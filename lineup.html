@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Football Lineup & Minutes Tracker</title>
+  <title>Football Tactical Lineup & Minutes Tracker</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
-      background: #0b1724;
-      color: #f5f5f5;
+      background: #020617;
+      color: #e5e7eb;
     }
     header {
-      padding: 16px 24px;
-      background: #111827;
+      padding: 14px 20px;
+      background: #0b1120;
       border-bottom: 1px solid #1f2937;
       display: flex;
       justify-content: space-between;
@@ -27,15 +27,15 @@
       color: #9ca3af;
     }
     main {
-      padding: 16px;
+      padding: 14px;
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 16px;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 14px;
     }
     section {
-      background: #111827;
+      background: #0b1120;
       border-radius: 8px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border: 1px solid #1f2937;
     }
     section h2 {
@@ -45,16 +45,20 @@
       padding-bottom: 6px;
       margin-bottom: 8px;
     }
+    h3 {
+      margin: 8px 0 6px;
+      font-size: 14px;
+    }
     label {
       display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
+      font-size: 12px;
+      margin-bottom: 3px;
     }
-    input, select, button {
+    input, select, button, textarea {
       font-family: inherit;
       font-size: 13px;
     }
-    input[type="text"], input[type="number"], select {
+    input[type="text"], input[type="number"], select, textarea {
       width: 100%;
       padding: 6px 8px;
       border-radius: 4px;
@@ -62,10 +66,10 @@
       background: #020617;
       color: #e5e7eb;
       box-sizing: border-box;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
-    input[type="number"] {
-      -moz-appearance: textfield;
+    textarea {
+      resize: vertical;
     }
     button {
       padding: 6px 10px;
@@ -90,7 +94,7 @@
     .row {
       display: flex;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .row > div {
       flex: 1;
@@ -98,10 +102,10 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 11px;
     }
     th, td {
-      padding: 4px 6px;
+      padding: 4px 5px;
       border-bottom: 1px solid #1f2937;
       text-align: left;
     }
@@ -115,56 +119,160 @@
       display: inline-block;
       padding: 2px 6px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 10px;
     }
     .badge-pos { background: #1d4ed8; }
     .badge-bench { background: #6b7280; }
     .badge-start { background: #16a34a; }
     .badge-low { background: #f97316; }
     .badge-high { background: #dc2626; }
+    .footer-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    /* Tactical pitch (compressed whiteboard) */
+    .pitch-wrapper {
+      margin-top: 8px;
+    }
     .pitch {
-      background: radial-gradient(circle at center, #14532d 0, #052e16 60%);
+      background: #020617;
       border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      height: 260px; /* compressed */
+      position: relative;
+      box-sizing: border-box;
       padding: 8px;
-      border: 1px solid #166534;
-      height: 320px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    }
+    .pitch-line-mark {
+      position: absolute;
+      border: 1px solid #e5e7eb;
       box-sizing: border-box;
     }
-    .pitch-line {
+    .pitch-center-line {
+      top: 50%;
+      left: 0;
+      right: 0;
+      border-top: 1px solid #e5e7eb;
+    }
+    .pitch-box-top {
+      top: 8px;
+      left: 15%;
+      right: 15%;
+      height: 40px;
+      border: 1px solid #e5e7eb;
+    }
+    .pitch-box-bottom {
+      bottom: 8px;
+      left: 15%;
+      right: 15%;
+      height: 40px;
+      border: 1px solid #e5e7eb;
+    }
+    .pitch-center-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      margin-left: -30px;
+      margin-top: -30px;
+      border-radius: 50%;
+      border: 1px solid #e5e7eb;
+    }
+
+    .pitch-players-layer {
+      position: absolute;
+      inset: 8px;
+    }
+
+    .player-circle {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #e5e7eb;
       display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      gap: 8px;
-    }
-    .player-chip {
-      background: rgba(15,23,42,0.9);
-      border-radius: 999px;
-      padding: 4px 8px;
-      border: 1px solid #1f2937;
-      font-size: 11px;
-      text-align: center;
-      min-width: 80px;
-    }
-    .player-chip span {
-      display: block;
-    }
-    .player-chip .name {
-      font-weight: 600;
-    }
-    .player-chip .pos {
       font-size: 10px;
+      background: rgba(15,23,42,0.7);
+      box-shadow: 0 0 8px rgba(148,163,184,0.6);
+      text-align: center;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    .player-circle .number {
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+    .player-circle .name {
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 52px;
+    }
+    .player-circle .pos {
+      font-size: 9px;
       color: #9ca3af;
     }
+
+    /* Sub timeline */
+    .timeline {
+      height: 60px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      position: relative;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+    .timeline-base {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      top: 30px;
+      height: 2px;
+      background: #374151;
+    }
+    .timeline-labels {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      top: 10px;
+      display: flex;
+      justify-content: space-between;
+      color: #9ca3af;
+      font-size: 10px;
+    }
+    .timeline-marker {
+      position: absolute;
+      top: 24px;
+      transform: translateX(-50%);
+      background: #2563eb;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    /* Sub log & snapshots */
     .sub-log {
-      max-height: 160px;
+      max-height: 120px;
       overflow-y: auto;
       border-radius: 4px;
       border: 1px solid #1f2937;
       padding: 4px 6px;
       background: #020617;
-      font-size: 12px;
+      font-size: 11px;
+      margin-bottom: 8px;
     }
     .sub-entry {
       margin-bottom: 4px;
@@ -173,14 +281,56 @@
       color: #60a5fa;
       font-weight: 600;
     }
-    .footer-note {
+
+    .snapshots {
+      max-height: 220px;
+      overflow-y: auto;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      padding: 4px 6px;
+      background: #020617;
       font-size: 11px;
-      color: #9ca3af;
-      margin-top: 6px;
     }
+    .snapshot {
+      margin-bottom: 8px;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 6px;
+    }
+    .snapshot-title {
+      margin-bottom: 4px;
+      color: #9ca3af;
+    }
+    .snapshot-pitch {
+      height: 160px;
+      background: #020617;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      position: relative;
+      box-sizing: border-box;
+      padding: 6px;
+    }
+    .snapshot-pitch .pitch-line-mark {
+      border-color: #e5e7eb;
+    }
+    .snapshot-pitch .pitch-center-line {
+      border-top-color: #e5e7eb;
+    }
+    .snapshot-pitch .pitch-center-circle {
+      border-color: #e5e7eb;
+    }
+    .snapshot-pitch .player-circle {
+      width: 46px;
+      height: 46px;
+      font-size: 9px;
+      box-shadow: 0 0 6px rgba(148,163,184,0.6);
+    }
+
     @media (max-width: 900px) {
       main {
         grid-template-columns: 1fr;
+      }
+      .pitch {
+        height: 220px;
       }
     }
   </style>
@@ -188,20 +338,20 @@
 <body>
 <header>
   <div>
-    <h1>Team Lineup & Minutes</h1>
-    <small>9‑a‑side • Formation & substitutions tracker</small>
+    <h1>Team Tactical Lineup & Minutes</h1>
+    <small>9‑a‑side • Formation, subs & minutes tracker</small>
   </div>
   <div>
-    <small>Match length: 
+    <small>Match length:
       <input type="number" id="matchLength" value="90" min="10" max="150" style="width:60px;"> mins
     </small>
   </div>
 </header>
 
 <main>
-  <!-- LEFT: Players + Controls + Pitch -->
+  <!-- LEFT: Setup + Players + Pitch -->
   <section>
-    <h2>Squad & Match Setup</h2>
+    <h2>Match Setup & Squad</h2>
 
     <div class="row">
       <div>
@@ -214,7 +364,7 @@
         </select>
       </div>
       <div>
-        <label>Custom line split (for 9 players)</label>
+        <label>Custom line split (must total 9)</label>
         <input type="text" id="customLines" placeholder="e.g. 1-3-3-2">
       </div>
     </div>
@@ -237,11 +387,27 @@
       </div>
     </div>
 
-    <hr style="border-color:#1f2937; margin:10px 0;">
+    <hr style="border-color:#1f2937; margin:8px 0;">
+
+    <h3>Import players from Excel</h3>
+    <label>Paste rows (Name, Preferred, Secondary, Number)</label>
+    <textarea id="excelPaste" rows="4" placeholder="Example:
+John Smith    CM    RW    8
+Adam Jones    CB    CDM   4"></textarea>
+    <div class="row">
+      <div>
+        <button id="importPlayersReplaceBtn" class="secondary">Replace squad with pasted list</button>
+      </div>
+      <div>
+        <button id="importPlayersAppendBtn" class="secondary">Append pasted players</button>
+      </div>
+    </div>
+
+    <hr style="border-color:#1f2937; margin:8px 0;">
 
     <div class="row">
       <div>
-        <h3 style="font-size:14px; margin:0 0 6px;">Players</h3>
+        <h3>Players</h3>
       </div>
       <div style="text-align:right;">
         <button id="addPlayerBtn" class="secondary">Add player</button>
@@ -253,29 +419,48 @@
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Position</th>
+          <th>Pref</th>
+          <th>Secondary</th>
           <th>Starter?</th>
+          <th>Target mins</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Initial 13 players -->
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <p class="footer-note">
-      Tip: tick “Starter?” for your starting 9. Bench players will be used for auto subs.
+      Tip: tick “Starter?” for your starting 9. Target minutes help you plan load (e.g. 80 vs 40).
     </p>
 
-    <h2>Pitch view</h2>
-    <div class="pitch" id="pitch">
-      <!-- Lines rendered here -->
+    <h2>Pitch (tactical whiteboard)</h2>
+    <div class="pitch-wrapper">
+      <div class="pitch" id="pitch">
+        <!-- Lines -->
+        <div class="pitch-line-mark pitch-center-line"></div>
+        <div class="pitch-line-mark pitch-box-top"></div>
+        <div class="pitch-line-mark pitch-box-bottom"></div>
+        <div class="pitch-center-circle"></div>
+        <!-- Players -->
+        <div class="pitch-players-layer" id="pitchPlayers"></div>
+      </div>
     </div>
   </section>
 
-  <!-- RIGHT: Substitutions + Minutes -->
+  <!-- RIGHT: Subs, timeline, minutes, snapshots -->
   <section>
-    <h2>Substitutions & Minutes</h2>
+    <h2>Substitutions, Minutes & Snapshots</h2>
+
+    <div class="timeline" id="subTimeline">
+      <div class="timeline-base"></div>
+      <div class="timeline-labels">
+        <span>0'</span>
+        <span>25'</span>
+        <span>50'</span>
+        <span>75'</span>
+        <span>90'</span>
+      </div>
+    </div>
 
     <div class="row">
       <div>
@@ -302,30 +487,31 @@
     <label>Substitution log</label>
     <div class="sub-log" id="subLog"></div>
 
-    <hr style="border-color:#1f2937; margin:10px 0;">
-
-    <h3 style="font-size:14px; margin:0 0 6px;">Minutes per player</h3>
+    <h3>Minutes per player</h3>
     <table id="minutesTable">
       <thead>
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Pos</th>
+          <th>Pref</th>
           <th>Starter?</th>
           <th>On</th>
           <th>Off</th>
           <th>Minutes</th>
+          <th>Target</th>
+          <th>Diff</th>
           <th>Load</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Filled by JS -->
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <p class="footer-note">
-      Load colours: green = healthy, orange = low minutes, red = heavy minutes (relative to match length).
+      Load colours: green = healthy vs target, orange = short, red = exceeded. Heavy vs match length also flagged.
     </p>
+
+    <h3>Tactical snapshots (after each sub)</h3>
+    <div class="snapshots" id="snapshots"></div>
   </section>
 </main>
 
@@ -334,9 +520,8 @@
   const match = {
     length: 90,
     players: [],
-    subs: [], // {offId, onId, minute}
+    subs: [] // {offId, onId, minute}
   };
-
   let nextPlayerId = 1;
 
   // --- Helpers ---
@@ -346,16 +531,19 @@
       "Player 6","Player 7","Player 8","Player 9","Player 10",
       "Player 11","Player 12","Player 13"
     ];
-    const positions = ["GK","DEF","DEF","DEF","MID","MID","MID","ATT","ATT","DEF","MID","ATT","ATT"];
+    const preferred = ["GK","DEF","DEF","DEF","MID","MID","MID","ATT","ATT","DEF","MID","ATT","ATT"];
+    const secondary = ["","DEF","MID","MID","ATT","DEF","ATT","MID","MID","MID","ATT","MID","DEF"];
     for (let i = 0; i < names.length; i++) {
       match.players.push({
         id: nextPlayerId++,
         name: names[i],
         number: i + 1,
-        position: positions[i] || "MID",
-        starter: i < 9, // first 9 as starters
+        preferred: preferred[i] || "MID",
+        secondary: secondary[i] || "",
+        starter: i < 9,
         onMinute: i < 9 ? 0 : null,
-        offMinute: null
+        offMinute: null,
+        target: null
       });
     }
   }
@@ -364,6 +552,7 @@
     return match.players.find(p => p.id === id);
   }
 
+  // --- Rendering: players table ---
   function renderPlayersTable() {
     const tbody = document.querySelector("#playersTable tbody");
     tbody.innerHTML = "";
@@ -387,17 +576,28 @@
       tdName.appendChild(nameInput);
       tr.appendChild(tdName);
 
-      const tdPos = document.createElement("td");
-      const posInput = document.createElement("input");
-      posInput.type = "text";
-      posInput.value = p.position;
-      posInput.addEventListener("input", () => {
-        p.position = posInput.value;
+      const tdPref = document.createElement("td");
+      const prefInput = document.createElement("input");
+      prefInput.type = "text";
+      prefInput.value = p.preferred;
+      prefInput.addEventListener("input", () => {
+        p.preferred = prefInput.value;
         renderPitch();
         renderMinutesTable();
       });
-      tdPos.appendChild(posInput);
-      tr.appendChild(tdPos);
+      tdPref.appendChild(prefInput);
+      tr.appendChild(tdPref);
+
+      const tdSec = document.createElement("td");
+      const secInput = document.createElement("input");
+      secInput.type = "text";
+      secInput.value = p.secondary || "";
+      secInput.addEventListener("input", () => {
+        p.secondary = secInput.value;
+        renderMinutesTable();
+      });
+      tdSec.appendChild(secInput);
+      tr.appendChild(tdSec);
 
       const tdStarter = document.createElement("td");
       const starterCheckbox = document.createElement("input");
@@ -419,6 +619,18 @@
       tdStarter.appendChild(starterCheckbox);
       tr.appendChild(tdStarter);
 
+      const tdTarget = document.createElement("td");
+      const targetInput = document.createElement("input");
+      targetInput.type = "number";
+      targetInput.value = p.target != null ? p.target : "";
+      targetInput.addEventListener("input", () => {
+        const val = parseInt(targetInput.value, 10);
+        p.target = isNaN(val) ? null : val;
+        renderMinutesTable();
+      });
+      tdTarget.appendChild(targetInput);
+      tr.appendChild(tdTarget);
+
       const tdActions = document.createElement("td");
       const removeBtn = document.createElement("button");
       removeBtn.textContent = "Remove";
@@ -431,6 +643,8 @@
         renderMinutesTable();
         renderSubSelects();
         renderSubLog();
+        renderSubTimeline();
+        renderSnapshots();
       });
       tdActions.appendChild(removeBtn);
       tr.appendChild(tdActions);
@@ -439,6 +653,7 @@
     });
   }
 
+  // --- Sub selects ---
   function renderSubSelects() {
     const offSel = document.getElementById("subOffSelect");
     const onSel = document.getElementById("subOnSelect");
@@ -451,7 +666,7 @@
     const addOption = (sel, player) => {
       const opt = document.createElement("option");
       opt.value = player.id;
-      opt.textContent = `#${player.number} ${player.name} (${player.position})`;
+      opt.textContent = `#${player.number} ${player.name} (${player.preferred})`;
       sel.appendChild(opt);
     };
 
@@ -459,6 +674,7 @@
     bench.forEach(p => addOption(onSel, p));
   }
 
+  // --- Formation parsing ---
   function parseFormationString(str) {
     if (!str) return null;
     const parts = str.split("-").map(x => parseInt(x.trim(), 10)).filter(x => !isNaN(x));
@@ -478,54 +694,58 @@
     return parsed || [1,3,3,2];
   }
 
+  // --- Pitch rendering (compressed tactical board) ---
   function renderPitch() {
-    const pitch = document.getElementById("pitch");
-    pitch.innerHTML = "";
+    const layer = document.getElementById("pitchPlayers");
+    layer.innerHTML = "";
 
     const lines = getFormationLines();
     const starters = match.players.filter(p => p.starter).slice(0, 9);
 
-    // If fewer than 9 starters, just show what we have
-    const playersByLine = [];
+    const height = layer.clientHeight || 244;
+    const width = layer.clientWidth || layer.parentElement.clientWidth - 16;
+
+    const lineCount = lines.length;
+    const verticalStep = height / (lineCount + 1);
+
     let idx = 0;
     for (let i = 0; i < lines.length; i++) {
       const count = lines[i];
-      const linePlayers = starters.slice(idx, idx + count);
-      idx += count;
-      playersByLine.push(linePlayers);
-    }
+      const y = verticalStep * (i + 1);
+      for (let j = 0; j < count; j++) {
+        const p = starters[idx];
+        idx++;
+        if (!p) continue;
 
-    const labels = ["GK / Back", "Defence", "Midfield", "Attack"];
+        const x = width * ((j + 1) / (count + 1));
 
-    playersByLine.forEach((linePlayers, i) => {
-      const lineDiv = document.createElement("div");
-      lineDiv.className = "pitch-line";
+        const circle = document.createElement("div");
+        circle.className = "player-circle";
+        circle.style.left = (x - 30) + "px";
+        circle.style.top = (y - 30) + "px";
 
-      if (linePlayers.length === 0) {
-        const placeholder = document.createElement("div");
-        placeholder.textContent = labels[i] || "Line";
-        placeholder.style.color = "#9ca3af";
-        lineDiv.appendChild(placeholder);
-      } else {
-        linePlayers.forEach(p => {
-          const chip = document.createElement("div");
-          chip.className = "player-chip";
-          const nameSpan = document.createElement("span");
-          nameSpan.className = "name";
-          nameSpan.textContent = `#${p.number} ${p.name}`;
-          const posSpan = document.createElement("span");
-          posSpan.className = "pos";
-          posSpan.textContent = p.position;
-          chip.appendChild(nameSpan);
-          chip.appendChild(posSpan);
-          lineDiv.appendChild(chip);
-        });
+        const numSpan = document.createElement("div");
+        numSpan.className = "number";
+        numSpan.textContent = p.number;
+
+        const nameSpan = document.createElement("div");
+        nameSpan.className = "name";
+        nameSpan.textContent = p.name;
+
+        const posSpan = document.createElement("div");
+        posSpan.className = "pos";
+        posSpan.textContent = p.preferred;
+
+        circle.appendChild(numSpan);
+        circle.appendChild(nameSpan);
+        circle.appendChild(posSpan);
+
+        layer.appendChild(circle);
       }
-
-      pitch.appendChild(lineDiv);
-    });
+    }
   }
 
+  // --- Sub log ---
   function renderSubLog() {
     const log = document.getElementById("subLog");
     log.innerHTML = "";
@@ -546,6 +766,27 @@
       });
   }
 
+  // --- Sub timeline ---
+  function renderSubTimeline() {
+    const tl = document.getElementById("subTimeline");
+    const baseWidth = tl.clientWidth || 260;
+    const markers = tl.querySelectorAll(".timeline-marker");
+    markers.forEach(m => m.remove());
+
+    match.subs.forEach(s => {
+      const pct = (s.minute / match.length) * 100;
+      const off = getPlayerById(s.offId);
+      const on = getPlayerById(s.onId);
+
+      const marker = document.createElement("div");
+      marker.className = "timeline-marker";
+      marker.style.left = pct + "%";
+      marker.textContent = `${off ? off.number : "?"}→${on ? on.number : "?"}`;
+      tl.appendChild(marker);
+    });
+  }
+
+  // --- Minutes computation ---
   function computeMinutes(player) {
     const length = match.length;
     const on = player.onMinute;
@@ -557,6 +798,7 @@
     return Math.max(0, off - on);
   }
 
+  // --- Minutes table ---
   function renderMinutesTable() {
     const tbody = document.querySelector("#minutesTable tbody");
     tbody.innerHTML = "";
@@ -571,12 +813,12 @@
       tdName.textContent = p.name;
       tr.appendChild(tdName);
 
-      const tdPos = document.createElement("td");
+      const tdPref = document.createElement("td");
       const badgePos = document.createElement("span");
       badgePos.className = "badge badge-pos";
-      badgePos.textContent = p.position || "-";
-      tdPos.appendChild(badgePos);
-      tr.appendChild(tdPos);
+      badgePos.textContent = p.preferred || "-";
+      tdPref.appendChild(badgePos);
+      tr.appendChild(tdPref);
 
       const tdStarter = document.createElement("td");
       const badgeStarter = document.createElement("span");
@@ -598,27 +840,160 @@
       tdMin.textContent = minutes;
       tr.appendChild(tdMin);
 
+      const tdTarget = document.createElement("td");
+      tdTarget.textContent = p.target != null ? p.target : "-";
+      tr.appendChild(tdTarget);
+
+      const tdDiff = document.createElement("td");
+      let diffText = "-";
+      if (p.target != null) {
+        const diff = minutes - p.target;
+        diffText = diff > 0 ? "+" + diff : diff.toString();
+      }
+      tdDiff.textContent = diffText;
+      tr.appendChild(tdDiff);
+
       const tdLoad = document.createElement("td");
-      const ratio = minutes / match.length;
       const badgeLoad = document.createElement("span");
+      const ratio = minutes / match.length;
+
       if (minutes === 0) {
         badgeLoad.className = "badge badge-low";
         badgeLoad.textContent = "0";
-      } else if (ratio < 0.4) {
-        badgeLoad.className = "badge badge-low";
-        badgeLoad.textContent = "Low";
-      } else if (ratio <= 0.8) {
-        badgeLoad.className = "badge badge-start";
-        badgeLoad.textContent = "OK";
+      } else if (p.target != null) {
+        const diff = minutes - p.target;
+        if (diff < -5) {
+          badgeLoad.className = "badge badge-low";
+          badgeLoad.textContent = "Short";
+        } else if (Math.abs(diff) <= 5) {
+          badgeLoad.className = "badge badge-start";
+          badgeLoad.textContent = "On plan";
+        } else {
+          badgeLoad.className = "badge badge-high";
+          badgeLoad.textContent = "Over";
+        }
       } else {
-        badgeLoad.className = "badge badge-high";
-        badgeLoad.textContent = "Heavy";
+        if (ratio < 0.4) {
+          badgeLoad.className = "badge badge-low";
+          badgeLoad.textContent = "Low";
+        } else if (ratio <= 0.8) {
+          badgeLoad.className = "badge badge-start";
+          badgeLoad.textContent = "OK";
+        } else {
+          badgeLoad.className = "badge badge-high";
+          badgeLoad.textContent = "Heavy";
+        }
       }
+
       tdLoad.appendChild(badgeLoad);
       tr.appendChild(tdLoad);
 
       tbody.appendChild(tr);
     });
+  }
+
+  // --- Tactical snapshots ---
+  function renderSnapshots() {
+    const container = document.getElementById("snapshots");
+    container.innerHTML = "";
+    if (match.subs.length === 0) {
+      container.textContent = "No snapshots yet.";
+      return;
+    }
+
+    const lines = getFormationLines();
+
+    match.subs
+      .slice()
+      .sort((a,b) => a.minute - b.minute)
+      .forEach(s => {
+        const snapshotDiv = document.createElement("div");
+        snapshotDiv.className = "snapshot";
+
+        const title = document.createElement("div");
+        title.className = "snapshot-title";
+        const off = getPlayerById(s.offId);
+        const on = getPlayerById(s.onId);
+        title.textContent = `${s.minute}' – ${off ? off.name : "?"} OFF, ${on ? on.name : "?"} ON`;
+        snapshotDiv.appendChild(title);
+
+        const pitch = document.createElement("div");
+        pitch.className = "snapshot-pitch";
+
+        // lines
+        const centerLine = document.createElement("div");
+        centerLine.className = "pitch-line-mark pitch-center-line";
+        pitch.appendChild(centerLine);
+
+        const boxTop = document.createElement("div");
+        boxTop.className = "pitch-line-mark pitch-box-top";
+        pitch.appendChild(boxTop);
+
+        const boxBottom = document.createElement("div");
+        boxBottom.className = "pitch-line-mark pitch-box-bottom";
+        pitch.appendChild(boxBottom);
+
+        const centerCircle = document.createElement("div");
+        centerCircle.className = "pitch-center-circle";
+        pitch.appendChild(centerCircle);
+
+        const layer = document.createElement("div");
+        layer.className = "pitch-players-layer";
+        pitch.appendChild(layer);
+
+        const height = 148;
+        const width = pitch.clientWidth || container.clientWidth - 16;
+        const lineCount = lines.length;
+        const verticalStep = height / (lineCount + 1);
+
+        const startersNow = match.players.filter(p => {
+          // player is "on" at this minute if:
+          // onMinute <= s.minute and (offMinute == null or offMinute > s.minute)
+          if (p.onMinute == null) return false;
+          if (p.onMinute > s.minute) return false;
+          if (p.offMinute != null && p.offMinute <= s.minute) return false;
+          return true;
+        }).slice(0, 9);
+
+        let idx = 0;
+        for (let i = 0; i < lines.length; i++) {
+          const count = lines[i];
+          const y = verticalStep * (i + 1);
+          for (let j = 0; j < count; j++) {
+            const p = startersNow[idx];
+            idx++;
+            if (!p) continue;
+
+            const x = width * ((j + 1) / (count + 1));
+
+            const circle = document.createElement("div");
+            circle.className = "player-circle";
+            circle.style.left = (x - 23) + "px";
+            circle.style.top = (y - 23) + "px";
+
+            const numSpan = document.createElement("div");
+            numSpan.className = "number";
+            numSpan.textContent = p.number;
+
+            const nameSpan = document.createElement("div");
+            nameSpan.className = "name";
+            nameSpan.textContent = p.name;
+
+            const posSpan = document.createElement("div");
+            posSpan.className = "pos";
+            posSpan.textContent = p.preferred;
+
+            circle.appendChild(numSpan);
+            circle.appendChild(nameSpan);
+            circle.appendChild(posSpan);
+
+            layer.appendChild(circle);
+          }
+        }
+
+        snapshotDiv.appendChild(pitch);
+        container.appendChild(snapshotDiv);
+      });
   }
 
   // --- Substitution logic ---
@@ -636,13 +1011,15 @@
 
     off.offMinute = minute;
     on.onMinute = minute;
-    on.starter = false; // still bench but now has minutes
+    on.starter = false;
 
     match.subs.push({ offId, onId, minute });
 
     renderSubLog();
     renderMinutesTable();
     renderPitch();
+    renderSubTimeline();
+    renderSnapshots();
   }
 
   function runAutoSubs() {
@@ -676,6 +1053,8 @@
     renderSubLog();
     renderMinutesTable();
     renderPitch();
+    renderSubTimeline();
+    renderSnapshots();
   }
 
   function resetMatch() {
@@ -692,6 +1071,8 @@
     renderSubLog();
     renderMinutesTable();
     renderPitch();
+    renderSubTimeline();
+    renderSnapshots();
   }
 
   function addPlayer() {
@@ -700,14 +1081,59 @@
       id: nextPlayerId++,
       name: "Player " + num,
       number: num,
-      position: "MID",
+      preferred: "MID",
+      secondary: "",
       starter: false,
       onMinute: null,
-      offMinute: null
+      offMinute: null,
+      target: null
     });
     renderPlayersTable();
     renderSubSelects();
     renderMinutesTable();
+    renderPitch();
+  }
+
+  // --- Excel import ---
+  function importPlayers(fromTextarea, mode) {
+    const raw = document.getElementById("excelPaste").value.trim();
+    if (!raw) return;
+
+    const lines = raw.split("\n");
+    const newPlayers = [];
+
+    lines.forEach(line => {
+      const cols = line.split(/\t+/); // Excel uses tabs
+      if (cols.length < 1) return;
+
+      const name = cols[0] || "Unnamed";
+      const preferred = cols[1] || "MID";
+      const secondary = cols[2] || "";
+      const number = cols[3] ? parseInt(cols[3], 10) : null;
+
+      newPlayers.push({
+        id: nextPlayerId++,
+        name,
+        number: number || (match.players.length + newPlayers.length),
+        preferred,
+        secondary,
+        starter: false,
+        onMinute: null,
+        offMinute: null,
+        target: null
+      });
+    });
+
+    if (mode === "replace") {
+      match.players = newPlayers;
+    } else {
+      match.players = match.players.concat(newPlayers);
+    }
+
+    renderPlayersTable();
+    renderSubSelects();
+    renderMinutesTable();
+    renderPitch();
   }
 
   // --- Event wiring ---
@@ -718,9 +1144,12 @@
     renderPitch();
     renderMinutesTable();
     renderSubLog();
+    renderSubTimeline();
+    renderSnapshots();
 
     document.getElementById("applyFormationBtn").addEventListener("click", () => {
       renderPitch();
+      renderSnapshots();
     });
 
     document.getElementById("resetMatchBtn").addEventListener("click", resetMatch);
@@ -733,7 +1162,22 @@
       if (!isNaN(val) && val > 0) {
         match.length = val;
         renderMinutesTable();
+        renderSubTimeline();
+        renderSnapshots();
       }
+    });
+
+    document.getElementById("importPlayersReplaceBtn").addEventListener("click", () => {
+      importPlayers(true, "replace");
+    });
+    document.getElementById("importPlayersAppendBtn").addEventListener("click", () => {
+      importPlayers(true, "append");
+    });
+
+    window.addEventListener("resize", () => {
+      renderPitch();
+      renderSubTimeline();
+      renderSnapshots();
     });
   }
 
