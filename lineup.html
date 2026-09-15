@@ -40,6 +40,7 @@
     .player-circle .number { font-weight:700; font-size:12px; margin-bottom:2px; }
     .player-circle .name { font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52px; }
     .player-circle .pos { font-size:9px; color:#9ca3af; }
+    .slot-label { font-family:inherit; }
     .snapshot-pitch { height:220px; background:#020617; border-radius:6px; border:1px solid #e5e7eb; position:relative; box-sizing:border-box; padding:6px; margin-bottom:8px; }
     @media (max-width:900px) { main { grid-template-columns:1fr; } .pitch { height:320px; } }
   </style>
@@ -68,7 +69,7 @@
           <option value="1-3-3-2">1‑3‑3‑2</option>
           <option value="1-4-3-1">1‑4‑3‑1</option>
           <option value="1-3-2-3">1‑3‑2‑3</option>
-          <option value="1-3-4-1">1‑3‑4‑1</option>
+          <option value="1-3-4-1" selected>1‑3‑4‑1</option>
           <option value="custom">Custom</option>
         </select>
       </div>
@@ -256,7 +257,7 @@ function normalisePosition(pos) {
     "GK":"GK","CB":"CB","CM":"CM","ST":"ST","LB":"LB","RB":"RB",
     "LM":"LM","RM":"RM","LW":"LM","RW":"RM","CDM":"CM","DM":"CM",
     "AM":"CM","CAM":"CM","CF":"ST","CBR":"CB","CBL":"CB","FB":"LB",
-    "WB":"LB","LWB":"LM","RWB":"RM"
+    "WB":"LB","LWB":"LM","RWB":"RM","FW":"ST"
   };
   return map[p] || p || "CM";
 }
@@ -308,7 +309,7 @@ function renderPlayersTable() {
 
     const tdName = document.createElement("td");
     const nameInput = document.createElement("input"); nameInput.type = "text"; nameInput.value = p.name;
-    nameInput.addEventListener("input", () => { p.name = nameInput.value; renderPitch(); renderMinutesTable(); renderSubSelects(); });
+    nameInput.addEventListener("input", () => { p.name = nameInput.value; renderPitchFull(); renderMinutesTable(); renderSubSelects(); });
     tdName.appendChild(nameInput); tr.appendChild(tdName);
 
     const tdPos = document.createElement("td");
@@ -318,22 +319,18 @@ function renderPlayersTable() {
       p.positions = list.length ? list.map(normalisePosition) : ["CM"];
       p.isGK = p.positions.includes("GK");
       if (p.isGK) { p.starter = true; p.onMinute = 0; p.offMinute = matchState.length || (parseInt(matchLengthInput.value,10)||80); }
-      renderPitch(); renderMinutesTable(); renderSubSelects();
+      renderPitchFull(); renderMinutesTable(); renderSubSelects();
     });
     tdPos.appendChild(posInput); tr.appendChild(tdPos);
 
     const tdStarter = document.createElement("td");
     const starterCheckbox = document.createElement("input"); starterCheckbox.type = "checkbox"; starterCheckbox.checked = !!p.starter;
     starterCheckbox.addEventListener("change", () => {
-      if (p.isGK && !starterCheckbox.checked) {
-        // prevent unchecking GK starter
-        starterCheckbox.checked = true;
-        return;
-      }
+      if (p.isGK && !starterCheckbox.checked) { starterCheckbox.checked = true; return; }
       p.starter = starterCheckbox.checked;
       if (p.starter) { if (p.onMinute === null || p.onMinute === undefined) p.onMinute = 0; }
       else { p.onMinute = null; p.offMinute = null; }
-      renderPitch(); renderMinutesTable(); renderSubSelects();
+      renderPitchFull(); renderMinutesTable(); renderSubSelects();
     });
     tdStarter.appendChild(starterCheckbox); tr.appendChild(tdStarter);
 
@@ -346,7 +343,7 @@ function renderPlayersTable() {
     const removeBtn = document.createElement("button"); removeBtn.textContent = "Remove"; removeBtn.className = "danger";
     removeBtn.addEventListener("click", () => {
       const idx = matchState.players.findIndex(x => x.id === p.id);
-      if (idx >= 0) { matchState.players.splice(idx,1); renderPlayersTable(); renderPitch(); renderMinutesTable(); renderSubSelects(); }
+      if (idx >= 0) { matchState.players.splice(idx,1); renderPlayersTable(); renderPitchFull(); renderMinutesTable(); renderSubSelects(); }
     });
     tdActions.appendChild(removeBtn); tr.appendChild(tdActions);
 
@@ -392,11 +389,10 @@ function renderMinutesTable() {
   });
 }
 
-// Render pitch (GK-aware placeholder; full placement in Part 3)
-function renderPitch() {
+// Render pitch placeholder (full implementation in Part 3)
+function renderPitchFull() {
+  // placeholder to be replaced by Part 3 implementation
   pitchPlayersLayer.innerHTML = "";
-  // GK will be placed in Part 3's renderPitch replacement; here we keep a simple placeholder if called early
-  // We'll call the full renderPitch implementation from Part 3's init
 }
 // PART 3 - JS (bottom half)
 
@@ -450,7 +446,7 @@ function addManualSub() {
   const offPlayer = matchState.players.find(p => p.id === offId);
   const onPlayer = matchState.players.find(p => p.id === onId);
   if (!offPlayer || !onPlayer) return;
-  // Prevent subbing GK outfield or using GK as outfield
+  // Prevent subbing GK off unless explicitly changed
   if (offPlayer.isGK) { alert("Cannot substitute the GK off unless you explicitly change GK status."); return; }
   // Apply substitution
   offPlayer.offMinute = minute;
@@ -480,7 +476,7 @@ function createSnapshot(minute) {
   // simple formation lines
   const formation = formationSelect.value;
   let lines = [];
-  if (formation === "custom") lines = customLinesInput.value ? customLinesInput.value.split("-").map(n=>parseInt(n,10)) : [1,3,4];
+  if (formation === "custom") lines = customLinesInput.value ? customLinesInput.value.split("-").map(n=>parseInt(n,10)) : [3,4,1];
   else {
     const parts = formation.split("-").map(n=>parseInt(n,10));
     if (parts.length === 4 && parts[0] === 1) lines = parts.slice(1);
@@ -512,65 +508,222 @@ function createSnapshot(minute) {
   snapshotsDiv.appendChild(snap);
 }
 
-// Full pitch rendering (GK-aware)
-function renderPitchFull() {
-  pitchPlayersLayer.innerHTML = "";
+// Assign starters specifically for 1-3-4-1 with left/right awareness
+function assignStartersFor1341() {
   const totalMatch = parseInt(matchLengthInput.value,10) || 80;
+
   // Ensure GK exists and is starter
   const gk = matchState.players.find(p => p.isGK);
   if (gk) {
     gk.starter = true;
-    if (gk.onMinute === null || gk.onMinute === undefined) gk.onMinute = 0;
-    if (gk.offMinute === null || gk.offMinute === undefined) gk.offMinute = totalMatch;
+    gk.onMinute = 0;
+    gk.offMinute = totalMatch;
   }
-  // Build outfield starters (8) excluding GK
-  let starters = matchState.players.filter(p => p.starter && !p.isGK).slice(0,8);
-  if (starters.length < 8) {
-    const bench = matchState.players.filter(p => !p.starter && !p.isGK);
-    for (let i=0;i<bench.length && starters.length<8;i++) starters.push(bench[i]);
+
+  // Pool excluding GK
+  const pool = matchState.players.filter(p => !p.isGK);
+
+  // Helper: check if player has any of tokens
+  function hasToken(player, tokens) {
+    if (!player.positions) return false;
+    for (const t of tokens) if (player.positions.includes(t)) return true;
+    return false;
   }
-  // Determine formation lines (outfield only)
-  const formation = formationSelect.value;
-  let lines = [];
-  if (formation === "custom") {
-    const raw = customLinesInput.value.trim();
-    lines = raw ? raw.split("-").map(n=>parseInt(n,10)) : [3,4,1];
-  } else {
-    const parts = formation.split("-").map(n=>parseInt(n,10));
-    if (parts.length === 4 && parts[0] === 1) lines = parts.slice(1);
-    else lines = parts;
+
+  // Desired slots with left/right awareness and fallback token lists
+  const desiredSlots = [
+    { id: "LB", tokens: ["LB","LWB","WB","FB"], side: "left", line: "def" },
+    { id: "CB1", tokens: ["CB"], side: "center", line: "def" },
+    { id: "CB2", tokens: ["CB"], side: "center", line: "def" },
+    { id: "RB", tokens: ["RB","RWB","WB","FB"], side: "right", line: "def" },
+
+    { id: "LM", tokens: ["LM","LW"], side: "left", line: "mid" },
+    { id: "CM1", tokens: ["CM","CDM","CAM","DM","AM"], side: "center", line: "mid" },
+    { id: "CM2", tokens: ["CM","CDM","CAM","DM","AM"], side: "center", line: "mid" },
+    { id: "RM", tokens: ["RM","RW"], side: "right", line: "mid" },
+
+    { id: "ST", tokens: ["ST","CF","FW"], side: "center", line: "fwd" }
+  ];
+
+  // Score function: exact token match highest, side match bonus, starter bias
+  function scoreForSlot(player, slot) {
+    let score = 0;
+    // exact token matches
+    for (let i = 0; i < slot.tokens.length; i++) {
+      if (player.positions.includes(slot.tokens[i])) score += 100 - i;
+    }
+    // side bonus: if slot is left and player has LM/LB etc.
+    if (slot.side === "left" && hasToken(player, ["LM","LW","LWB","LB"])) score += 20;
+    if (slot.side === "right" && hasToken(player, ["RM","RW","RWB","RB"])) score += 20;
+    // center bonus for CM/CB/ST
+    if (slot.side === "center" && hasToken(player, ["CM","CB","ST","CF"])) score += 10;
+    // prefer players already marked starter slightly
+    if (player.starter) score += 5;
+    // small fallback for any outfield player
+    if (score === 0) score = 5;
+    return score;
   }
-  const width = pitchPlayersLayer.clientWidth || 600;
-  const height = pitchPlayersLayer.clientHeight || 320;
-  let placed = 0;
-  for (let li=0; li<lines.length; li++) {
-    const count = lines[li];
-    const y = ((li+1)/(lines.length+1))*height;
-    for (let pi=0; pi<count; pi++) {
-      const player = starters[placed];
-      if (!player) break;
-      const x = ((pi+1)/(count+1))*width;
-      const el = document.createElement("div"); el.className = "player-circle";
-      el.style.left = `${x-30}px`; el.style.top = `${y-30}px`;
-      el.title = `${player.number || ""} ${player.name} (${player.positions.join(",")})`;
-      const num = document.createElement("div"); num.className = "number"; num.textContent = player.number || "";
-      const name = document.createElement("div"); name.className = "name"; name.textContent = player.name;
-      const pos = document.createElement("div"); pos.className = "pos"; pos.textContent = player.positions[0] || "";
-      el.appendChild(num); el.appendChild(name); el.appendChild(pos);
-      pitchPlayersLayer.appendChild(el);
-      placed++;
+
+  // Choose best candidate for each slot, removing chosen from pool
+  const chosen = [];
+  const remaining = pool.slice();
+  for (const slot of desiredSlots) {
+    let best = null;
+    let bestScore = -Infinity;
+    for (const p of remaining) {
+      const s = scoreForSlot(p, slot);
+      if (s > bestScore) { bestScore = s; best = p; }
+    }
+    if (best) {
+      chosen.push({ slot, player: best });
+      const idx = remaining.findIndex(x => x.id === best.id);
+      if (idx >= 0) remaining.splice(idx, 1);
     }
   }
-  // Place GK at bottom center
-  if (gk) {
-    const el = document.createElement("div"); el.className = "player-circle";
-    el.style.left = `${(width/2)-30}px`; el.style.top = `${height-60}px`;
-    el.title = `${gk.number || ""} ${gk.name} (GK)`;
-    const num = document.createElement("div"); num.className = "number"; num.textContent = gk.number || "";
-    const name = document.createElement("div"); name.className = "name"; name.textContent = gk.name;
-    const pos = document.createElement("div"); pos.className = "pos"; pos.textContent = "GK";
+
+  // If fewer than 8 chosen, fill from remaining bench
+  while (chosen.length < 8 && remaining.length) {
+    const p = remaining.shift();
+    chosen.push({ slot: { id: "FILL", tokens: ["CM"], side: "center", line: "mid" }, player: p });
+  }
+
+  // Reset outfield starter flags and minutes (GK already handled)
+  matchState.players.forEach(p => {
+    if (!p.isGK) { p.starter = false; p.onMinute = null; p.offMinute = null; }
+  });
+
+  // Apply chosen starters
+  chosen.forEach(c => {
+    const p = c.player;
+    p.starter = true;
+    if (p.onMinute === null || p.onMinute === undefined) p.onMinute = 0;
+  });
+
+  // Build ordered arrays for rendering with left->center->right ordering per line
+  const defenders = chosen.filter(c => c.slot.line === "def");
+  const midfielders = chosen.filter(c => c.slot.line === "mid");
+  const forwards = chosen.filter(c => c.slot.line === "fwd");
+
+  // Sort defenders: left, center(s), right
+  defenders.sort((a,b) => {
+    const order = { left: 0, center: 1, right: 2 };
+    return order[a.slot.side] - order[b.slot.side];
+  });
+
+  // Sort midfielders: left, center(s), right
+  midfielders.sort((a,b) => {
+    const order = { left: 0, center: 1, right: 2 };
+    return order[a.slot.side] - order[b.slot.side];
+  });
+
+  return {
+    gk,
+    defenders: defenders.map(d => d.player),
+    midfielders: midfielders.map(m => m.player),
+    forwards: forwards.map(f => f.player)
+  };
+}
+
+// Slot label helper + renderPitchFull replacement (drop-in)
+function createSlotLabel(text, x, y) {
+  const lbl = document.createElement("div");
+  lbl.className = "slot-label";
+  lbl.textContent = text;
+  lbl.style.position = "absolute";
+  lbl.style.left = `${x}px`;
+  lbl.style.top = `${y}px`;
+  lbl.style.transform = "translate(-50%, -100%)";
+  lbl.style.pointerEvents = "none";
+  lbl.style.fontSize = "11px";
+  lbl.style.padding = "2px 6px";
+  lbl.style.borderRadius = "6px";
+  lbl.style.background = "rgba(255,255,255,0.06)";
+  lbl.style.color = "#e5e7eb";
+  lbl.style.border = "1px solid rgba(255,255,255,0.06)";
+  lbl.style.backdropFilter = "blur(4px)";
+  lbl.style.boxShadow = "0 2px 6px rgba(0,0,0,0.6)";
+  return lbl;
+}
+
+function renderPitchFull() {
+  pitchPlayersLayer.innerHTML = "";
+  const totalMatch = parseInt(matchLengthInput.value,10) || 80;
+  const assigned = assignStartersFor1341();
+  const gk = assigned.gk;
+  const defenders = assigned.defenders || [];
+  const midfielders = assigned.midfielders || [];
+  const forwards = assigned.forwards || [];
+
+  const width = pitchPlayersLayer.clientWidth || 600;
+  const height = pitchPlayersLayer.clientHeight || 320;
+
+  function createPlayerEl(player, posLabel) {
+    const el = document.createElement("div");
+    el.className = "player-circle";
+    el.title = `${player.number || ""} ${player.name} (${player.positions.join(",")})`;
+    const num = document.createElement("div"); num.className = "number"; num.textContent = player.number || "";
+    const name = document.createElement("div"); name.className = "name"; name.textContent = player.name;
+    const pos = document.createElement("div"); pos.className = "pos"; pos.textContent = posLabel || (player.positions[0] || "");
     el.appendChild(num); el.appendChild(name); el.appendChild(pos);
+    return el;
+  }
+
+  // Defenders band (3) — left, center(s), right
+  const defY = height * 0.72;
+  const defCount = Math.max(1, defenders.length);
+  for (let i = 0; i < defCount; i++) {
+    const p = defenders[i];
+    if (!p) continue;
+    const x = ((i + 1) / (defCount + 1)) * width;
+    const el = createPlayerEl(p, p.positions[0] || "CB");
+    el.style.left = `${x - 30}px`;
+    el.style.top = `${defY - 30}px`;
     pitchPlayersLayer.appendChild(el);
+    const slotText = (i === 0) ? "LB" : (i === defCount - 1 ? "RB" : "CB");
+    const lbl = createSlotLabel(slotText, x, defY - 30);
+    pitchPlayersLayer.appendChild(lbl);
+  }
+
+  // Midfielders band (4) — left, two centers, right
+  const midY = height * 0.48;
+  const midCount = Math.max(1, midfielders.length);
+  for (let i = 0; i < midCount; i++) {
+    const p = midfielders[i];
+    if (!p) continue;
+    const x = ((i + 1) / (midCount + 1)) * width;
+    const el = createPlayerEl(p, p.positions[0] || "CM");
+    el.style.left = `${x - 30}px`;
+    el.style.top = `${midY - 30}px`;
+    pitchPlayersLayer.appendChild(el);
+    let slotText = "CM";
+    if (i === 0) slotText = "LM";
+    else if (i === midCount - 1) slotText = "RM";
+    else slotText = "CM";
+    const lbl = createSlotLabel(slotText, x, midY - 30);
+    pitchPlayersLayer.appendChild(lbl);
+  }
+
+  // Forward (1)
+  const fwdY = height * 0.22;
+  if (forwards.length > 0) {
+    const p = forwards[0];
+    const x = width / 2;
+    const el = createPlayerEl(p, p.positions[0] || "ST");
+    el.style.left = `${x - 30}px`;
+    el.style.top = `${fwdY - 30}px`;
+    pitchPlayersLayer.appendChild(el);
+    const lbl = createSlotLabel("ST", x, fwdY - 30);
+    pitchPlayersLayer.appendChild(lbl);
+  }
+
+  // GK bottom center
+  if (gk) {
+    const el = createPlayerEl(gk, "GK");
+    el.style.left = `${(width / 2) - 30}px`;
+    el.style.top = `${height - 60}px`;
+    pitchPlayersLayer.appendChild(el);
+    const lbl = createSlotLabel("GK", width / 2, height - 60);
+    pitchPlayersLayer.appendChild(lbl);
   }
 }
 
@@ -597,30 +750,25 @@ function runAdvancedScheduler() {
   // Schedule subs at intervals choosing off/on to move toward targets
   let minute = interval;
   while (minute < totalMatch && bench.length > 0) {
-    // compute minutes so far for starters up to 'minute'
     const starterMinutes = starters.map(s => {
       const on = s.onMinute === null ? 0 : s.onMinute;
       const off = s.offMinute === null ? minute : Math.min(s.offMinute, minute);
       return { player: s, minsSoFar: Math.max(0, off - on) };
     });
-    // pick starter most overplayed relative to target (smallest remaining need)
     starterMinutes.sort((a,b) => {
       const aNeed = (a.player.target || 60) - a.minsSoFar;
       const bNeed = (b.player.target || 60) - b.minsSoFar;
       return aNeed - bNeed;
     });
-    // pick bench player with largest deficit (highest target first)
     bench.sort((a,b) => ((b.target||60) - (a.target||60)));
     const off = starterMinutes[0] ? starterMinutes[0].player : null;
     const on = bench.shift();
     if (!off || !on) break;
-    // prevent using GK as outfield
     if (off.isGK || on.isGK) continue;
     off.offMinute = minute;
     on.onMinute = minute;
     on.offMinute = null;
     on.starter = false;
-    // swap arrays
     starters = starters.filter(s => s.id !== off.id);
     starters.push(on);
     bench.push(off);
