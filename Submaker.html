@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Football Lineup & Minutes Tracker</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0b1724;
+      color: #f5f5f5;
+    }
+    header {
+      padding: 16px 24px;
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    header small {
+      color: #9ca3af;
+    }
+    main {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+    }
+    section {
+      background: #111827;
+      border-radius: 8px;
+      padding: 12px 14px;
+      border: 1px solid #1f2937;
+    }
+    section h2 {
+      margin-top: 0;
+      font-size: 16px;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    input, select, button {
+      font-family: inherit;
+      font-size: 13px;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    button {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: none;
+      background: #2563eb;
+      color: #f9fafb;
+      cursor: pointer;
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+    button.secondary {
+      background: #4b5563;
+    }
+    button.danger {
+      background: #b91c1c;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .row > div {
+      flex: 1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #1f2937;
+      text-align: left;
+    }
+    th {
+      background: #020617;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+    .badge-pos { background: #1d4ed8; }
+    .badge-bench { background: #6b7280; }
+    .badge-start { background: #16a34a; }
+    .badge-low { background: #f97316; }
+    .badge-high { background: #dc2626; }
+    .pitch {
+      background: radial-gradient(circle at center, #14532d 0, #052e16 60%);
+      border-radius: 8px;
+      padding: 8px;
+      border: 1px solid #166534;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    .pitch-line {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+    .player-chip {
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      padding: 4px 8px;
+      border: 1px solid #1f2937;
+      font-size: 11px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .player-chip span {
+      display: block;
+    }
+    .player-chip .name {
+      font-weight: 600;
+    }
+    .player-chip .pos {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+    .sub-log {
+      max-height: 160px;
+      overflow-y: auto;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      padding: 4px 6px;
+      background: #020617;
+      font-size: 12px;
+    }
+    .sub-entry {
+      margin-bottom: 4px;
+    }
+    .sub-entry span.minute {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+    .footer-note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Team Lineup & Minutes</h1>
+    <small>9‑a‑side • Formation & substitutions tracker</small>
+  </div>
+  <div>
+    <small>Match length: 
+      <input type="number" id="matchLength" value="90" min="10" max="150" style="width:60px;"> mins
+    </small>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: Players + Controls + Pitch -->
+  <section>
+    <h2>Squad & Match Setup</h2>
+
+    <div class="row">
+      <div>
+        <label>Formation (9‑a‑side)</label>
+        <select id="formationSelect">
+          <option value="1-3-3-2">1‑3‑3‑2 (GK‑DEF‑MID‑ATT)</option>
+          <option value="1-4-3-1">1‑4‑3‑1</option>
+          <option value="1-3-2-3">1‑3‑2‑3</option>
+          <option value="custom">Custom (set lines manually)</option>
+        </select>
+      </div>
+      <div>
+        <label>Custom line split (for 9 players)</label>
+        <input type="text" id="customLines" placeholder="e.g. 1-3-3-2">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Auto subs interval (minutes, optional)</label>
+        <input type="number" id="autoInterval" placeholder="e.g. 20">
+      </div>
+      <div>
+        <label>Start minute for auto subs</label>
+        <input type="number" id="autoStart" value="0">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <button id="applyFormationBtn">Apply formation</button>
+        <button id="resetMatchBtn" class="secondary">Reset match</button>
+      </div>
+    </div>
+
+    <hr style="border-color:#1f2937; margin:10px 0;">
+
+    <div class="row">
+      <div>
+        <h3 style="font-size:14px; margin:0 0 6px;">Players</h3>
+      </div>
+      <div style="text-align:right;">
+        <button id="addPlayerBtn" class="secondary">Add player</button>
+      </div>
+    </div>
+
+    <table id="playersTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Starter?</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Initial 13 players -->
+      </tbody>
+    </table>
+
+    <p class="footer-note">
+      Tip: tick “Starter?” for your starting 9. Bench players will be used for auto subs.
+    </p>
+
+    <h2>Pitch view</h2>
+    <div class="pitch" id="pitch">
+      <!-- Lines rendered here -->
+    </div>
+  </section>
+
+  <!-- RIGHT: Substitutions + Minutes -->
+  <section>
+    <h2>Substitutions & Minutes</h2>
+
+    <div class="row">
+      <div>
+        <label>Manual substitution – player OFF</label>
+        <select id="subOffSelect"></select>
+      </div>
+      <div>
+        <label>Manual substitution – player ON</label>
+        <select id="subOnSelect"></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Minute</label>
+        <input type="number" id="subMinute" min="0" value="45">
+      </div>
+      <div style="display:flex; align-items:flex-end; gap:6px;">
+        <button id="addSubBtn">Add manual sub</button>
+        <button id="runAutoSubsBtn" class="secondary">Run auto subs</button>
+      </div>
+    </div>
+
+    <label>Substitution log</label>
+    <div class="sub-log" id="subLog"></div>
+
+    <hr style="border-color:#1f2937; margin:10px 0;">
+
+    <h3 style="font-size:14px; margin:0 0 6px;">Minutes per player</h3>
+    <table id="minutesTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Pos</th>
+          <th>Starter?</th>
+          <th>On</th>
+          <th>Off</th>
+          <th>Minutes</th>
+          <th>Load</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filled by JS -->
+      </tbody>
+    </table>
+
+    <p class="footer-note">
+      Load colours: green = healthy, orange = low minutes, red = heavy minutes (relative to match length).
+    </p>
+  </section>
+</main>
+
+<script>
+  // --- Data model ---
+  const match = {
+    length: 90,
+    players: [],
+    subs: [], // {offId, onId, minute}
+  };
+
+  let nextPlayerId = 1;
+
+  // --- Helpers ---
+  function createInitialPlayers() {
+    const names = [
+      "Player 1","Player 2","Player 3","Player 4","Player 5",
+      "Player 6","Player 7","Player 8","Player 9","Player 10",
+      "Player 11","Player 12","Player 13"
+    ];
+    const positions = ["GK","DEF","DEF","DEF","MID","MID","MID","ATT","ATT","DEF","MID","ATT","ATT"];
+    for (let i = 0; i < names.length; i++) {
+      match.players.push({
+        id: nextPlayerId++,
+        name: names[i],
+        number: i + 1,
+        position: positions[i] || "MID",
+        starter: i < 9, // first 9 as starters
+        onMinute: i < 9 ? 0 : null,
+        offMinute: null
+      });
+    }
+  }
+
+  function getPlayerById(id) {
+    return match.players.find(p => p.id === id);
+  }
+
+  function renderPlayersTable() {
+    const tbody = document.querySelector("#playersTable tbody");
+    tbody.innerHTML = "";
+    match.players.forEach(p => {
+      const tr = document.createElement("tr");
+
+      const tdNum = document.createElement("td");
+      tdNum.textContent = p.number;
+      tr.appendChild(tdNum);
+
+      const tdName = document.createElement("td");
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.value = p.name;
+      nameInput.addEventListener("input", () => {
+        p.name = nameInput.value;
+        renderPitch();
+        renderMinutesTable();
+        renderSubSelects();
+      });
+      tdName.appendChild(nameInput);
+      tr.appendChild(tdName);
+
+      const tdPos = document.createElement("td");
+      const posInput = document.createElement("input");
+      posInput.type = "text";
+      posInput.value = p.position;
+      posInput.addEventListener("input", () => {
+        p.position = posInput.value;
+        renderPitch();
+        renderMinutesTable();
+      });
+      tdPos.appendChild(posInput);
+      tr.appendChild(tdPos);
+
+      const tdStarter = document.createElement("td");
+      const starterCheckbox = document.createElement("input");
+      starterCheckbox.type = "checkbox";
+      starterCheckbox.checked = p.starter;
+      starterCheckbox.addEventListener("change", () => {
+        p.starter = starterCheckbox.checked;
+        if (p.starter) {
+          p.onMinute = 0;
+          p.offMinute = null;
+        } else {
+          p.onMinute = null;
+          p.offMinute = null;
+        }
+        renderPitch();
+        renderMinutesTable();
+        renderSubSelects();
+      });
+      tdStarter.appendChild(starterCheckbox);
+      tr.appendChild(tdStarter);
+
+      const tdActions = document.createElement("td");
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "Remove";
+      removeBtn.className = "danger";
+      removeBtn.addEventListener("click", () => {
+        match.players = match.players.filter(x => x.id !== p.id);
+        match.subs = match.subs.filter(s => s.offId !== p.id && s.onId !== p.id);
+        renderPlayersTable();
+        renderPitch();
+        renderMinutesTable();
+        renderSubSelects();
+        renderSubLog();
+      });
+      tdActions.appendChild(removeBtn);
+      tr.appendChild(tdActions);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderSubSelects() {
+    const offSel = document.getElementById("subOffSelect");
+    const onSel = document.getElementById("subOnSelect");
+    offSel.innerHTML = "";
+    onSel.innerHTML = "";
+
+    const starters = match.players.filter(p => p.starter);
+    const bench = match.players.filter(p => !p.starter);
+
+    const addOption = (sel, player) => {
+      const opt = document.createElement("option");
+      opt.value = player.id;
+      opt.textContent = `#${player.number} ${player.name} (${player.position})`;
+      sel.appendChild(opt);
+    };
+
+    starters.forEach(p => addOption(offSel, p));
+    bench.forEach(p => addOption(onSel, p));
+  }
+
+  function parseFormationString(str) {
+    if (!str) return null;
+    const parts = str.split("-").map(x => parseInt(x.trim(), 10)).filter(x => !isNaN(x));
+    const total = parts.reduce((a,b) => a+b, 0);
+    if (total !== 9) return null;
+    return parts;
+  }
+
+  function getFormationLines() {
+    const formationSelect = document.getElementById("formationSelect");
+    const value = formationSelect.value;
+    if (value === "custom") {
+      const custom = parseFormationString(document.getElementById("customLines").value);
+      return custom || [1,3,3,2];
+    }
+    const parsed = parseFormationString(value);
+    return parsed || [1,3,3,2];
+  }
+
+  function renderPitch() {
+    const pitch = document.getElementById("pitch");
+    pitch.innerHTML = "";
+
+    const lines = getFormationLines();
+    const starters = match.players.filter(p => p.starter).slice(0, 9);
+
+    // If fewer than 9 starters, just show what we have
+    const playersByLine = [];
+    let idx = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const count = lines[i];
+      const linePlayers = starters.slice(idx, idx + count);
+      idx += count;
+      playersByLine.push(linePlayers);
+    }
+
+    const labels = ["GK / Back", "Defence", "Midfield", "Attack"];
+
+    playersByLine.forEach((linePlayers, i) => {
+      const lineDiv = document.createElement("div");
+      lineDiv.className = "pitch-line";
+
+      if (linePlayers.length === 0) {
+        const placeholder = document.createElement("div");
+        placeholder.textContent = labels[i] || "Line";
+        placeholder.style.color = "#9ca3af";
+        lineDiv.appendChild(placeholder);
+      } else {
+        linePlayers.forEach(p => {
+          const chip = document.createElement("div");
+          chip.className = "player-chip";
+          const nameSpan = document.createElement("span");
+          nameSpan.className = "name";
+          nameSpan.textContent = `#${p.number} ${p.name}`;
+          const posSpan = document.createElement("span");
+          posSpan.className = "pos";
+          posSpan.textContent = p.position;
+          chip.appendChild(nameSpan);
+          chip.appendChild(posSpan);
+          lineDiv.appendChild(chip);
+        });
+      }
+
+      pitch.appendChild(lineDiv);
+    });
+  }
+
+  function renderSubLog() {
+    const log = document.getElementById("subLog");
+    log.innerHTML = "";
+    if (match.subs.length === 0) {
+      log.textContent = "No substitutions yet.";
+      return;
+    }
+    match.subs
+      .slice()
+      .sort((a,b) => a.minute - b.minute)
+      .forEach(s => {
+        const off = getPlayerById(s.offId);
+        const on = getPlayerById(s.onId);
+        const div = document.createElement("div");
+        div.className = "sub-entry";
+        div.innerHTML = `<span class="minute">${s.minute}'</span> – ${off ? off.name : "?"} OFF, ${on ? on.name : "?"} ON`;
+        log.appendChild(div);
+      });
+  }
+
+  function computeMinutes(player) {
+    const length = match.length;
+    const on = player.onMinute;
+    const off = player.offMinute;
+
+    if (on === null && off === null) return 0;
+    if (on === null && off !== null) return 0;
+    if (on !== null && off === null) return Math.max(0, length - on);
+    return Math.max(0, off - on);
+  }
+
+  function renderMinutesTable() {
+    const tbody = document.querySelector("#minutesTable tbody");
+    tbody.innerHTML = "";
+    match.players.forEach(p => {
+      const tr = document.createElement("tr");
+
+      const tdNum = document.createElement("td");
+      tdNum.textContent = p.number;
+      tr.appendChild(tdNum);
+
+      const tdName = document.createElement("td");
+      tdName.textContent = p.name;
+      tr.appendChild(tdName);
+
+      const tdPos = document.createElement("td");
+      const badgePos = document.createElement("span");
+      badgePos.className = "badge badge-pos";
+      badgePos.textContent = p.position || "-";
+      tdPos.appendChild(badgePos);
+      tr.appendChild(tdPos);
+
+      const tdStarter = document.createElement("td");
+      const badgeStarter = document.createElement("span");
+      badgeStarter.className = "badge " + (p.starter ? "badge-start" : "badge-bench");
+      badgeStarter.textContent = p.starter ? "Starter" : "Bench";
+      tdStarter.appendChild(badgeStarter);
+      tr.appendChild(tdStarter);
+
+      const tdOn = document.createElement("td");
+      tdOn.textContent = p.onMinute !== null ? p.onMinute + "'" : "-";
+      tr.appendChild(tdOn);
+
+      const tdOff = document.createElement("td");
+      tdOff.textContent = p.offMinute !== null ? p.offMinute + "'" : "-";
+      tr.appendChild(tdOff);
+
+      const minutes = computeMinutes(p);
+      const tdMin = document.createElement("td");
+      tdMin.textContent = minutes;
+      tr.appendChild(tdMin);
+
+      const tdLoad = document.createElement("td");
+      const ratio = minutes / match.length;
+      const badgeLoad = document.createElement("span");
+      if (minutes === 0) {
+        badgeLoad.className = "badge badge-low";
+        badgeLoad.textContent = "0";
+      } else if (ratio < 0.4) {
+        badgeLoad.className = "badge badge-low";
+        badgeLoad.textContent = "Low";
+      } else if (ratio <= 0.8) {
+        badgeLoad.className = "badge badge-start";
+        badgeLoad.textContent = "OK";
+      } else {
+        badgeLoad.className = "badge badge-high";
+        badgeLoad.textContent = "Heavy";
+      }
+      tdLoad.appendChild(badgeLoad);
+      tr.appendChild(tdLoad);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- Substitution logic ---
+  function addManualSub() {
+    const offId = parseInt(document.getElementById("subOffSelect").value, 10);
+    const onId = parseInt(document.getElementById("subOnSelect").value, 10);
+    const minute = parseInt(document.getElementById("subMinute").value, 10);
+
+    if (!offId || !onId || isNaN(minute)) return;
+    if (minute < 0 || minute > match.length) return;
+
+    const off = getPlayerById(offId);
+    const on = getPlayerById(onId);
+    if (!off || !on) return;
+
+    off.offMinute = minute;
+    on.onMinute = minute;
+    on.starter = false; // still bench but now has minutes
+
+    match.subs.push({ offId, onId, minute });
+
+    renderSubLog();
+    renderMinutesTable();
+    renderPitch();
+  }
+
+  function runAutoSubs() {
+    const interval = parseInt(document.getElementById("autoInterval").value, 10);
+    const start = parseInt(document.getElementById("autoStart").value, 10);
+    if (isNaN(interval) || interval <= 0) return;
+
+    const starters = match.players.filter(p => p.starter);
+    const bench = match.players.filter(p => !p.starter);
+
+    if (bench.length === 0 || starters.length === 0) return;
+
+    let currentMinute = start;
+    let benchIndex = 0;
+    let starterIndex = 0;
+
+    while (currentMinute < match.length && benchIndex < bench.length && starterIndex < starters.length) {
+      const off = starters[starterIndex];
+      const on = bench[benchIndex];
+
+      off.offMinute = currentMinute;
+      on.onMinute = currentMinute;
+
+      match.subs.push({ offId: off.id, onId: on.id, minute: currentMinute });
+
+      benchIndex++;
+      starterIndex++;
+      currentMinute += interval;
+    }
+
+    renderSubLog();
+    renderMinutesTable();
+    renderPitch();
+  }
+
+  function resetMatch() {
+    match.subs = [];
+    match.players.forEach(p => {
+      if (p.starter) {
+        p.onMinute = 0;
+        p.offMinute = null;
+      } else {
+        p.onMinute = null;
+        p.offMinute = null;
+      }
+    });
+    renderSubLog();
+    renderMinutesTable();
+    renderPitch();
+  }
+
+  function addPlayer() {
+    const num = match.players.length + 1;
+    match.players.push({
+      id: nextPlayerId++,
+      name: "Player " + num,
+      number: num,
+      position: "MID",
+      starter: false,
+      onMinute: null,
+      offMinute: null
+    });
+    renderPlayersTable();
+    renderSubSelects();
+    renderMinutesTable();
+  }
+
+  // --- Event wiring ---
+  function init() {
+    createInitialPlayers();
+    renderPlayersTable();
+    renderSubSelects();
+    renderPitch();
+    renderMinutesTable();
+    renderSubLog();
+
+    document.getElementById("applyFormationBtn").addEventListener("click", () => {
+      renderPitch();
+    });
+
+    document.getElementById("resetMatchBtn").addEventListener("click", resetMatch);
+    document.getElementById("addSubBtn").addEventListener("click", addManualSub);
+    document.getElementById("runAutoSubsBtn").addEventListener("click", runAutoSubs);
+    document.getElementById("addPlayerBtn").addEventListener("click", addPlayer);
+
+    document.getElementById("matchLength").addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (!isNaN(val) && val > 0) {
+        match.length = val;
+        renderMinutesTable();
+      }
+    });
+  }
+
+  window.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
