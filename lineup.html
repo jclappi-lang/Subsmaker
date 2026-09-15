@@ -87,10 +87,19 @@
     button.danger {
       background: #b91c1c;
     }
+
+    /* NEW GREEN BUTTON */
+    button.replace-btn {
+      background: #10b981 !important; /* bright green */
+      color: white !important;
+      font-weight: 600;
+    }
+
     button:disabled {
       opacity: 0.5;
       cursor: default;
     }
+
     .row {
       display: flex;
       gap: 8px;
@@ -334,7 +343,10 @@ John Smith    CM    LM    8
 Adam Jones    CB    RB   4"></textarea>
     <div class="row">
       <div>
-        <button id="importPlayersReplaceBtn" class="secondary">Replace squad with pasted list</button>
+        <!-- GREEN BUTTON -->
+        <button id="importPlayersReplaceBtn" class="replace-btn">
+          Replace squad with pasted list
+        </button>
       </div>
       <div>
         <button id="importPlayersAppendBtn" class="secondary">Append pasted players</button>
@@ -528,4 +540,3 @@ Adam Jones    CB    RB   4"></textarea>
       const tdName = document.createElement("td");
       const nameInput = document.createElement("input");
       nameInput.type = "text";
-      nameInput.value = p.name;
