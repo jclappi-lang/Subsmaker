@@ -132,6 +132,7 @@
       margin-top: 4px;
     }
 
+    /* Pitch spacing updated */
     .pitch-wrapper {
       margin-top: 8px;
     }
@@ -139,7 +140,7 @@
       background: #020617;
       border-radius: 8px;
       border: 1px solid #e5e7eb;
-      height: 260px;
+      height: 360px; /* increased from 260 */
       position: relative;
       box-sizing: border-box;
       padding: 8px;
@@ -220,85 +221,9 @@
       color: #9ca3af;
     }
 
-    .timeline {
-      height: 60px;
-      background: #020617;
-      border: 1px solid #1f2937;
-      border-radius: 6px;
-      position: relative;
-      margin-bottom: 8px;
-      box-sizing: border-box;
-      padding: 4px 6px;
-      font-size: 11px;
-    }
-    .timeline-base {
-      position: absolute;
-      left: 6px;
-      right: 6px;
-      top: 30px;
-      height: 2px;
-      background: #374151;
-    }
-    .timeline-labels {
-      position: absolute;
-      left: 6px;
-      right: 6px;
-      top: 10px;
-      display: flex;
-      justify-content: space-between;
-      color: #9ca3af;
-      font-size: 10px;
-    }
-    .timeline-marker {
-      position: absolute;
-      top: 24px;
-      transform: translateX(-50%);
-      background: #2563eb;
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10px;
-      white-space: nowrap;
-    }
-
-    .sub-log {
-      max-height: 120px;
-      overflow-y: auto;
-      border-radius: 4px;
-      border: 1px solid #1f2937;
-      padding: 4px 6px;
-      background: #020617;
-      font-size: 11px;
-      margin-bottom: 8px;
-    }
-    .sub-entry {
-      margin-bottom: 4px;
-    }
-    .sub-entry span.minute {
-      color: #60a5fa;
-      font-weight: 600;
-    }
-
-    .snapshots {
-      max-height: 220px;
-      overflow-y: auto;
-      border-radius: 4px;
-      border: 1px solid #1f2937;
-      padding: 4px 6px;
-      background: #020617;
-      font-size: 11px;
-    }
-    .snapshot {
-      margin-bottom: 8px;
-      border-bottom: 1px solid #1f2937;
-      padding-bottom: 6px;
-    }
-    .snapshot-title {
-      margin-bottom: 4px;
-      color: #9ca3af;
-    }
+    /* Snapshot pitch spacing updated */
     .snapshot-pitch {
-      height: 160px;
+      height: 220px; /* increased from 160 */
       background: #020617;
       border-radius: 6px;
       border: 1px solid #e5e7eb;
@@ -327,7 +252,7 @@
         grid-template-columns: 1fr;
       }
       .pitch {
-        height: 220px;
+        height: 320px;
       }
     }
   </style>
@@ -340,7 +265,7 @@
   </div>
   <div>
     <small>Match length:
-      <input type="number" id="matchLength" value="90" min="10" max="150" style="width:60px;"> mins
+      <input type="number" id="matchLength" value="80" min="10" max="150" style="width:60px;"> mins
     </small>
   </div>
 </header>
@@ -353,10 +278,11 @@
       <div>
         <label>Formation (9‑a‑side)</label>
         <select id="formationSelect">
-          <option value="1-3-3-2">1‑3‑3‑2 (GK‑DEF‑MID‑ATT)</option>
+          <option value="1-3-3-2">1‑3‑3‑2</option>
           <option value="1-4-3-1">1‑4‑3‑1</option>
           <option value="1-3-2-3">1‑3‑2‑3</option>
-          <option value="custom">Custom (set lines manually)</option>
+          <option value="1-3-4-1">1‑3‑4‑1</option>
+          <option value="custom">Custom</option>
         </select>
       </div>
       <div>
@@ -464,10 +390,10 @@ Adam Jones    CB    RB   4"></textarea>
       <div class="timeline-base"></div>
       <div class="timeline-labels">
         <span>0'</span>
-        <span>25'</span>
-        <span>50'</span>
-        <span>75'</span>
-        <span>90'</span>
+        <span>20'</span>
+        <span>40'</span>
+        <span>60'</span>
+        <span>80'</span>
       </div>
     </div>
 
@@ -485,7 +411,7 @@ Adam Jones    CB    RB   4"></textarea>
     <div class="row">
       <div>
         <label>Minute</label>
-        <input type="number" id="subMinute" min="0" value="45">
+        <input type="number" id="subMinute" min="0" value="40">
       </div>
       <div style="display:flex; align-items:flex-end; gap:6px;">
         <button id="addSubBtn">Add manual sub</button>
@@ -525,7 +451,7 @@ Adam Jones    CB    RB   4"></textarea>
 
 <script>
   const match = {
-    length: 90,
+    length: 80,
     players: [],
     subs: []
   };
@@ -568,7 +494,7 @@ Adam Jones    CB    RB   4"></textarea>
       "Player 6","Player 7","Player 8","Player 9","Player 10",
       "Player 11","Player 12","Player 13"
     ];
-    const preferred = ["GK","CB","CB","LB","CM","CM","RM","ST","ST","RB","LM","CM","RM];
+    const preferred = ["GK","CB","CB","LB","CM","CM","RM","ST","ST","RB","LM","CM","RM"];
     const secondary = ["","LB","RB","CB","LM","RM","CM","CM","LM","CB","CM","LB","CM"];
     for (let i = 0; i < names.length; i++) {
       match.players.push({
@@ -604,729 +530,4 @@ Adam Jones    CB    RB   4"></textarea>
       nameInput.type = "text";
       nameInput.value = p.name;
       nameInput.addEventListener("input", () => {
-        p.name = nameInput.value;
-        renderPitch();
-        renderMinutesTable();
-        renderSubSelects();
-      });
-      tdName.appendChild(nameInput);
-      tr.appendChild(tdName);
-
-      const tdPref = document.createElement("td");
-      const prefInput = document.createElement("input");
-      prefInput.type = "text";
-      prefInput.value = p.preferred;
-      prefInput.addEventListener("input", () => {
-        p.preferred = normalisePosition(prefInput.value);
-        prefInput.value = p.preferred;
-        renderPitch();
-        renderMinutesTable();
-      });
-      tdPref.appendChild(prefInput);
-      tr.appendChild(tdPref);
-
-      const tdSec = document.createElement("td");
-      const secInput = document.createElement("input");
-      secInput.type = "text";
-      secInput.value = p.secondary || "";
-      secInput.addEventListener("input", () => {
-        p.secondary = normalisePosition(secInput.value);
-        secInput.value = p.secondary;
-        renderMinutesTable();
-      });
-      tdSec.appendChild(secInput);
-      tr.appendChild(tdSec);
-
-      const tdStarter = document.createElement("td");
-      const starterCheckbox = document.createElement("input");
-      starterCheckbox.type = "checkbox";
-      starterCheckbox.checked = p.starter;
-      starterCheckbox.addEventListener("change", () => {
-        p.starter = starterCheckbox.checked;
-        if (p.starter) {
-          p.onMinute = 0;
-          p.offMinute = null;
-        } else {
-          p.onMinute = null;
-          p.offMinute = null;
-        }
-        renderPitch();
-        renderMinutesTable();
-        renderSubSelects();
-      });
-      tdStarter.appendChild(starterCheckbox);
-      tr.appendChild(tdStarter);
-
-      const tdTarget = document.createElement("td");
-      const targetInput = document.createElement("input");
-      targetInput.type = "number";
-      targetInput.value = p.target != null ? p.target : 60;
-      targetInput.addEventListener("input", () => {
-        const val = parseInt(targetInput.value, 10);
-        p.target = isNaN(val) ? 60 : val;
-        renderMinutesTable();
-      });
-      tdTarget.appendChild(targetInput);
-      tr.appendChild(tdTarget);
-
-      const tdActions = document.createElement("td");
-      const removeBtn = document.createElement("button");
-      removeBtn.textContent = "Remove";
-      removeBtn.className = "danger";
-      removeBtn.addEventListener("click", () => {
-        match.players = match.players.filter(x => x.id !== p.id);
-        match.subs = match.subs.filter(s => s.offId !== p.id && s.onId !== p.id);
-        renderPlayersTable();
-        renderPitch();
-        renderMinutesTable();
-        renderSubSelects();
-        renderSubLog();
-        renderSubTimeline();
-        renderSnapshots();
-      });
-      tdActions.appendChild(removeBtn);
-      tr.appendChild(tdActions);
-
-      tbody.appendChild(tr);
-    });
-  }
-
-  function renderSubSelects() {
-    const offSel = document.getElementById("subOffSelect");
-    const onSel = document.getElementById("subOnSelect");
-    offSel.innerHTML = "";
-    onSel.innerHTML = "";
-
-    const starters = match.players.filter(p => p.starter);
-    const bench = match.players.filter(p => !p.starter);
-
-    const addOption = (sel, player) => {
-      const opt = document.createElement("option");
-      opt.value = player.id;
-      opt.textContent = `#${player.number} ${player.name} (${player.preferred})`;
-      sel.appendChild(opt);
-    };
-
-    starters.forEach(p => addOption(offSel, p));
-    bench.forEach(p => addOption(onSel, p));
-  }
-
-  function parseFormationString(str) {
-    if (!str) return null;
-    const parts = str.split("-").map(x => parseInt(x.trim(), 10)).filter(x => !isNaN(x));
-    const total = parts.reduce((a,b) => a+b, 0);
-    if (total !== 9) return null;
-    return parts;
-  }
-
-  function getFormationLines() {
-    const formationSelect = document.getElementById("formationSelect");
-    const value = formationSelect.value;
-    if (value === "custom") {
-      const custom = parseFormationString(document.getElementById("customLines").value);
-      return custom || [1,3,3,2];
-    }
-    const parsed = parseFormationString(value);
-    return parsed || [1,3,3,2];
-  }
-
-  function defenceSlots(count) {
-    if (count === 4) return ["LB","CB","CB","RB"];
-    if (count === 3) return ["LB","CB","RB"];
-    if (count === 2) return ["CB","CB"];
-    return Array(count).fill("CB");
-  }
-
-  function midfieldSlots(count) {
-    if (count === 3) return ["LM","CM","RM"];
-    if (count === 4) return ["LM","CM","CM","RM"];
-    return Array(count).fill("CM");
-  }
-
-  function attackSlots(count) {
-    return Array(count).fill("ST");
-  }
-
-  function gkSlots() {
-    return ["GK"];
-  }
-
-  function renderPitch() {
-    const layer = document.getElementById("pitchPlayers");
-    layer.innerHTML = "";
-
-    const lines = getFormationLines();
-    const starters = match.players.filter(p => p.starter).slice(0, 9);
-
-    const height = layer.clientHeight || 244;
-    const width = layer.clientWidth || layer.parentElement.clientWidth - 16;
-
-    const lineCount = lines.length;
-    const verticalStep = height / (lineCount + 1);
-
-    let idx = 0;
-    for (let i = 0; i < lines.length; i++) {
-      const count = lines[i];
-      const y = verticalStep * (i + 1);
-      for (let j = 0; j < count; j++) {
-        const p = starters[idx];
-        idx++;
-        if (!p) continue;
-
-        const x = width * ((j + 1) / (count + 1));
-
-        const circle = document.createElement("div");
-        circle.className = "player-circle";
-        circle.style.left = (x - 30) + "px";
-        circle.style.top = (y - 30) + "px";
-
-        const numSpan = document.createElement("div");
-        numSpan.className = "number";
-        numSpan.textContent = p.number;
-
-        const nameSpan = document.createElement("div");
-        nameSpan.className = "name";
-        nameSpan.textContent = p.name;
-
-        const posSpan = document.createElement("div");
-        posSpan.className = "pos";
-        posSpan.textContent = p.preferred;
-
-        circle.appendChild(numSpan);
-        circle.appendChild(nameSpan);
-        circle.appendChild(posSpan);
-
-        layer.appendChild(circle);
-      }
-    }
-  }
-
-  function renderSubLog() {
-    const log = document.getElementById("subLog");
-    log.innerHTML = "";
-    if (match.subs.length === 0) {
-      log.textContent = "No substitutions yet.";
-      return;
-    }
-    match.subs
-      .slice()
-      .sort((a,b) => a.minute - b.minute)
-      .forEach(s => {
-        const off = getPlayerById(s.offId);
-        const on = getPlayerById(s.onId);
-        const div = document.createElement("div");
-        div.className = "sub-entry";
-        div.innerHTML = `<span class="minute">${s.minute}'</span> – ${off ? off.name : "?"} OFF, ${on ? on.name : "?"} ON`;
-        log.appendChild(div);
-      });
-  }
-
-  function renderSubTimeline() {
-    const tl = document.getElementById("subTimeline");
-    const markers = tl.querySelectorAll(".timeline-marker");
-    markers.forEach(m => m.remove());
-
-    match.subs.forEach(s => {
-      const pct = (s.minute / match.length) * 100;
-      const off = getPlayerById(s.offId);
-      const on = getPlayerById(s.onId);
-
-      const marker = document.createElement("div");
-      marker.className = "timeline-marker";
-      marker.style.left = pct + "%";
-      marker.textContent = `${off ? off.number : "?"}→${on ? on.number : "?"}`;
-      tl.appendChild(marker);
-    });
-  }
-
-  function computeMinutes(player) {
-    const length = match.length;
-    const on = player.onMinute;
-    const off = player.offMinute;
-
-    if (on === null && off === null) return 0;
-    if (on === null && off !== null) return 0;
-    if (on !== null && off === null) return Math.max(0, length - on);
-    return Math.max(0, off - on);
-  }
-
-  function renderMinutesTable() {
-    const tbody = document.querySelector("#minutesTable tbody");
-    tbody.innerHTML = "";
-    match.players.forEach(p => {
-      const tr = document.createElement("tr");
-
-      const tdNum = document.createElement("td");
-      tdNum.textContent = p.number;
-      tr.appendChild(tdNum);
-
-      const tdName = document.createElement("td");
-      tdName.textContent = p.name;
-      tr.appendChild(tdName);
-
-      const tdPref = document.createElement("td");
-      const badgePos = document.createElement("span");
-      badgePos.className = "badge badge-pos";
-      badgePos.textContent = p.preferred || "-";
-      tdPref.appendChild(badgePos);
-      tr.appendChild(tdPref);
-
-      const tdStarter = document.createElement("td");
-      const badgeStarter = document.createElement("span");
-      badgeStarter.className = "badge " + (p.starter ? "badge-start" : "badge-bench");
-      badgeStarter.textContent = p.starter ? "Starter" : "Bench";
-      tdStarter.appendChild(badgeStarter);
-      tr.appendChild(tdStarter);
-
-      const tdOn = document.createElement("td");
-      tdOn.textContent = p.onMinute !== null ? p.onMinute + "'" : "-";
-      tr.appendChild(tdOn);
-
-      const tdOff = document.createElement("td");
-      tdOff.textContent = p.offMinute !== null ? p.offMinute + "'" : "-";
-      tr.appendChild(tdOff);
-
-      const minutes = computeMinutes(p);
-      const tdMin = document.createElement("td");
-      tdMin.textContent = minutes;
-      tr.appendChild(tdMin);
-
-      const tdTarget = document.createElement("td");
-      tdTarget.textContent = p.target != null ? p.target : 60;
-      tr.appendChild(tdTarget);
-
-      const tdDiff = document.createElement("td");
-      let diffText = "-";
-      if (p.target != null) {
-        const diff = minutes - p.target;
-        diffText = diff > 0 ? "+" + diff : diff.toString();
-      }
-      tdDiff.textContent = diffText;
-      tr.appendChild(tdDiff);
-
-      const tdLoad = document.createElement("td");
-      const badgeLoad = document.createElement("span");
-      const ratio = minutes / match.length;
-
-      if (minutes === 0) {
-        badgeLoad.className = "badge badge-low";
-        badgeLoad.textContent = "0";
-      } else if (p.target != null) {
-        const diff = minutes - p.target;
-        if (diff < -5) {
-          badgeLoad.className = "badge badge-low";
-          badgeLoad.textContent = "Short";
-        } else if (Math.abs(diff) <= 5) {
-          badgeLoad.className = "badge badge-start";
-          badgeLoad.textContent = "On plan";
-        } else {
-          badgeLoad.className = "badge badge-high";
-          badgeLoad.textContent = "Over";
-        }
-      } else {
-        if (ratio < 0.4) {
-          badgeLoad.className = "badge badge-low";
-          badgeLoad.textContent = "Low";
-        } else if (ratio <= 0.8) {
-          badgeLoad.className = "badge badge-start";
-          badgeLoad.textContent = "OK";
-        } else {
-          badgeLoad.className = "badge badge-high";
-          badgeLoad.textContent = "Heavy";
-        }
-      }
-
-      tdLoad.appendChild(badgeLoad);
-      tr.appendChild(tdLoad);
-
-      tbody.appendChild(tr);
-    });
-  }
-
-  function renderSnapshots() {
-    const container = document.getElementById("snapshots");
-    container.innerHTML = "";
-    if (match.subs.length === 0) {
-      container.textContent = "No snapshots yet.";
-      return;
-    }
-
-    const lines = getFormationLines();
-
-    match.subs
-      .slice()
-      .sort((a,b) => a.minute - b.minute)
-      .forEach(s => {
-        const snapshotDiv = document.createElement("div");
-        snapshotDiv.className = "snapshot";
-
-        const title = document.createElement("div");
-        title.className = "snapshot-title";
-        const off = getPlayerById(s.offId);
-        const on = getPlayerById(s.onId);
-        title.textContent = `${s.minute}' – ${off ? off.name : "?"} OFF, ${on ? on.name : "?"} ON`;
-        snapshotDiv.appendChild(title);
-
-        const pitch = document.createElement("div");
-        pitch.className = "snapshot-pitch";
-
-        const centerLine = document.createElement("div");
-        centerLine.className = "pitch-line-mark pitch-center-line";
-        pitch.appendChild(centerLine);
-
-        const boxTop = document.createElement("div");
-        boxTop.className = "pitch-line-mark pitch-box-top";
-        pitch.appendChild(boxTop);
-
-        const boxBottom = document.createElement("div");
-        boxBottom.className = "pitch-line-mark pitch-box-bottom";
-        pitch.appendChild(boxBottom);
-
-        const centerCircle = document.createElement("div");
-        centerCircle.className = "pitch-center-circle";
-        pitch.appendChild(centerCircle);
-
-        const layer = document.createElement("div");
-        layer.className = "pitch-players-layer";
-        pitch.appendChild(layer);
-
-        const height = 148;
-        const width = pitch.clientWidth || container.clientWidth - 16;
-        const lineCount = lines.length;
-        const verticalStep = height / (lineCount + 1);
-
-        const startersNow = match.players.filter(p => {
-          if (p.onMinute == null) return false;
-          if (p.onMinute > s.minute) return false;
-          if (p.offMinute != null && p.offMinute <= s.minute) return false;
-          return true;
-        }).slice(0, 9);
-
-        let idx = 0;
-        for (let i = 0; i < lines.length; i++) {
-          const count = lines[i];
-          const y = verticalStep * (i + 1);
-          for (let j = 0; j < count; j++) {
-            const p = startersNow[idx];
-            idx++;
-            if (!p) continue;
-
-            const x = width * ((j + 1) / (count + 1));
-
-            const circle = document.createElement("div");
-            circle.className = "player-circle";
-            circle.style.left = (x - 23) + "px";
-            circle.style.top = (y - 23) + "px";
-
-            const numSpan = document.createElement("div");
-            numSpan.className = "number";
-            numSpan.textContent = p.number;
-
-            const nameSpan = document.createElement("div");
-            nameSpan.className = "name";
-            nameSpan.textContent = p.name;
-
-            const posSpan = document.createElement("div");
-            posSpan.className = "pos";
-            posSpan.textContent = p.preferred;
-
-            circle.appendChild(numSpan);
-            circle.appendChild(nameSpan);
-            circle.appendChild(posSpan);
-
-            layer.appendChild(circle);
-          }
-        }
-
-        snapshotDiv.appendChild(pitch);
-        container.appendChild(snapshotDiv);
-      });
-  }
-
-  function addManualSub() {
-    const offId = parseInt(document.getElementById("subOffSelect").value, 10);
-    const onId = parseInt(document.getElementById("subOnSelect").value, 10);
-    const minute = parseInt(document.getElementById("subMinute").value, 10);
-
-    if (!offId || !onId || isNaN(minute)) return;
-    if (minute < 0 || minute > match.length) return;
-
-    const off = getPlayerById(offId);
-    const on = getPlayerById(onId);
-    if (!off || !on) return;
-
-    off.offMinute = minute;
-    on.onMinute = minute;
-    on.starter = false;
-
-    match.subs.push({ offId, onId, minute });
-
-    renderSubLog();
-    renderMinutesTable();
-    renderPitch();
-    renderSubTimeline();
-    renderSnapshots();
-  }
-
-  function resetMatch() {
-    match.subs = [];
-    match.players.forEach(p => {
-      if (p.starter) {
-        p.onMinute = 0;
-        p.offMinute = null;
-      } else {
-        p.onMinute = null;
-        p.offMinute = null;
-      }
-    });
-    renderSubLog();
-    renderMinutesTable();
-    renderPitch();
-    renderSubTimeline();
-    renderSnapshots();
-  }
-
-  function addPlayer() {
-    const num = match.players.length + 1;
-    match.players.push({
-      id: nextPlayerId++,
-      name: "Player " + num,
-      number: num,
-      preferred: "CM",
-      secondary: "",
-      starter: false,
-      onMinute: null,
-      offMinute: null,
-      target: 60
-    });
-    renderPlayersTable();
-    renderSubSelects();
-    renderMinutesTable();
-    renderPitch();
-  }
-
-  function importPlayers(mode) {
-    const raw = document.getElementById("excelPaste").value.trim();
-    if (!raw) return;
-
-    const lines = raw.split("\n");
-    const newPlayers = [];
-
-    lines.forEach(line => {
-      const cols = line.split(/\t+/);
-      if (cols.length < 1) return;
-
-      const name = cols[0] || "Unnamed";
-      const preferred = normalisePosition(cols[1]);
-      const secondary = normalisePosition(cols[2]);
-      const number = cols[3] ? parseInt(cols[3], 10) : null;
-
-      newPlayers.push({
-        id: nextPlayerId++,
-        name,
-        number: number || (match.players.length + newPlayers.length),
-        preferred,
-        secondary,
-        starter: false,
-        onMinute: null,
-        offMinute: null,
-        target: 60
-      });
-    });
-
-    if (mode === "replace") {
-      match.players = newPlayers;
-    } else {
-      match.players = match.players.concat(newPlayers);
-    }
-
-    renderPlayersTable();
-    renderSubSelects();
-    renderMinutesTable();
-    renderPitch();
-  }
-
-  function positionScore(player, requiredPos, allowPosChange) {
-    const pref = normalisePosition(player.preferred);
-    const sec = normalisePosition(player.secondary);
-
-    if (pref === requiredPos) return 3;
-    if (sec === requiredPos) return 2;
-    if (allowPosChange) return 1;
-    return 0;
-  }
-
-  function autoScheduleAdvanced() {
-    match.subs = [];
-
-    const mode = document.getElementById("schedulerMode").value;
-    const allowPosChange = document.getElementById("allowPositionChange").value === "yes";
-    const preferredInterval = parseInt(document.getElementById("advInterval").value, 10) || 20;
-    const matchLen = match.length;
-
-    const lines = getFormationLines();
-
-    const slotPlan = [];
-    lines.forEach((count, idx) => {
-      if (idx === 0) slotPlan.push(gkSlots());
-      else if (idx === lines.length - 1) slotPlan.push(attackSlots(count));
-      else if (idx === 1) slotPlan.push(defenceSlots(count));
-      else slotPlan.push(midfieldSlots(count));
-    });
-
-    const allPlayers = match.players.slice();
-    let starters = [];
-
-    if (mode === "fromStarters") {
-      starters = allPlayers.filter(p => p.starter);
-    } else {
-      const used = new Set();
-
-      slotPlan.forEach(lineSlots => {
-        lineSlots.forEach(requiredPos => {
-          const candidates = allPlayers
-            .filter(p => !used.has(p.id))
-            .map(p => ({
-              p,
-              score: positionScore(p, requiredPos, allowPosChange)
-            }))
-            .filter(x => x.score > 0)
-            .sort((a,b) => b.score - a.score || (a.p.target || 60) - (b.p.target || 60));
-
-          const pick = candidates[0];
-          if (pick) {
-            starters.push(pick.p);
-            used.add(pick.p.id);
-          }
-        });
-      });
-
-      if (starters.length < 9) {
-        allPlayers
-          .filter(p => !starters.includes(p))
-          .slice(0, 9 - starters.length)
-          .forEach(p => starters.push(p));
-      }
-
-      match.players.forEach(p => {
-        p.starter = starters.includes(p);
-      });
-    }
-
-    const bench = allPlayers.filter(p => !starters.includes(p));
-
-    match.players.forEach(p => {
-      p.onMinute = null;
-      p.offMinute = null;
-    });
-    starters.forEach(p => {
-      p.onMinute = 0;
-      p.offMinute = null;
-    });
-
-    const slots = [];
-    let current = preferredInterval;
-    while (current < matchLen) {
-      slots.push(current);
-      current += preferredInterval;
-    }
-    if (slots.length === 0) {
-      for (let t = 10; t < matchLen; t += 10) slots.push(t);
-    }
-
-    let benchIndex = 0;
-
-    slots.forEach(minute => {
-      const candidateStarter = starters
-        .filter(p => p.offMinute == null)
-        .sort((a,b) => {
-          const ta = pTarget(a);
-          const tb = pTarget(b);
-          const da = minute - ta;
-          const db = minute - tb;
-          return Math.abs(da) - Math.abs(db);
-        })[0];
-
-      function pTarget(p) {
-        return p.target != null ? p.target : 60;
-      }
-
-      const candidateBench = bench[benchIndex];
-
-      if (!candidateStarter || !candidateBench) return;
-
-      candidateStarter.offMinute = minute;
-      candidateBench.onMinute = minute;
-
-      match.subs.push({
-        offId: candidateStarter.id,
-        onId: candidateBench.id,
-        minute
-      });
-
-      benchIndex++;
-      if (benchIndex >= bench.length) benchIndex = bench.length - 1;
-    });
-
-    match.players.forEach(p => {
-      if (p.onMinute != null && p.offMinute == null) {
-        p.offMinute = matchLen;
-      }
-    });
-
-    renderSubLog();
-    renderMinutesTable();
-    renderPitch();
-    renderSubTimeline();
-    renderSnapshots();
-  }
-
-  function init() {
-    createInitialPlayers();
-    renderPlayersTable();
-    renderSubSelects();
-    renderPitch();
-    renderMinutesTable();
-    renderSubLog();
-    renderSubTimeline();
-    renderSnapshots();
-
-    document.getElementById("applyFormationBtn").addEventListener("click", () => {
-      renderPitch();
-      renderSnapshots();
-    });
-
-    document.getElementById("resetMatchBtn").addEventListener("click", resetMatch);
-    document.getElementById("addSubBtn").addEventListener("click", addManualSub);
-    document.getElementById("addPlayerBtn").addEventListener("click", addPlayer);
-
-    document.getElementById("matchLength").addEventListener("input", (e) => {
-      const val = parseInt(e.target.value, 10);
-      if (!isNaN(val) && val > 0) {
-        match.length = val;
-        renderMinutesTable();
-        renderSubTimeline();
-        renderSnapshots();
-      }
-    });
-
-    document.getElementById("importPlayersReplaceBtn").addEventListener("click", () => {
-      importPlayers("replace");
-    });
-    document.getElementById("importPlayersAppendBtn").addEventListener("click", () => {
-      importPlayers("append");
-    });
-
-    document.getElementById("advScheduleBtn").addEventListener("click", autoScheduleAdvanced);
-
-    window.addEventListener("resize", () => {
-      renderPitch();
-      renderSubTimeline();
-      renderSnapshots();
-    });
-  }
-
-  window.addEventListener("DOMContentLoaded", init);
-</script>
-</body>
-</html>
+        p.name = name
