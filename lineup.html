@@ -88,9 +88,9 @@
       background: #b91c1c;
     }
 
-    /* NEW GREEN BUTTON */
+    /* GREEN BUTTON */
     button.replace-btn {
-      background: #10b981 !important; /* bright green */
+      background: #10b981 !important;
       color: white !important;
       font-weight: 600;
     }
@@ -149,7 +149,7 @@
       background: #020617;
       border-radius: 8px;
       border: 1px solid #e5e7eb;
-      height: 360px; /* increased from 260 */
+      height: 360px;
       position: relative;
       box-sizing: border-box;
       padding: 8px;
@@ -232,7 +232,7 @@
 
     /* Snapshot pitch spacing updated */
     .snapshot-pitch {
-      height: 220px; /* increased from 160 */
+      height: 220px;
       background: #020617;
       border-radius: 6px;
       border: 1px solid #e5e7eb;
@@ -343,7 +343,6 @@ John Smith    CM    LM    8
 Adam Jones    CB    RB   4"></textarea>
     <div class="row">
       <div>
-        <!-- GREEN BUTTON -->
         <button id="importPlayersReplaceBtn" class="replace-btn">
           Replace squad with pasted list
         </button>
@@ -540,3 +539,11 @@ Adam Jones    CB    RB   4"></textarea>
       const tdName = document.createElement("td");
       const nameInput = document.createElement("input");
       nameInput.type = "text";
+      nameInput.value = p.name;
+      nameInput.addEventListener("input", () => {
+        p.name = nameInput.value;
+        renderPitch();
+        renderMinutesTable();
+        renderSubSelects();
+      });
+      tdName.appendChild
