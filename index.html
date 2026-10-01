@@ -88,7 +88,7 @@ border:2px solid rgba(255,255,255,.85);box-shadow:0 3px 8px rgba(0,0,0,.45);curs
 .ghost{position:fixed;transform:translate(-50%,-50%);pointer-events:none;z-index:9999;display:flex;align-items:center;gap:6px;
 background:linear-gradient(180deg,#28d16a,#16a34a);color:#04240f;font-weight:800;border-radius:20px;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:13px}
 .tabs{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
-.tab{flex:1 1 0;min-width:54px;text-align:center;background:#1b2740;border:1px solid #33456a;color:#c9d8ee;border-radius:9px;padding:5px 6px;font-size:13px;font-weight:800;cursor:pointer;line-height:1.15}
+.tab{flex:1 1 0;min-width:50px;text-align:center;background:#1b2740;border:1px solid #33456a;color:#c9d8ee;border-radius:9px;padding:5px 5px;font-size:12px;font-weight:800;cursor:pointer;line-height:1.15}
 .tab small{display:block;font-size:9px;font-weight:600;color:var(--muted)}
 .tab:hover{border-color:#5b7fb8}
 .tab.on{background:linear-gradient(180deg,#28d16a,#16a34a);border-color:#15803d;color:#04240f}
@@ -105,7 +105,7 @@ background:linear-gradient(180deg,#28d16a,#16a34a);color:#04240f;font-weight:800
 .rh{display:flex;align-items:center;gap:7px}
 .minute{font-weight:800;font-size:13px;background:#22314e;border-radius:7px;padding:2px 8px}
 .rh .len{margin-left:auto}
-.mini{position:relative;height:158px;aspect-ratio:68/105;margin:6px auto 0;border:1.5px solid rgba(255,255,255,.45);border-radius:7px;
+.mini{position:relative;height:150px;aspect-ratio:68/105;margin:6px auto 0;border:1.5px solid rgba(255,255,255,.45);border-radius:7px;
 background:repeating-linear-gradient(180deg,#1a6f3f 0 10%,#176336 10% 20%);overflow:hidden}
 .mini .pl{border-color:rgba(255,255,255,.3)}
 .mslot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px}
@@ -169,9 +169,9 @@ details p{font-size:12px;color:var(--muted);line-height:1.6}
         <input type="number" id="periods" min="1" max="6" value="4"></label>
       <label class="field" title="Minutes in each period">Min/period
         <input type="number" id="mpp" min="4" max="45" value="20"></label>
-      <label class="field" title="Plan a substitution block every N minutes (nothing before a quarter of the match)">Sub every
+      <label class="field" title="Preferred substitution block length. The planner will use finer blocks automatically if your minutes need them.">Sub every
         <input type="number" id="subEvery" min="0" max="30" value="20"></label>
-      <label class="field" title="Minimum length of a stint so players aren't chopped in and out">Min stint
+      <label class="field" title="Minimum length of a stint. Also caps how fine the auto planner's blocks can get.">Min stint
         <input type="number" id="minStint" min="0" max="30" value="8"></label>
       <label class="field tick" title="Split goalkeeper duty between players by period. Off = one keeper plays the whole match.">
         <input type="checkbox" id="gkRot"> GK rotation</label>
@@ -206,8 +206,8 @@ GK, CB, 25"></textarea>
         </div>
         <div class="hint">Positions: <code>GK LB CB RB LWB RWB CDM CM CAM LM RM LW RW ST</code> &mdash; separate with <code>/ , ;</code> or spaces.
         A number on its own (e.g. <code>40</code>) is that player's preferred minutes; leave it out to keep them on <b>auto</b>.<br>
-        <b>Order matters:</b> first position is the 1st choice, the last is the <i>only-if-needed</i> option. Related positions
-        (LB &rarr; RB) count for roughly half a listed slot. <b>CM is doubled up</b> in most shapes; wings and full-backs stay single.</div>
+        <b>Order matters:</b> first position is the 1st choice, the last is the <i>only-if-needed</i> option.
+        <b>CM is doubled up</b> in most shapes; wings and full-backs stay single.</div>
       </div>
       <div id="emptyZone" class="empty-state">No players yet &mdash; paste your squad above or tap <b>+ Add blank</b>.</div>
       <div id="listZone" style="display:none">
@@ -230,9 +230,9 @@ GK, CB, 25"></textarea>
           <button class="btn sm" id="btnRound">Round to 10&prime;</button>
         </div>
         <div id="budgetWarn" class="warnbox" style="display:none"></div>
-        <div class="hint"><b>auto</b> = that player's fair share of the outfield minutes
-        (outfield slots &times; match length &divide; outfield players), with the keeper on the full match.
-        Press <b>+</b> / <b>&minus;</b> to move in 10&prime; steps from there.</div>
+        <div class="hint"><b>auto</b> = that player's fair share of the outfield minutes, with the keeper on the full match.
+        Press <b>+</b> / <b>&minus;</b> to move in 10&prime; steps from there. Minutes are the planner's priority;
+        positions are optimised only where they don't cost anyone minutes.</div>
       </div>
     </div>
 
@@ -240,11 +240,11 @@ GK, CB, 25"></textarea>
     <div class="panel">
       <details><summary>How to use</summary>
         <p>1. Paste your squad, positions <b>in preference order</b>, optional preferred minutes.<br>
-        2. Leave players on <b>auto</b> or nudge their minutes with <b>&minus;/+</b> in 10&prime; steps; the bar shows whether the totals add up.<br>
-        3. Pick side / shape / match length at the top. The auto planner never puts a substitution before a quarter of the match.<br>
-        4. Hit <b>Auto plan</b> &mdash; it tries ten different schedules and keeps the best for minutes and positions.<br>
-        5. Use the tabs under the pitch to jump to any block. Drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap. On touch: tap a player, then tap the destination.<br>
-        6. A change affects <b>only that block</b> unless you tick <b>Ripple forward</b>. The toast tells you the new total and how far over/under the player's allocation it is.</p>
+        2. Set the minutes you want each player to get &mdash; the bar shows whether the totals add up.<br>
+        3. Pick side / shape / match length. The planner never puts a substitution before a quarter of the match.<br>
+        4. Hit <b>Auto plan</b>. It picks the block length that can actually deliver your minutes (20&prime;, 10&prime; or 5&prime; steps), then balances every player's minutes before touching positions.<br>
+        5. Use the tabs under the pitch to jump to any block. Drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap.<br>
+        6. A change affects <b>only that block</b> unless you tick <b>Ripple forward</b>.</p>
       </details>
     </div>
   </section>
@@ -339,7 +339,6 @@ function parsePositions(str){
 }
 
 /* ================= preference weighting ================= */
-/* index 0 = first choice ... later entries are progressively "only if needed" */
 const PREF_W=[10,7.5,5.5,4,3,2.5,2];
 function prefScore(p,pos){
   if(!p.prefs||!p.prefs.length)return 1.5;
@@ -354,7 +353,6 @@ function prefScore(p,pos){
   }
   return best>0?Math.min(4.5,best):0.2;
 }
-const prefIndex=(p,pos)=>p.prefs.indexOf(pos);
 
 /* ================= formations ================= */
 const OFFS={1:[0],2:[-14,14],3:[-26,0,26],4:[-38,-13,13,38],5:[-39,-20,0,20,39],6:[-40,-24,-8,8,24,40]};
@@ -475,16 +473,35 @@ function minsNote(p){
   return m+"\u2032 \u2014 right on allocation";
 }
 
-/* ================= auto planner ================= */
+/* ============================================================
+   AUTO PLANNER
+   Two layers:
+     1. minutes  - who is on the pitch in each block (optimised)
+     2. positions- who fills which slot inside a block (free)
+   Position changes are only ever accepted when they cost
+   zero minutes, so minutes always win.
+   ============================================================ */
 function autoPlan(){
   const P=state.players;
   if(!P.length){toast("Add some players first");return;}
-  const S=state,end=matchEnd();
-  const gkOrder=gkInfo().slice();
-  const gkFor={};
-  for(let pd=1;pd<=S.periods;pd++)gkFor[pd]=(S.gkRot&&gkOrder.length>1)?gkOrder[(pd-1)%gkOrder.length].id:gkOrder[0].id;
+  const S=state,end=matchEnd(),F=curForm(),N=F.slots.length,S_OUT=Math.max(1,N-1);
+  const keepers=gkInfo(),keeperIds=keepers.map(k=>k.id);
+  const outIds=P.filter(p=>keeperIds.indexOf(p.id)<0).map(p=>p.id);
 
-  /* no substitutions before a quarter of the match */
+  const gkFor={};
+  for(let pd=1;pd<=S.periods;pd++)gkFor[pd]=(S.gkRot&&keepers.length>1)?keepers[(pd-1)%keepers.length].id:keepers[0].id;
+
+  /* ---- targets: keepers play their GK blocks, outfield targets are
+          normalised so the outfield slots are exactly filled ---- */
+  const auto=autoMinutes();
+  const T={};
+  P.forEach(p=>{T[p.id]=clamp(isAuto(p)?(auto.min[p.id]||0):+p.target,0,end);});
+  const totalOut=S_OUT*end;
+  let sumOut=0;outIds.forEach(id=>sumOut+=T[id]);
+  if(sumOut>0.01)outIds.forEach(id=>{T[id]=Math.min(end,T[id]*(totalOut/sumOut));});
+  else outIds.forEach(id=>{T[id]=Math.min(end,totalOut/Math.max(1,outIds.length));});
+
+  /* ---- candidate time grids: nothing before a quarter of the match ---- */
   function buildTimes(step){
     const set={0:1},minT=end/4;
     for(let pd=1;pd<=S.periods;pd++){
@@ -494,136 +511,171 @@ function autoPlan(){
     }
     return Object.keys(set).map(Number).sort((a,b)=>a-b);
   }
-  const g1=buildTimes(S.subEvery),g2=buildTimes(S.subEvery===10?5:10);
-  const grids=[g1];
-  if(JSON.stringify(g2)!==JSON.stringify(g1))grids.push(g2);
-  const variants=[];
-  grids.forEach((g,gi)=>{for(let seed=1;seed<=5;seed++)variants.push({times:g,seed:seed,grid:gi});});
+  const steps=[S.subEvery];
+  if(S.minStint<=10)steps.push(10);
+  if(S.minStint<=5)steps.push(5);
+  const grids=[];
+  steps.forEach(st=>{
+    if(st==null||st<0)return;
+    const g=buildTimes(st);
+    if(g.length<1)return;
+    if(!grids.some(x=>x.times.length===g.length&&x.times.every((v,i)=>v===g[i])))grids.push({times:g,step:st});
+  });
+  if(!grids.length)grids.push({times:buildTimes(0),step:0});
+
   let best=null;
-  variants.forEach(v=>{const res=schedule(v.times,v.seed);if(!best||res.score<best.score)best=res;});
-  const fellBack=(JSON.stringify(best.times)!==JSON.stringify(g1));
+  grids.forEach(g=>{
+    const seeds=g.step===S.subEvery?3:2;
+    for(let seed=1;seed<=seeds;seed++){
+      const res=build(g.times,g.step,seed);
+      if(!best||res.score<best.score)best=res;
+    }
+  });
+
   state.snaps=best.snaps;state.activeId=best.snaps[0].id;
   render();
-  let msg="Auto plan \u2014 "+best.snaps.length+" block"+(best.snaps.length===1?"":"s")+" of ~"+best.blockLen+"\u2032";
+  let msg="Auto plan \u2014 "+best.blocks+" block"+(best.blocks===1?"":"s");
+  if(best.step>0)msg+=" on a "+best.step+"\u2032 grid";
   msg+=" \u00b7 biggest miss "+Math.round(best.worst)+"\u2032";
   if(best.cover)msg+=" \u00b7 "+best.cover+" cover stint"+(best.cover===1?"":"s");
   if(best.unfilled)msg+=" \u00b7 "+best.unfilled+" slot(s) unfilled";
-  if(fellBack)msg+=" \u00b7 used "+best.blockLen+"\u2032 blocks to fit the minutes";
+  if(best.blocks>1)msg+=" \u00b7 first sub "+best.snaps[1].t+"\u2032";
   toast(msg);
 
-  function schedule(times,seed){
-    const F=curForm(),N=F.slots.length,auto=autoMinutes();
-    const ivs=[];
+  /* ---------------- one full schedule ---------------- */
+  function build(times,step,seed){
+    const B=[];                                   // {t0,len,period}
     for(let i=0;i<times.length;i++){
       const t0=times[i],t1=(i+1<times.length?times[i+1]:end);
-      if(t1>t0)ivs.push({t0:t0,t1:t1,len:t1-t0,period:Math.floor(t0/S.mpp)+1});
+      if(t1>t0)B.push({t0:t0,t1:t1,len:t1-t0,period:Math.floor(t0/S.mpp)+1});
     }
-    if(!ivs.length)return{snaps:[newSnap(0,blankAssign(N))],score:1e9,worst:0,cover:0,unfilled:N,blockLen:end,times:times};
-    const gkMin={};P.forEach(p=>gkMin[p.id]=0);
-    ivs.forEach(iv=>{const g=gkFor[iv.period];if(g!=null)gkMin[g]+=iv.len;});
-    const total=N*end,tgt={};
-    P.forEach(p=>{
-      let t=isAuto(p)?auto.min[p.id]:+p.target;
-      t=clamp(t,0,end);
-      if(gkMin[p.id]>t)t=Math.min(end,gkMin[p.id]);
-      tgt[p.id]=t;
-    });
-    const rem={};P.forEach(p=>rem[p.id]=Math.max(0,tgt[p.id]-gkMin[p.id]));
-    const gkFloor=Object.keys(gkMin).reduce((a,k)=>a+gkMin[k],0);
-    const avail=Math.max(0,total-gkFloor);
-    let sm=0;P.forEach(p=>sm+=rem[p.id]);
-    const kk=(sm>0.01)?avail/sm:1;
-    P.forEach(p=>rem[p.id]=Math.max(0,rem[p.id]*kk));
+    if(!B.length)B.push({t0:0,t1:end,len:end,period:1});
+    const nB=B.length;
 
-    /* --- fill each block --- */
-    const scar={};
-    const scarcity=pos=>{if(scar[pos]!=null)return scar[pos];let c=0;P.forEach(p=>{if(prefScore(p,pos)>=3)c++;});return scar[pos]=c;};
-    const outIdx=[];for(let i=1;i<N;i++)outIdx.push(i);
-    const played={};P.forEach(p=>played[p.id]=0);
-    let prev={};
-    ivs.forEach(iv=>{
-      const assign=blankAssign(N),used=new Set();
-      const gid=gkFor[iv.period];
-      if(gid!=null){assign[0]=gid;used.add(gid);played[gid]+=iv.len;}
-      const order=outIdx.slice().sort((a,b)=>scarcity(F.slots[a].pos)-scarcity(F.slots[b].pos));
-      order.forEach(si=>{
-        const pos=F.slots[si].pos;let best=null,bs=-1e9;
-        P.forEach(p=>{
-          if(used.has(p.id)||rem[p.id]<=0.01)return;
-          const need=Math.min(rem[p.id]/iv.len,2.5);
-          const over=Math.max(0,iv.len-rem[p.id]);
-          const sc=prefScore(p,pos)*6+need*6+(prev[si]===p.id?8:0)-over*2.0+hash(p.id+"|"+si+"|"+seed)*3;
-          if(sc>bs){bs=sc;best=p;}
-        });
-        if(!best){
-          P.forEach(p=>{
-            if(used.has(p.id))return;
-            const sc=prefScore(p,pos)*6+(prev[si]===p.id?8:0)-20+hash(p.id+"|"+si+"|"+seed)*3;
-            if(sc>bs){bs=sc;best=p;}
-          });
-        }
-        if(best){assign[si]=best.id;used.add(best.id);rem[best.id]=Math.max(0,rem[best.id]-iv.len);played[best.id]+=iv.len;}
-      });
-      prev={};assign.forEach((v,i)=>prev[i]=v);
-      iv.assign=assign;
-    });
-
-    /* --- minutes repair: give short players time, guarded by position quality --- */
-    for(let pass=0;pass<6;pass++){
-      let changed=false;
-      P.forEach(p=>{
-        let def=tgt[p.id]-played[p.id];
-        if(def<3)return;
-        for(let i=0;i<ivs.length&&def>=3;i++){
-          const iv=ivs[i];
-          if(iv.assign.indexOf(p.id)>=0)continue;
-          for(let kx=0;kx<outIdx.length;kx++){
-            const si=outIdx[kx],qid=iv.assign[si];
-            if(!qid)continue;
-            const q=player(qid);if(!q)continue;
-            if(played[qid]-tgt[qid]>=iv.len-0.5&&prefScore(p,F.slots[si].pos)>=prefScore(q,F.slots[si].pos)-2){
-              iv.assign[si]=p.id;played[p.id]+=iv.len;played[qid]-=iv.len;def=tgt[p.id]-played[p.id];changed=true;break;
-            }
-          }
-        }
-      });
-      if(!changed)break;
+    /* ---------- 1. construct: most unfilled minutes first ---------- */
+    const ON=[];                                  // ON[b] = [playerId...] outfield
+    const played={};outIds.forEach(id=>played[id]=0);
+    for(let b=0;b<nB;b++){
+      const lb=B[b].len,prev=new Set(b?ON[b-1]:[]);
+      const scored=outIds.map(id=>({id:id,sc:(T[id]-played[id])+(prev.has(id)?lb*0.5:0)+hash(id+"|"+b+"|"+seed)*lb*0.3}));
+      scored.sort((x,y)=>y.sc-x.sc);
+      const take=scored.slice(0,S_OUT).map(o=>o.id);
+      ON.push(take);
+      take.forEach(id=>{played[id]+=lb;});
     }
 
-    /* --- position polish: same-block swaps cost no minutes at all --- */
-    ivs.forEach(iv=>{
-      let imp=true,guard=0;
-      while(imp&&guard++<10){
-        imp=false;
-        for(let a=1;a<N;a++){
-          for(let b=a+1;b<N;b++){
-            const pa=iv.assign[a],pb=iv.assign[b];
-            if(!pa||!pb)continue;
-            const A=player(pa),B=player(pb);
-            const cur=prefScore(A,F.slots[a].pos)+prefScore(B,F.slots[b].pos);
-            const alt=prefScore(A,F.slots[b].pos)+prefScore(B,F.slots[a].pos);
-            if(alt>cur+2){iv.assign[a]=pb;iv.assign[b]=pa;imp=true;}
+    /* ---------- 2. balance minutes: steepest-descent swaps ---------- */
+    const inBlock=ON.map(set=>new Set(set));
+    for(let it=0;it<250;it++){
+      let bestD=-0.05,bx=-1,bi=-1,bq=null;
+      for(let b=0;b<nB;b++){
+        const lb=B[b].len,set=ON[b];
+        for(let x=0;x<set.length;x++){
+          const p=set[x];
+          const dp=Math.abs(played[p]-lb-T[p])-Math.abs(played[p]-T[p]);
+          if(dp>=0)continue;
+          for(let y=0;y<outIds.length;y++){
+            const q=outIds[y];
+            if(inBlock[b].has(q))continue;
+            const dq=Math.abs(played[q]+lb-T[q])-Math.abs(played[q]-T[q]);
+            if(dp+dq>=bestD)continue;
+            bestD=dp+dq;bx=x;bi=b;bq=q;
           }
         }
       }
-    });
+      if(bq==null)break;
+      const p=ON[bi][bx];
+      inBlock[bi].delete(p);inBlock[bi].add(bq);
+      ON[bi][bx]=bq;
+      played[p]-=B[bi].len;played[bq]+=B[bi].len;
+    }
 
-    /* --- score the whole plan --- */
-    let minErr=0,cover=0,unfilled=0,posLoss=0;
-    P.forEach(p=>{minErr+=Math.abs(played[p.id]-tgt[p.id]);});
-    ivs.forEach(iv=>{
+    /* ---------- 3. slot fitting inside a block (costs no minutes) ---------- */
+    function fitBlock(b){
+      const assign=blankAssign(N);
+      const gid=gkFor[B[b].period];
+      if(gid!=null)assign[0]=gid;
+      const used=new Set(gid!=null?[gid]:[]);
+      const pool=ON[b].slice();
+      const order=[];for(let i=1;i<N;i++)order.push(i);
+      const claim=pos=>pool.reduce((a,id)=>{const p=player(id);return a+(p&&prefScore(p,pos)>=3?1:0);},0);
+      order.sort((a,c)=>claim(F.slots[a].pos)-claim(F.slots[c].pos));
+      order.forEach(si=>{
+        let bi2=-1,bs=-1e9;
+        pool.forEach((id,ix)=>{
+          if(used.has(id))return;
+          const p=player(id);if(!p)return;
+          const sc=prefScore(p,F.slots[si].pos);
+          if(sc>bs){bs=sc;bi2=ix;}
+        });
+        if(bi2>=0){assign[si]=pool[bi2];used.add(pool[bi2]);}
+      });
+      for(let guard=0;guard<8;guard++){
+        let imp=false;
+        for(let a=1;a<N;a++)for(let c=a+1;c<N;c++){
+          const pa=assign[a],pc=assign[c];
+          if(!pa||!pc)continue;
+          const A=player(pa),C=player(pc);
+          if(prefScore(A,F.slots[c].pos)+prefScore(C,F.slots[a].pos)>prefScore(A,F.slots[a].pos)+prefScore(C,F.slots[c].pos)+1.5){
+            assign[a]=pc;assign[c]=pa;imp=true;
+          }
+        }
+        if(!imp)break;
+      }
+      return assign;
+    }
+
+    /* ---------- 4. position swaps, only where minutes do not suffer ---------- */
+    for(let round=0;round<4;round++){
+      let improved=false;
+      for(let b=0;b<nB;b++){
+        for(let attempt=0;attempt<4;attempt++){
+          const lb=B[b].len,set=ON[b];
+          const assign=fitBlock(b);
+          let bestGain=0.4,bp=null,bq=null;
+          set.forEach(p=>{
+            const si=assign.indexOf(p);if(si<1)return;
+            const pos=F.slots[si].pos,pp=player(p);
+            const curFit=prefScore(pp,pos);
+            outIds.forEach(q=>{
+              if(inBlock[b].has(q))return;
+              const gain=prefScore(player(q),pos)-curFit;
+              if(gain<=bestGain)return;
+              const dp=Math.abs(played[p]-lb-T[p])-Math.abs(played[p]-T[p]);
+              const dq=Math.abs(played[q]+lb-T[q])-Math.abs(played[q]-T[q]);
+              if(dp+dq>0.001)return;                 // never trade minutes for position
+              bestGain=gain;bp=p;bq=q;
+            });
+          });
+          if(bp==null)break;
+          const ix=ON[b].indexOf(bp);
+          inBlock[b].delete(bp);inBlock[b].add(bq);
+          ON[b][ix]=bq;
+          played[bp]-=lb;played[bq]+=lb;
+          improved=true;
+        }
+      }
+      if(!improved)break;
+    }
+
+    /* ---------- 5. final line-ups + score ---------- */
+    const assigns=[];for(let b=0;b<nB;b++)assigns.push(fitBlock(b));
+    let minErr=0;outIds.forEach(id=>{minErr+=Math.abs(played[id]-T[id]);});
+    let posLoss=0,cover=0,unfilled=0;
+    for(let b=0;b<nB;b++){
+      const lb=B[b].len;
       F.slots.forEach((sl,si)=>{
-        const occ=iv.assign[si];
+        const occ=assigns[b][si];
         if(!occ){unfilled++;return;}
         const pl=player(occ);if(!pl)return;
-        posLoss+=(10-prefScore(pl,sl.pos))/2*(iv.len/20);
+        posLoss+=(10-prefScore(pl,sl.pos))/2*(lb/20);
         if(pl.prefs.length&&pl.prefs.indexOf(sl.pos)<0)cover++;
       });
-    });
-    const snaps=ivs.map(iv=>newSnap(iv.t0,iv.assign));
-    const worst=P.length?Math.max.apply(null,P.map(p=>Math.abs(played[p.id]-tgt[p.id]))):0;
-    const blockLen=Math.round(ivs.reduce((a,iv)=>a+iv.len,0)/ivs.length);
-    return{snaps:snaps,score:minErr+posLoss*3+unfilled*60,worst:worst,cover:cover,unfilled:unfilled,blockLen:blockLen,times:times};
+    }
+    const snaps=B.map((bt,i)=>newSnap(bt.t0,assigns[i]));
+    let worst=0;outIds.forEach(id=>{worst=Math.max(worst,Math.abs(played[id]-T[id]));});
+    return{snaps:snaps,score:minErr*2.5+posLoss*2+nB*0.8+unfilled*60,
+      worst:worst,cover:cover,unfilled:unfilled,blocks:nB,step:step,times:times};
   }
 }
 
@@ -963,7 +1015,7 @@ function render(){
 }
 function toast(msg){
   const t=$("#toast");t.textContent=msg;t.classList.add("on");
-  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),4600);
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),5200);
 }
 
 /* ================= top bar wiring ================= */
@@ -1127,7 +1179,7 @@ $("#playerTable").addEventListener("input",e=>{
 
 /* ================= save / load / copy ================= */
 $("#btnData").addEventListener("click",()=>{
-  $("#modalText").value=JSON.stringify({v:5,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
+  $("#modalText").value=JSON.stringify({v:6,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
     subEvery:state.subEvery,minStint:state.minStint,gkRot:state.gkRot,carry:state.carry,
     players:state.players.map(p=>({num:p.num,name:p.name,prefs:p.prefs,target:p.target})),
     snaps:state.snaps.map(s=>({t:s.t,assign:s.assign}))},null,1);
