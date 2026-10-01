@@ -169,7 +169,7 @@ details p{font-size:12px;color:var(--muted);line-height:1.6}
         <input type="number" id="periods" min="1" max="6" value="4"></label>
       <label class="field" title="Minutes in each period">Min/period
         <input type="number" id="mpp" min="4" max="45" value="20"></label>
-      <label class="field" title="Plan a substitution block every N minutes">Sub every
+      <label class="field" title="Plan a substitution block every N minutes (nothing before a quarter of the match)">Sub every
         <input type="number" id="subEvery" min="0" max="30" value="20"></label>
       <label class="field" title="Minimum length of a stint so players aren't chopped in and out">Min stint
         <input type="number" id="minStint" min="0" max="30" value="8"></label>
@@ -193,7 +193,6 @@ details p{font-size:12px;color:var(--muted);line-height:1.6}
         <h2 style="margin:0">1 &middot; Players</h2>
         <span class="tiny muted" id="squadCount">no players yet</span>
       </div>
-
       <div id="importZone" style="margin-top:9px">
         <textarea id="pasteBox" spellcheck="false" placeholder="Paste from Excel, one player per line:
 7, Ali Khan, GK/LB
@@ -210,9 +209,7 @@ GK, CB, 25"></textarea>
         <b>Order matters:</b> first position is the 1st choice, the last is the <i>only-if-needed</i> option. Related positions
         (LB &rarr; RB) count for roughly half a listed slot. <b>CM is doubled up</b> in most shapes; wings and full-backs stay single.</div>
       </div>
-
       <div id="emptyZone" class="empty-state">No players yet &mdash; paste your squad above or tap <b>+ Add blank</b>.</div>
-
       <div id="listZone" style="display:none">
         <div class="row" style="justify-content:space-between">
           <span class="tiny muted">Positions in preference order &amp; minutes</span>
@@ -224,7 +221,6 @@ GK, CB, 25"></textarea>
             <tbody></tbody>
           </table>
         </div>
-
         <div class="budget">
           <div class="bbar"><div class="bfill" id="bfill"></div></div>
           <div class="blab"><span id="bLabLeft"></span><span id="bLabRight" class="muted"></span></div>
@@ -245,8 +241,8 @@ GK, CB, 25"></textarea>
       <details><summary>How to use</summary>
         <p>1. Paste your squad, positions <b>in preference order</b>, optional preferred minutes.<br>
         2. Leave players on <b>auto</b> or nudge their minutes with <b>&minus;/+</b> in 10&prime; steps; the bar shows whether the totals add up.<br>
-        3. Pick side / shape / match length at the top.<br>
-        4. Hit <b>Auto plan</b> for a full game, or <b>Reset plan</b> and drag players on yourself.<br>
+        3. Pick side / shape / match length at the top. The auto planner never puts a substitution before a quarter of the match.<br>
+        4. Hit <b>Auto plan</b> &mdash; it tries ten different schedules and keeps the best for minutes and positions.<br>
         5. Use the tabs under the pitch to jump to any block. Drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap. On touch: tap a player, then tap the destination.<br>
         6. A change affects <b>only that block</b> unless you tick <b>Ripple forward</b>. The toast tells you the new total and how far over/under the player's allocation it is.</p>
       </details>
@@ -318,6 +314,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hash=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%997;return h/997;};
+const ORD=["","1st","2nd","3rd","4th","5th","6th","7th","8th"];
 
 /* ================= positions ================= */
 const FAM={GK:"GK",LB:"DEF",LCB:"DEF",CB:"DEF",RCB:"DEF",RB:"DEF",LWB:"DEF",RWB:"DEF",
@@ -345,7 +342,7 @@ function parsePositions(str){
 /* index 0 = first choice ... later entries are progressively "only if needed" */
 const PREF_W=[10,7.5,5.5,4,3,2.5,2];
 function prefScore(p,pos){
-  if(!p.prefs||!p.prefs.length)return 1.5;            // unlisted preferences: flexible, but never beats a specialist
+  if(!p.prefs||!p.prefs.length)return 1.5;
   const i=p.prefs.indexOf(pos);
   if(i>=0)return PREF_W[Math.min(i,PREF_W.length-1)];
   const fam=FAM[pos];let best=0;
@@ -355,10 +352,11 @@ function prefScore(p,pos){
       if(w>best)best=w;
     }
   }
-  return best>0?Math.min(4.5,best):0.2;                // related = partial credit, unrelated = last resort
+  return best>0?Math.min(4.5,best):0.2;
 }
+const prefIndex=(p,pos)=>p.prefs.indexOf(pos);
 
-/* ================= formations (built once) ================= */
+/* ================= formations ================= */
 const OFFS={1:[0],2:[-14,14],3:[-26,0,26],4:[-38,-13,13,38],5:[-39,-20,0,20,39],6:[-40,-24,-8,8,24,40]};
 function mk(name,rows){
   const slots=[{pos:"GK",x:50,y:90}];
@@ -471,57 +469,59 @@ function targetTotals(){
   return{end:end,total:total,sum:sum,set:set,autoSum:autoSum,auto:auto.avg};
 }
 function minsNote(p){
-  const m=stats().min[p.id]||0,w=wantOf(p),d=m-w,lab=isAuto(p)?"auto":"wants";
+  const m=stats().min[p.id]||0,w=wantOf(p),d=m-w,lab=isAuto(p)?"auto":"allocation";
   if(d>2)return m+"\u2032 \u2014 "+Math.round(d)+"\u2032 OVER "+lab;
   if(d<-2)return m+"\u2032 \u2014 "+Math.round(-d)+"\u2032 under "+lab;
-  return m+"\u2032 \u2014 on track";
+  return m+"\u2032 \u2014 right on allocation";
 }
 
 /* ================= auto planner ================= */
 function autoPlan(){
   const P=state.players;
   if(!P.length){toast("Add some players first");return;}
-  const end=matchEnd(),S=state;
+  const S=state,end=matchEnd();
   const gkOrder=gkInfo().slice();
   const gkFor={};
   for(let pd=1;pd<=S.periods;pd++)gkFor[pd]=(S.gkRot&&gkOrder.length>1)?gkOrder[(pd-1)%gkOrder.length].id:gkOrder[0].id;
 
+  /* no substitutions before a quarter of the match */
   function buildTimes(step){
-    const set={0:1};
+    const set={0:1},minT=end/4;
     for(let pd=1;pd<=S.periods;pd++){
       const ps=(pd-1)*S.mpp,pe=pd*S.mpp;
-      if(pe<end)set[pe]=1;
-      if(step>0)for(let t=ps+step;t<pe-1e-6;t+=step)if(t<end)set[t]=1;
+      if(pe<end&&pe>=minT-1e-6)set[pe]=1;
+      if(step>0)for(let t=ps+step;t<pe-1e-6;t+=step)if(t<end&&t>=minT-1e-6)set[t]=1;
     }
     return Object.keys(set).map(Number).sort((a,b)=>a-b);
   }
-  const runs=[buildTimes(S.subEvery),buildTimes(S.subEvery>10?10:S.subEvery)];
-  let best=null,usedFallback=false;
-  for(let r=0;r<runs.length;r++){
-    const res=schedule(runs[r]);
-    if(!best){best=res;usedFallback=res.fallback;}
-    if(res.worst<=4){best=res;usedFallback=res.fallback;break;}
-    if(r===1){best=res;usedFallback=true;}
-  }
+  const g1=buildTimes(S.subEvery),g2=buildTimes(S.subEvery===10?5:10);
+  const grids=[g1];
+  if(JSON.stringify(g2)!==JSON.stringify(g1))grids.push(g2);
+  const variants=[];
+  grids.forEach((g,gi)=>{for(let seed=1;seed<=5;seed++)variants.push({times:g,seed:seed,grid:gi});});
+  let best=null;
+  variants.forEach(v=>{const res=schedule(v.times,v.seed);if(!best||res.score<best.score)best=res;});
+  const fellBack=(JSON.stringify(best.times)!==JSON.stringify(g1));
   state.snaps=best.snaps;state.activeId=best.snaps[0].id;
   render();
-  let msg="Auto plan built \u2014 "+best.snaps.length+" block"+(best.snaps.length===1?"":"s")+" of ~"+best.blockLen+"\u2032";
-  if(best.unfilled)msg+=" \u00b7 "+best.unfilled+" slot(s) couldn't be filled (check squad vs team size)";
-  else if(usedFallback)msg+=" \u00b7 fell back to 10\u2032 blocks to hit your minutes";
-  else msg+=" \u00b7 biggest minutes miss "+Math.round(best.worst)+"\u2032";
+  let msg="Auto plan \u2014 "+best.snaps.length+" block"+(best.snaps.length===1?"":"s")+" of ~"+best.blockLen+"\u2032";
+  msg+=" \u00b7 biggest miss "+Math.round(best.worst)+"\u2032";
+  if(best.cover)msg+=" \u00b7 "+best.cover+" cover stint"+(best.cover===1?"":"s");
+  if(best.unfilled)msg+=" \u00b7 "+best.unfilled+" slot(s) unfilled";
+  if(fellBack)msg+=" \u00b7 used "+best.blockLen+"\u2032 blocks to fit the minutes";
   toast(msg);
 
-  function schedule(times){
+  function schedule(times,seed){
     const F=curForm(),N=F.slots.length,auto=autoMinutes();
     const ivs=[];
     for(let i=0;i<times.length;i++){
       const t0=times[i],t1=(i+1<times.length?times[i+1]:end);
       if(t1>t0)ivs.push({t0:t0,t1:t1,len:t1-t0,period:Math.floor(t0/S.mpp)+1});
     }
+    if(!ivs.length)return{snaps:[newSnap(0,blankAssign(N))],score:1e9,worst:0,cover:0,unfilled:N,blockLen:end,times:times};
     const gkMin={};P.forEach(p=>gkMin[p.id]=0);
     ivs.forEach(iv=>{const g=gkFor[iv.period];if(g!=null)gkMin[g]+=iv.len;});
-    const total=N*end;
-    const tgt={};
+    const total=N*end,tgt={};
     P.forEach(p=>{
       let t=isAuto(p)?auto.min[p.id]:+p.target;
       t=clamp(t,0,end);
@@ -531,16 +531,17 @@ function autoPlan(){
     const rem={};P.forEach(p=>rem[p.id]=Math.max(0,tgt[p.id]-gkMin[p.id]));
     const gkFloor=Object.keys(gkMin).reduce((a,k)=>a+gkMin[k],0);
     const avail=Math.max(0,total-gkFloor);
-    let s=0;P.forEach(p=>s+=rem[p.id]);
-    const k=(s>0.01)?avail/s:1;
-    P.forEach(p=>rem[p.id]=Math.max(0,rem[p.id]*k));
+    let sm=0;P.forEach(p=>sm+=rem[p.id]);
+    const kk=(sm>0.01)?avail/sm:1;
+    P.forEach(p=>rem[p.id]=Math.max(0,rem[p.id]*kk));
 
+    /* --- fill each block --- */
     const scar={};
-    function scarcity(pos){if(scar[pos]!=null)return scar[pos];let c=0;P.forEach(p=>{if(prefScore(p,pos)>=3)c++;});return scar[pos]=c;}
+    const scarcity=pos=>{if(scar[pos]!=null)return scar[pos];let c=0;P.forEach(p=>{if(prefScore(p,pos)>=3)c++;});return scar[pos]=c;};
     const outIdx=[];for(let i=1;i<N;i++)outIdx.push(i);
     const played={};P.forEach(p=>played[p.id]=0);
     let prev={};
-    ivs.forEach((iv,ii)=>{
+    ivs.forEach(iv=>{
       const assign=blankAssign(N),used=new Set();
       const gid=gkFor[iv.period];
       if(gid!=null){assign[0]=gid;used.add(gid);played[gid]+=iv.len;}
@@ -549,21 +550,27 @@ function autoPlan(){
         const pos=F.slots[si].pos;let best=null,bs=-1e9;
         P.forEach(p=>{
           if(used.has(p.id)||rem[p.id]<=0.01)return;
-          let sc=(rem[p.id]/iv.len)*8+prefScore(p,pos)*2.5;
-          if(prev[si]===p.id)sc+=6;
-          const left=rem[p.id]-iv.len;
-          if(left>0&&left<S.minStint)sc-=6;
-          if(rem[p.id]<iv.len*0.6&&ii===ivs.length-1)sc+=2;
-          sc+=hash(p.id+"|"+si)*0.001;
+          const need=Math.min(rem[p.id]/iv.len,2.5);
+          const over=Math.max(0,iv.len-rem[p.id]);
+          const sc=prefScore(p,pos)*6+need*6+(prev[si]===p.id?8:0)-over*2.0+hash(p.id+"|"+si+"|"+seed)*3;
           if(sc>bs){bs=sc;best=p;}
         });
+        if(!best){
+          P.forEach(p=>{
+            if(used.has(p.id))return;
+            const sc=prefScore(p,pos)*6+(prev[si]===p.id?8:0)-20+hash(p.id+"|"+si+"|"+seed)*3;
+            if(sc>bs){bs=sc;best=p;}
+          });
+        }
         if(best){assign[si]=best.id;used.add(best.id);rem[best.id]=Math.max(0,rem[best.id]-iv.len);played[best.id]+=iv.len;}
       });
-      outIdx.forEach(si=>{if(assign[si]==null){const c=P.find(p=>!used.has(p.id));if(c){assign[si]=c.id;used.add(c.id);played[c.id]+=iv.len;}}});
       prev={};assign.forEach((v,i)=>prev[i]=v);
       iv.assign=assign;
     });
-    for(let pass=0;pass<3;pass++){
+
+    /* --- minutes repair: give short players time, guarded by position quality --- */
+    for(let pass=0;pass<6;pass++){
+      let changed=false;
       P.forEach(p=>{
         let def=tgt[p.id]-played[p.id];
         if(def<3)return;
@@ -575,20 +582,48 @@ function autoPlan(){
             if(!qid)continue;
             const q=player(qid);if(!q)continue;
             if(played[qid]-tgt[qid]>=iv.len-0.5&&prefScore(p,F.slots[si].pos)>=prefScore(q,F.slots[si].pos)-2){
-              iv.assign[si]=p.id;played[p.id]+=iv.len;played[qid]-=iv.len;def=tgt[p.id]-played[p.id];break;
+              iv.assign[si]=p.id;played[p.id]+=iv.len;played[qid]-=iv.len;def=tgt[p.id]-played[p.id];changed=true;break;
             }
           }
         }
       });
+      if(!changed)break;
     }
-    /* keep a snapshot at every boundary so every block stays the same length */
+
+    /* --- position polish: same-block swaps cost no minutes at all --- */
+    ivs.forEach(iv=>{
+      let imp=true,guard=0;
+      while(imp&&guard++<10){
+        imp=false;
+        for(let a=1;a<N;a++){
+          for(let b=a+1;b<N;b++){
+            const pa=iv.assign[a],pb=iv.assign[b];
+            if(!pa||!pb)continue;
+            const A=player(pa),B=player(pb);
+            const cur=prefScore(A,F.slots[a].pos)+prefScore(B,F.slots[b].pos);
+            const alt=prefScore(A,F.slots[b].pos)+prefScore(B,F.slots[a].pos);
+            if(alt>cur+2){iv.assign[a]=pb;iv.assign[b]=pa;imp=true;}
+          }
+        }
+      }
+    });
+
+    /* --- score the whole plan --- */
+    let minErr=0,cover=0,unfilled=0,posLoss=0;
+    P.forEach(p=>{minErr+=Math.abs(played[p.id]-tgt[p.id]);});
+    ivs.forEach(iv=>{
+      F.slots.forEach((sl,si)=>{
+        const occ=iv.assign[si];
+        if(!occ){unfilled++;return;}
+        const pl=player(occ);if(!pl)return;
+        posLoss+=(10-prefScore(pl,sl.pos))/2*(iv.len/20);
+        if(pl.prefs.length&&pl.prefs.indexOf(sl.pos)<0)cover++;
+      });
+    });
     const snaps=ivs.map(iv=>newSnap(iv.t0,iv.assign));
-    let unfilled=0;
-    snaps.forEach(sn=>sn.assign.forEach(v=>{if(!v)unfilled++;}));
-    const dev=P.map(p=>Math.abs(played[p.id]-tgt[p.id]));
-    const worst=dev.length?Math.max.apply(null,dev):0;
-    const blockLen=ivs.length?Math.round(ivs.reduce((a,iv)=>a+iv.len,0)/ivs.length):0;
-    return{snaps:snaps,worst:worst,unfilled:unfilled,blockLen:blockLen,fallback:(runs.length>1&&times!==runs[0])};
+    const worst=P.length?Math.max.apply(null,P.map(p=>Math.abs(played[p.id]-tgt[p.id]))):0;
+    const blockLen=Math.round(ivs.reduce((a,iv)=>a+iv.len,0)/ivs.length);
+    return{snaps:snaps,score:minErr+posLoss*3+unfilled*60,worst:worst,cover:cover,unfilled:unfilled,blockLen:blockLen,times:times};
   }
 }
 
@@ -863,35 +898,60 @@ function renderPositions(){
   }).join("");
 }
 function renderChecks(){
-  const st=stats(),F=curForm(),out=[];
-  if(!state.players.length){$("#checks").innerHTML="<li class='info'>Add players to get started.</li>";return;}
-  const nums={};state.players.forEach(p=>nums[p.num]=(nums[p.num]||0)+1);
+  const st=stats(),F=curForm(),out=[],P=state.players;
+  if(!P.length){
+    $("#checks").innerHTML="<li class='info'>Add players, then press <b>Auto plan</b> &mdash; checks appear once there's a plan to check.</li>";
+    return;
+  }
+  const nums={};P.forEach(p=>nums[p.num]=(nums[p.num]||0)+1);
   Object.keys(nums).forEach(n=>{if(nums[n]>1)out.push(["bad","Shirt number #"+n+" is used by "+nums[n]+" players."]);});
-  state.players.forEach(p=>{
+  if(P.length<F.slots.length)out.push(["bad","Squad ("+P.length+") is smaller than the team ("+F.slots.length+" slots)."]);
+  const b=targetTotals(),bdiff=b.sum-b.total;
+  if(bdiff>5)out.push(["bad","Preferred minutes are "+Math.round(bdiff)+"\u2032 over the "+b.total+"\u2032 available."]);
+  else if(bdiff<-5)out.push(["info","Preferred minutes are "+Math.round(-bdiff)+"\u2032 short \u2014 players on auto will cover it."]);
+
+  const assigned=sortedSnaps().reduce((a,s)=>a+s.assign.filter(v=>v).length,0);
+  if(!assigned){
+    out.push(["info","No plan yet \u2014 press \u26A1 Auto plan. This panel then lists minutes over/under, players out of position, and lower-choice cover."]);
+    $("#checks").innerHTML=out.map(o=>"<li class='"+o[0]+"'>"+o[1]+"</li>").join("");
+    return;
+  }
+
+  const over=[],under=[];
+  P.forEach(p=>{
     const m=st.min[p.id]||0,w=wantOf(p),d=m-w;
-    if(d>3)out.push(["warn","#"+p.num+" "+p.name+" is "+Math.round(d)+"\u2032 OVER their allocation ("+m+"/"+w+")."]);
-    else if(d<-3)out.push(["warn","#"+p.num+" "+p.name+" is "+Math.round(-d)+"\u2032 UNDER their allocation ("+m+"/"+w+")."]);
+    if(d>3)over.push({p:p,d:d,m:m,w:w});else if(d<-3)under.push({p:p,d:d,m:m,w:w});
   });
-  let empty=0,gkEmpty=0;
-  sortedSnaps().forEach(s=>F.slots.forEach((sl,si)=>{if(!s.assign[si]){empty++;if(sl.pos==="GK")gkEmpty++;}}));
-  if(state.players.length<F.slots.length)out.push(["bad","Squad ("+state.players.length+") is smaller than the team ("+F.slots.length+" slots)."]);
-  if(empty)out.push(["bad",empty+" empty slot(s) across blocks"+(gkEmpty?" (incl. "+gkEmpty+" in goal)":"")+" \u2014 drag players on."]);
-  const cover=[];
-  state.players.forEach(p=>{
+  over.sort((a,b)=>b.d-a.d);under.sort((a,b)=>a.d-b.d);
+  over.slice(0,5).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is "+Math.round(o.d)+"\u2032 OVER their allocation ("+o.m+"\u2032 vs "+o.w+"\u2032)."]));
+  if(over.length>5)out.push(["warn","\u2026and "+(over.length-5)+" more over their allocation."]);
+  under.slice(0,5).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is "+Math.round(-o.d)+"\u2032 UNDER their allocation ("+o.m+"\u2032 vs "+o.w+"\u2032)."]));
+  if(under.length>5)out.push(["warn","\u2026and "+(under.length-5)+" more under their allocation."]);
+
+  const cover=[],nth=[];
+  P.forEach(p=>{
     if(!p.prefs.length)return;
     const bp=st.byPos[p.id]||{};
-    Object.keys(bp).forEach(pos=>{if(p.prefs.indexOf(pos)<0&&bp[pos]>0)cover.push({p:p,pos:pos,m:bp[pos]});});
+    Object.keys(bp).forEach(pos=>{
+      if(bp[pos]<=0)return;
+      const i=p.prefs.indexOf(pos);
+      if(i<0)cover.push({p:p,pos:pos,m:bp[pos]});
+      else if(i>=2)nth.push({p:p,pos:pos,m:bp[pos],i:i});
+    });
   });
-  cover.sort((a,b)=>b.m-a.m);
-  cover.slice(0,4).forEach(o=>out.push(["info","Cover role: #"+o.p.num+" "+o.p.name+" \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+" (prefs "+o.p.prefs.join("/")+")."]));
-  if(cover.length>4)out.push(["info","\u2026and "+(cover.length-4)+" more stints outside a preferred position."]);
-  const gkP=state.players.filter(p=>p.prefs.indexOf("GK")>=0);
-  if(!gkP.length)out.push(["info","Nobody lists GK \u2014 the planner will use your first player in goal."]);
+  cover.sort((a,b)=>b.m-a.m);nth.sort((a,b)=>b.m-a.m);
+  cover.slice(0,4).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is OUT OF POSITION \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+" (their list: "+o.p.prefs.join("/")+")."]));
+  if(cover.length>4)out.push(["warn","\u2026and "+(cover.length-4)+" more stints outside a listed position."]);
+  nth.slice(0,4).forEach(o=>out.push(["info","#"+o.p.num+" "+o.p.name+" is on their "+ORD[o.i+1]+" choice \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+" ("+o.p.prefs.join("/")+")."]));
+  if(nth.length>4)out.push(["info","\u2026and "+(nth.length-4)+" more lower-choice stints."]);
+
+  let empty=0,gkEmpty=0;
+  sortedSnaps().forEach(s=>F.slots.forEach((sl,si)=>{if(!s.assign[si]){empty++;if(sl.pos==="GK")gkEmpty++;}}));
+  if(empty)out.push(["bad",empty+" empty slot(s) across blocks"+(gkEmpty?" (incl. "+gkEmpty+" in goal)":"")+" \u2014 drag players on."]);
+  const gkP=P.filter(p=>p.prefs.indexOf("GK")>=0);
+  if(!gkP.length)out.push(["info","Nobody lists GK \u2014 your first player keeps goal."]);
   if(state.gkRot&&gkP.length<2)out.push(["info","GK rotation is on but only "+gkP.length+" player lists GK \u2014 they'll keep the gloves."]);
-  const b=targetTotals(),diff=b.sum-b.total;
-  if(diff>5)out.push(["warn","Preferred minutes are "+Math.round(diff)+"\u2032 over the "+b.total+"\u2032 available."]);
-  else if(diff<-5)out.push(["info","Preferred minutes are "+Math.round(-diff)+"\u2032 short \u2014 auto players will cover it."]);
-  if(!out.length)out.push(["info","No problems found \u2014 minutes add up and every slot is filled."]);
+  if(!out.length)out.push(["info","Nothing to flag \u2014 minutes and positions all check out."]);
   $("#checks").innerHTML=out.map(o=>"<li class='"+o[0]+"'>"+o[1]+"</li>").join("");
 }
 function render(){
@@ -949,8 +1009,15 @@ $("#btnReset").addEventListener("click",()=>{
     if(best&&bs>0)a[si]=best.id;
   });
   pool.forEach(p=>{if(a.indexOf(p.id)>=0)return;const i=a.indexOf(null);if(i>=0)a[i]=p.id;});
+  for(let a2=1;a2<n;a2++)for(let b2=a2+1;b2<n;b2++){
+    const pa=a[a2],pb=a[b2];if(!pa||!pb)continue;
+    const A=player(pa),B=player(pb);
+    if(prefScore(A,F.slots[b2].pos)+prefScore(B,F.slots[a2].pos)>prefScore(A,F.slots[a2].pos)+prefScore(B,F.slots[b2].pos)+2){
+      a[a2]=pb;a[b2]=pa;
+    }
+  }
   state.snaps=[newSnap(0,a)];state.activeId=state.snaps[0].id;sel=null;render();
-  toast("Plan reset \u2014 one kick-off line-up");
+  toast("Plan reset \u2014 one kick-off line-up, best-fit positions");
 });
 $("#btnSubPoint").addEventListener("click",()=>{
   const t=clamp(Math.round($("#clock").value),0,matchEnd()-1);
@@ -1060,7 +1127,7 @@ $("#playerTable").addEventListener("input",e=>{
 
 /* ================= save / load / copy ================= */
 $("#btnData").addEventListener("click",()=>{
-  $("#modalText").value=JSON.stringify({v:4,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
+  $("#modalText").value=JSON.stringify({v:5,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
     subEvery:state.subEvery,minStint:state.minStint,gkRot:state.gkRot,carry:state.carry,
     players:state.players.map(p=>({num:p.num,name:p.name,prefs:p.prefs,target:p.target})),
     snaps:state.snaps.map(s=>({t:s.t,assign:s.assign}))},null,1);
