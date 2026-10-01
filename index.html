@@ -6,47 +6,57 @@
 <title>Match Sub Planner</title>
 <style>
 :root{--bg:#0b1220;--panel:#131c2e;--panel2:#182338;--line:#26344b;--text:#e6edf7;--muted:#93a4bf;
---accent:#22c55e;--info:#38bdf8;--danger:#ef4444;--gk:#facc15;--def:#38bdf8;--mid:#34d399;--att:#fb7185}
+--accent:#22c55e;--info:#38bdf8;--danger:#ef4444;--warn:#f59e0b;--gk:#facc15;--def:#38bdf8;--mid:#34d399;--att:#fb7185}
 *{box-sizing:border-box}html,body{margin:0;padding:0}
 body{background:radial-gradient(1200px 600px at 15% -15%,#16233c,#0b1220 60%);color:var(--text);
 font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh}
-h2{font-size:13px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700}
+h2{font-size:12px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700}
 code{background:#0d1626;padding:1px 4px;border-radius:4px;font-size:12px;color:#c7d5ea}
-header{position:sticky;top:0;z-index:60;background:rgba(11,18,32,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:9px 12px}
+header{position:sticky;top:0;z-index:60;background:rgba(11,18,32,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:8px 12px}
 .topbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.brand{font-weight:800;letter-spacing:.3px}.brand span{font-weight:400;color:var(--muted);font-size:12px}
-.settings{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
-.field{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:4px 9px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.field input[type=number]{background:transparent;border:none;color:var(--text);font:inherit;font-size:13px;width:46px;outline:none;text-align:center}
-.field select{background:transparent;border:none;color:var(--text);font:inherit;font-size:13px;outline:none;text-transform:none;letter-spacing:0}
+.brand{font-weight:800;letter-spacing:.3px;font-size:14px}.brand span{font-weight:400;color:var(--muted);font-size:12px}
+.settings{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.field{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:4px 9px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.field input[type=number]{background:transparent;border:none;color:var(--text);font:inherit;font-size:13px;width:42px;outline:none;text-align:center;text-transform:none}
+.field select{background:transparent;border:none;color:var(--text);font:inherit;font-size:12px;outline:none;text-transform:none;letter-spacing:0;max-width:140px}
 .field select option{background:#131c2e}
 .field.tick{cursor:pointer}.field input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .btn{background:#1e2b45;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
 .btn:hover{background:#25355a}
 .btn.primary{background:linear-gradient(180deg,#28d16a,#16a34a);border-color:#15803d;color:#04240f;font-weight:800}
 .btn.primary:hover{filter:brightness(1.07)}
-.btn.ghost{background:transparent}.btn.sm{padding:3px 7px;font-size:12px;border-radius:7px}
-main{display:grid;grid-template-columns:326px minmax(340px,1fr) 404px;gap:12px;padding:12px;align-items:start}
-@media(max-width:1320px){main{grid-template-columns:1fr}}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent}.btn.sm{padding:3px 8px;font-size:12px;border-radius:7px}
+main{display:grid;grid-template-columns:340px minmax(340px,1fr) 410px;gap:12px;padding:12px;align-items:start}
+@media(max-width:1340px){main{grid-template-columns:1fr}}
 .panel{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:12px}
 .row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .muted{color:var(--muted)}.tiny{font-size:11px}
-.hint{font-size:11px;color:var(--muted);line-height:1.5;margin-top:6px}
-textarea{width:100%;min-height:74px;background:#0d1626;border:1px solid var(--line);border-radius:9px;color:var(--text);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;padding:8px;resize:vertical;outline:none}
+.hint{font-size:11px;color:var(--muted);line-height:1.55;margin-top:6px}
+textarea{width:100%;min-height:70px;background:#0d1626;border:1px solid var(--line);border-radius:9px;color:var(--text);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;padding:8px;resize:vertical;outline:none}
 textarea:focus{border-color:#38507a}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:4px 3px;font-weight:700}
-td{padding:2px 3px;border-bottom:1px solid rgba(38,52,75,.55)}
+td{padding:3px;border-bottom:1px solid rgba(38,52,75,.55)}
 input.cell{width:100%;background:#0e1728;border:1px solid transparent;border-radius:6px;color:var(--text);font:inherit;padding:3px 5px;outline:none}
 input.cell:hover{border-color:var(--line)}input.cell:focus{border-color:#3b5a8f;background:#0b1424}
-input.cell.num{width:38px;text-align:center}input.cell.bad{border-color:var(--danger);color:#fca5a5}
-td.actual{font-weight:700;text-align:right;white-space:nowrap}
-td.actual small{display:block;font-weight:600;font-size:10px;opacity:.85}
-.ok{color:#7ee2a8}.over{color:#fca5a5}.under{color:#fcd34d}
-tr.flash td{animation:flashRow 1.4s ease-out}
-@keyframes flashRow{0%{background:rgba(56,189,248,.3)}100%{background:transparent}}
+input.cell.num{width:36px;text-align:center}
+select.cell{background:#0e1728;border:1px solid transparent;border-radius:6px;color:var(--text);font:12px inherit;padding:3px 4px;outline:none}
+select.cell:focus{border-color:#3b5a8f}
 button.del{background:transparent;border:none;color:#6b7d99;cursor:pointer;font-size:13px;padding:2px 4px}
 button.del:hover{color:var(--danger)}
+.stepper{display:flex;align-items:center;gap:3px}
+.stepper button{width:22px;height:22px;border-radius:6px;background:#22314e;border:1px solid var(--line);color:var(--text);cursor:pointer;font-size:14px;line-height:1;padding:0;display:grid;place-items:center}
+.stepper button:hover{background:#2c3f66;border-color:#476699}
+.stepper input{width:40px;text-align:center;background:#0e1728;border:1px solid var(--line);border-radius:6px;color:var(--text);font:13px/1 inherit;padding:3px 0;outline:none}
+.budget{margin:9px 0 2px}
+.bbar{height:12px;border-radius:7px;background:#0d1626;border:1px solid var(--line);overflow:hidden;position:relative}
+.bfill{height:100%;width:0;transition:.25s}
+.bfill.ok{background:linear-gradient(90deg,#16a34a,#22c55e)}
+.bfill.under{background:linear-gradient(90deg,#b45309,#f59e0b)}
+.bfill.over{background:linear-gradient(90deg,#b91c1c,#ef4444)}
+.blab{font-size:11px;margin-top:4px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ok{color:#7ee2a8}.over{color:#fca5a5}.under{color:#fcd34d}
 .pitchwrap{display:flex;justify-content:center}
 .pitch{position:relative;height:min(58vh,600px);aspect-ratio:68/105;max-width:100%;
 background:repeating-linear-gradient(180deg,#1c7a45 0 10%,#186b3c 10% 20%);
@@ -125,25 +135,36 @@ padding:8px 14px;border-radius:11px;font-size:13px;box-shadow:0 10px 30px rgba(0
 .toast.on{opacity:1;transform:translateX(-50%) translateY(-6px)}
 details{margin-top:8px}details summary{cursor:pointer;color:var(--muted);font-size:12px}
 details p{font-size:12px;color:var(--muted);line-height:1.6}
+.empty-state{border:1px dashed #33456a;border-radius:10px;padding:16px;text-align:center;color:var(--muted);font-size:12px;margin-top:9px}
 .kpis{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
 .kpi{background:#0e1728;border:1px solid var(--line);border-radius:8px;padding:4px 8px}
 .kpi b{color:var(--text);font-size:13px}
+.badge{font-size:10px;padding:1px 6px;border-radius:6px;background:#22314e;color:#c9d8ee;font-weight:700}
+.warnbox{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.5);color:#fde68a;border-radius:9px;padding:7px 10px;font-size:12px;margin-top:8px}
 </style>
 </head>
 <body>
 <header>
   <div class="topbar">
-    <div class="brand">&#9917; Match Sub Planner <span>&mdash; rotations &amp; minutes</span></div>
+    <div class="brand">&#9917; Match Sub Planner <span id="subTitle"></span></div>
     <div class="settings">
-      <label class="field">Side <input type="number" id="pps" min="5" max="11" value="9"></label>
-      <label class="field">Shape <select id="formation"></select></label>
-      <label class="field">Periods <input type="number" id="periods" min="1" max="6" value="2"></label>
-      <label class="field">Min/period <input type="number" id="mpp" min="4" max="45" value="25"></label>
-      <label class="field">Sub every <input type="number" id="subEvery" min="0" max="30" value="10"></label>
-      <label class="field">Min stint <input type="number" id="minStint" min="0" max="30" value="8"></label>
-      <label class="field tick" title="Split keeper duty across periods"><input type="checkbox" id="gkRot" checked> GK rotation</label>
-      <label class="field tick" title="When you change a slot, the new player keeps that slot in later snapshots"><input type="checkbox" id="carry" checked> Carry fwd</label>
-      <button class="btn primary" id="btnAuto">&#9889; Auto plan</button>
+      <label class="field" title="Players per team on the pitch">Side
+        <input type="number" id="pps" min="5" max="11" value="9"></label>
+      <label class="field" title="Formation / shape">Shape
+        <select id="formation"></select></label>
+      <label class="field" title="Number of periods (halves/quarters)">Periods
+        <input type="number" id="periods" min="1" max="6" value="4"></label>
+      <label class="field" title="Minutes in each period">Min/period
+        <input type="number" id="mpp" min="4" max="45" value="20"></label>
+      <label class="field" title="Plan a substitution block every N minutes">Sub every
+        <input type="number" id="subEvery" min="0" max="30" value="20"></label>
+      <label class="field" title="Minimum length of a stint so players aren't chopped in and out">Min stint
+        <input type="number" id="minStint" min="0" max="30" value="8"></label>
+      <label class="field tick" title="Split goalkeeper duty between players by period. Off = one keeper plays the whole match.">
+        <input type="checkbox" id="gkRot"> GK rotation</label>
+      <label class="field tick" title="When you change a slot, the new player keeps that slot in later snapshots">
+        <input type="checkbox" id="carry" checked> Carry fwd</label>
+      <button class="btn primary" id="btnAuto" title="Build a full match plan from targets and positions">&#9889; Auto plan</button>
       <button class="btn" id="btnSubPoint">+ Sub point</button>
       <button class="btn ghost" id="btnReset">Reset plan</button>
       <button class="btn ghost" id="btnData">&#8645; Save / Load</button>
@@ -155,35 +176,65 @@ details p{font-size:12px;color:var(--muted);line-height:1.6}
 <main>
   <section>
     <div class="panel">
-      <h2>Squad <span class="muted" id="squadCount"></span></h2>
-      <textarea id="pasteBox" spellcheck="false" placeholder="Paste from Excel, one player per line:
-7, Ali Khan, GK/LB, 50
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 style="margin:0">1 &middot; Players</h2>
+        <span class="tiny muted" id="squadCount">no players yet</span>
+      </div>
+
+      <div id="importZone" style="display:none;margin-top:9px">
+        <textarea id="pasteBox" spellcheck="false" placeholder="Paste from Excel, one player per line:
+7, Ali Khan, GK/LB
 Jack, LB/LM, 40
 Tom&#9;CM;RM&#9;35
 GK, CB, 25"></textarea>
-      <div class="row" style="margin-top:7px">
-        <button class="btn primary" id="btnPaste">Import players</button>
-        <button class="btn sm" id="btnAddPlayer">+ Player</button>
-        <button class="btn sm" id="btnEqual">Equal minutes</button>
-        <button class="btn sm" id="btnClearSquad">Clear squad</button>
+        <div class="row" style="margin-top:7px">
+          <button class="btn primary" id="btnPaste">Import players</button>
+          <button class="btn sm" id="btnAddPlayer">+ Add blank</button>
+          <button class="btn sm ghost" id="btnClearSquad">Clear squad</button>
+        </div>
+        <div class="hint">Positions: <code>GK LB CB RB LWB RWB CDM CM CAM LM RM LW RW ST</code> &mdash; separate with <code>/ , ;</code> or spaces.
+        Numbers on their own (e.g. <code>40</code>) are read as preferred minutes. Leave minutes out and the planner shares them evenly.
+        <b>CM is doubled up</b> in most shapes; wings and full-backs stay single.</div>
       </div>
-      <div class="hint">Positions: <code>GK LB CB RB LWB RWB CDM CM CAM LM RM LW RW ST</code> &mdash; separate with <code>/ , ;</code> or spaces. Leave minutes blank for auto.
-      First column can be the shirt number. <b>CM is doubled up</b> in most shapes (two CM slots); wings and full-backs stay single.</div>
-      <div style="margin-top:9px;max-height:44vh;overflow:auto">
-        <table id="squadTable">
-          <thead><tr><th>#</th><th>Name</th><th>Prefs</th><th>Tgt</th><th>Mins</th><th></th></tr></thead>
-          <tbody></tbody>
-        </table>
+
+      <div id="emptyZone" class="empty-state">No players yet &mdash; paste your squad above or tap <b>+ Add blank</b>.</div>
+
+      <div id="listZone" style="display:none">
+        <div class="row" style="justify-content:space-between">
+          <span class="tiny muted">Preferred positions &amp; minutes</span>
+          <button class="btn sm ghost" id="btnToggleImport">Expand input</button>
+        </div>
+        <div style="max-height:46vh;overflow:auto;margin-top:7px">
+          <table id="playerTable">
+            <thead><tr><th>#</th><th>Player</th><th>Preferred positions</th><th style="text-align:center">Wants</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="budget">
+          <div class="bbar"><div class="bfill" id="bfill"></div></div>
+          <div class="blab">
+            <span id="bLabLeft"></span>
+            <span id="bLabRight" class="muted"></span>
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn sm" id="btnEqual">Share minutes evenly</button>
+          <button class="btn sm" id="btnRound">Round to blocks</button>
+        </div>
+        <div id="budgetWarn" class="warnbox" style="display:none"></div>
       </div>
     </div>
-    <div class="panel"><h2>Checks</h2><ul id="checks"></ul></div>
+
+    <div class="panel" id="checksPanel"><h2>Checks</h2><ul id="checks"></ul></div>
     <div class="panel">
       <details><summary>How to use</summary>
-        <p>1. Paste your squad (positions + target minutes).<br>
-        2. Pick side / shape / match length.<br>
-        3. Hit <b>Auto plan</b> for a full game, or <b>Reset plan</b> and drag players on yourself.<br>
-        4. Click a snapshot chip or move the clock slider to edit that part of the match. Drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap. On touch: tap a player, then tap the destination.<br>
-        5. Watch the minute columns and the Checks list &mdash; every drop tells you the before &rarr; after minutes.</p>
+        <p>1. Paste your squad (positions, optional preferred minutes).<br>
+        2. Adjust needed minutes with the &minus;/+ steppers &mdash; the bar shows whether they add up to the pitch minutes available.<br>
+        3. Pick side / shape / match length at the top.<br>
+        4. Hit <b>Auto plan</b> for a full game, or <b>Reset plan</b> and drag players on yourself.<br>
+        5. Click a snapshot or move the clock slider to edit that part of the match. Drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap. On touch: tap a player, then tap the destination.<br>
+        6. Every drop tells you the before &rarr; after minutes.</p>
       </details>
     </div>
   </section>
@@ -196,13 +247,13 @@ GK, CB, 25"></textarea>
       </div>
       <div class="chips" id="chips" style="margin:9px 0"></div>
       <div class="row tiny">
-        <label class="field">This snapshot starts <input type="number" id="snapTime" min="0" step="1"></label>
+        <label class="field">Starts <input type="number" id="snapTime" min="0" step="1"></label>
         <button class="btn sm" id="btnClone">&#10697; Clone &amp; shift</button>
         <button class="btn sm" id="btnDelSnap">&#128465; Delete snapshot</button>
       </div>
       <div class="clock">
         <span class="tiny muted">Clock</span>
-        <input type="range" id="clock" min="0" max="50" value="0" step="1">
+        <input type="range" id="clock" min="0" max="80" value="0" step="1">
         <span class="tiny muted" id="clockLabel">0&prime;</span>
       </div>
       <div class="pitchwrap" style="margin-top:10px"><div class="pitch" id="pitch"></div></div>
@@ -232,30 +283,29 @@ GK, CB, 25"></textarea>
       <button class="btn" id="btnModalSelect">Select all</button>
       <button class="btn ghost" id="btnModalClose">Close</button>
     </div>
-    <div class="hint">Copy the text to keep your plan; paste a saved plan back in and press <b>Load this JSON</b>. Plan text is also fine in the box (it holds JSON).</div>
+    <div class="hint">Copy the text to keep your plan; paste a saved plan back in and press <b>Load this JSON</b>.</div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 "use strict";
-/* ---------- helpers ---------- */
+/* ================= helpers ================= */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hash=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%997;return h/997;};
 
-/* ---------- positions ---------- */
+/* ================= positions ================= */
 const FAM={GK:"GK",LB:"DEF",LCB:"DEF",CB:"DEF",RCB:"DEF",RB:"DEF",LWB:"DEF",RWB:"DEF",
 CDM:"MID",CM:"MID",CAM:"MID",LM:"MID",RM:"MID",LW:"ATT",RW:"ATT",ST:"ATT"};
 const POSCODES=Object.keys(FAM);
 const ALIAS={gk:"GK",goalkeeper:"GK",keeper:"GK",goalie:"GK",
 lb:"LB",leftback:"LB",lcb:"LCB",cb:"CB",centreback:"CB",centerback:"CB",ch:"CB",rcb:"RCB",rb:"RB",rightback:"RB",lwb:"LWB",rwb:"RWB",
-cdm:"CDM",dm:"CDM",holding:"CDM",cm:"CM",centremid:"CM",centermid:"CM",centremidfield:"CM",midfield:"CM",mid:"CM",cmid:"CM",
+cdm:"CDM",dm:"CDM",holding:"CDM",cm:"CM",centremid:"CM",centremidfield:"CM",midfield:"CM",mid:"CM",cmid:"CM",
 cam:"CAM",am:"CAM",attackingmid:"CAM",lm:"LM",leftmid:"LM",rm:"RM",rightmid:"RM",
 lw:"LW",leftwing:"LW",rw:"RW",rightwing:"RW",winger:"LW",
 st:"ST",cf:"ST",striker:"ST",forward:"ST",fw:"ST",attacker:"ST",f:"ST",centreforward:"ST"};
-
 function parsePositions(str){
   if(!str)return[];
   const out=[];
@@ -268,7 +318,7 @@ function parsePositions(str){
   return out;
 }
 
-/* ---------- formations ---------- */
+/* ================= formations (built once) ================= */
 const OFFS={1:[0],2:[-14,14],3:[-26,0,26],4:[-38,-13,13,38],5:[-39,-20,0,20,39],6:[-40,-24,-8,8,24,40]};
 function mk(name,rows){
   const slots=[{pos:"GK",x:50,y:90}];
@@ -291,19 +341,23 @@ const FORMS={
 11:[mk("4-4-2",["LB LCB RCB RB","LM CM CM RM","ST ST"]),mk("4-3-3",["LB LCB RCB RB","CM CM CM","LW ST RW"]),mk("3-5-2",["LB CB RB","LWB CM CM CM RWB","ST ST"]),mk("4-2-3-1",["LB LCB RCB RB","CDM CDM","LM CAM RM","ST"]),mk("3-4-3",["LB CB RB","LM CM CM RM","LW ST RW"])]
 };
 
-/* ---------- state ---------- */
+/* ================= state ================= */
 let uid=1;
-const state={pps:9,formIdx:0,periods:2,mpp:25,subEvery:10,minStint:8,gkRot:true,carry:true,
+const state={pps:9,formIdx:0,periods:4,mpp:20,subEvery:20,minStint:8,gkRot:false,carry:true,
   players:[],snaps:[],activeId:null};
+let sel=null,drag=null,ghostEl=null;
 
-function matchEnd(){return Math.max(4,state.periods*state.mpp);}
-function curForm(){const list=FORMS[state.pps]||FORMS[9];return list[clamp(state.formIdx,0,list.length-1)];}
-function player(id){return state.players.find(p=>p.id===id)||null;}
-function activeSnap(){return state.snaps.find(s=>s.id===state.activeId)||state.snaps[0];}
-function sortedSnaps(){return state.snaps.slice().sort((a,b)=>a.t-b.t);}
-function newSnap(t,assign){return {id:uid++,t:t,assign:assign.slice()};}
+const matchEnd=()=>Math.max(4,state.periods*state.mpp);
+const formList=()=>FORMS[state.pps]||FORMS[9];
+function curForm(){return formList()[clamp(state.formIdx,0,formList().length-1)];}
+const player=id=>state.players.find(p=>p.id===id)||null;
+const ranked=()=>state.players.slice().sort((a,b)=>(a.prefs.indexOf("GK")>=0?0:1)-(b.prefs.indexOf("GK")>=0?0:1));
+function activeSnap(){return state.snaps.find(s=>s.id===state.activeId)||state.snaps[0]||null;}
+const sortedSnaps=()=>state.snaps.slice().sort((a,b)=>a.t-b.t);
+function newSnap(t,assign){return{id:uid++,t:t,assign:assign.slice()};}
+function blankAssign(n){return new Array(n).fill(null);}
 
-/* ---------- minutes engine ---------- */
+/* ================= minutes engine ================= */
 function intervals(){
   const end=matchEnd(),ss=sortedSnaps(),out=[];
   for(let i=0;i<ss.length;i++){
@@ -318,21 +372,23 @@ function stats(){
   intervals().forEach(iv=>{
     F.slots.forEach((sl,si)=>{
       const pid=iv.snap.assign[si];
-      if(!pid||!min.hasOwnProperty(pid))return;
+      if(!pid||min[pid]===undefined)return;
       min[pid]+=iv.len;
       byPos[pid][sl.pos]=(byPos[pid][sl.pos]||0)+iv.len;
     });
   });
-  return {min:min,byPos:byPos};
+  return{min:min,byPos:byPos};
+}
+function targetTotals(){
+  const end=matchEnd(),total=curForm().slots.length*end;
+  let sum=0,n=0;
+  state.players.forEach(p=>{if(p.target!=null&&p.target!==""){sum+=+p.target;n++;}});
+  return{end:end,total:total,sum:sum,set:n};
 }
 
-/* ---------- squad editing ---------- */
-function addPlayer(name,num,prefs,target){
-  const p={id:uid++,num:num!=null?num:(state.players.length+1),name:name||"Player",prefs:prefs||[],target:target==null?null:target};
-  state.players.push(p);return p;
-}
+/* ================= assign helpers ================= */
 function remapAssign(oldAssign,oldSlots,newSlots){
-  const out=new Array(newSlots.length).fill(null),used=new Set();
+  const out=blankAssign(newSlots.length),used=new Set();
   newSlots.forEach((sl,si)=>{
     for(let i=0;i<oldSlots.length;i++){
       if(oldSlots[i].pos===sl.pos&&oldAssign[i]&&!used.has(oldAssign[i])){out[si]=oldAssign[i];used.add(oldAssign[i]);return;}
@@ -342,165 +398,176 @@ function remapAssign(oldAssign,oldSlots,newSlots){
   newSlots.forEach((sl,si)=>{if(!out[si]&&spare.length)out[si]=spare.shift();});
   return out;
 }
-function applyFormationChange(){
-  const list=FORMS[state.pps];
-  state.formIdx=clamp(state.formIdx,0,list.length-1);
-  const old=state.snaps.length?curFormOld:null;
-  state.snaps.forEach(s=>{
-    if(s.assign.length===list[state.formIdx].slots.length){s.assign=s.assign.map(v=>v&&player(v)?v:null);return;}
-    s.assign=remapAssign(s.assign,oldSlots,s.form.slots);
-  });
-}
-let curFormOld=null,oldSlots=[];
 
-/* ---------- auto planner ---------- */
+/* ================= auto planner ================= */
 function prefScore(p,pos){
   if(!p.prefs||!p.prefs.length)return 1;
   if(p.prefs.indexOf(pos)>=0)return 5;
-  if(p.prefs.indexOf(FAM[pos])>=0)return 3;
   const fam=FAM[pos];
-  for(let i=0;i<p.prefs.length;i++){if(FAM[p.prefs[i]]===fam)return 2.5;}
+  for(let i=0;i<p.prefs.length;i++){if(p.prefs[i]===fam)return 3;if(FAM[p.prefs[i]]===fam)return 2.5;}
   return 0;
 }
 function autoPlan(){
   const P=state.players;
   if(!P.length){toast("Add some players first");return;}
-  const F=curForm(),N=F.slots.length,end=matchEnd(),S=state;
-  const gkCap=P.filter(p=>p.prefs.indexOf("GK")>=0).sort((a,b)=>(a.prefs[0]==="GK"?0:1)-(b.prefs[0]==="GK"?0:1));
-  const gkOrder=gkCap.length?gkCap:P.slice(0,1);
+  const end=matchEnd(),S=state;
+  const gkPool=ranked().filter(p=>p.prefs.indexOf("GK")>=0);
+  const gkOrder=gkPool.length?gkPool:[ranked()[0]];
   const gkFor={};
-  for(let pd=1;pd<=S.periods;pd++){
-    gkFor[pd]=(S.gkRot&&gkOrder.length>1)?gkOrder[(pd-1)%gkOrder.length].id:gkOrder[0].id;
+  for(let pd=1;pd<=S.periods;pd++)gkFor[pd]=(S.gkRot&&gkOrder.length>1)?gkOrder[(pd-1)%gkOrder.length].id:gkOrder[0].id;
+
+  function buildTimes(step,extraBefore){
+    const set={0:1};
+    for(let pd=1;pd<=S.periods;pd++){
+      const ps=(pd-1)*S.mpp,pe=pd*S.mpp;
+      if(pe<end)set[pe]=1;
+      if(step>0)for(let t=ps+step;t<pe-1e-6;t+=step)if(t<end)set[t]=1;
+    }
+    if(extraBefore)Object.keys(extraBefore).forEach(t=>{if(t<end)set[t]=1;});
+    return Object.keys(set).map(Number).sort((a,b)=>a-b);
   }
-  const tset={0:1};
-  for(let pd=1;pd<=S.periods;pd++){
-    const ps=(pd-1)*S.mpp,pe=pd*S.mpp;
-    if(pe<end)tset[pe]=1;
-    if(S.subEvery>0)for(let t=ps+S.subEvery;t<pe-1e-6;t+=S.subEvery)if(t<end)tset[t]=1;
+
+  // pass 1: user's sub interval. pass 2: fall back to 10 min if targets badly missed
+  const runs=[buildTimes(S.subEvery,{}),buildTimes(S.subEvery>0?Math.min(S.subEvery,10):10,{})];
+  let best=null;
+  for(let r=0;r<runs.length;r++){
+    const res=schedule(runs[r]);
+    if(!best)best=res;
+    const worst=Math.max.apply(null,res.dev); // biggest absolute minutes miss
+    if(worst<=4)break;
+    if(r===1)best=res;
   }
-  const times=Object.keys(tset).map(Number).sort((a,b)=>a-b);
-  const ivs=[];
-  for(let i=0;i<times.length;i++){
-    const t0=times[i],t1=(i+1<times.length?times[i+1]:end);
-    if(t1>t0)ivs.push({t0:t0,t1:t1,len:t1-t0,period:Math.floor(t0/S.mpp)+1});
-  }
-  const gkMin={};P.forEach(p=>gkMin[p.id]=0);
-  ivs.forEach(iv=>{const g=gkFor[iv.period];if(g!=null)gkMin[g]+=iv.len;});
-  const total=N*end;
-  const base=total/P.length;
-  const tgt={};
-  P.forEach(p=>{
-    const t=(p.target==null||p.target==="")?Math.round(base):+p.target;
-    tgt[p.id]=clamp(isFinite(t)?t:Math.round(base),0,end);
-    if(gkMin[p.id]>tgt[p.id])tgt[p.id]=Math.min(end,gkMin[p.id]);
-  });
-  const rem={};P.forEach(p=>rem[p.id]=Math.max(0,tgt[p.id]-gkMin[p.id]));
-  const usedByGk=Object.keys(gkMin).reduce((a,k)=>a+gkMin[k],0);
-  const availOut=Math.max(0,total-usedByGk);
-  let sumRem=P.reduce((a,p)=>a+rem[p.id],0);
-  if(sumRem<=0.01){P.forEach(p=>{if(gkMin[p.id]<=0)rem[p.id]=availOut/Math.max(1,P.length-gkOrder.length);});sumRem=P.reduce((a,p)=>a+rem[p.id],0);}
-  const scale=sumRem>0?availOut/sumRem:1;
-  P.forEach(p=>rem[p.id]=Math.max(0,rem[p.id]*scale));
-  const scored={};
-  function scarcity(pos){if(scored[pos]!=null)return scored[pos];let c=0;P.forEach(p=>{if(prefScore(p,pos)>=3)c++;});return scored[pos]=c;}
-  const outIdx=[];for(let i=1;i<N;i++)outIdx.push(i);
-  const played={};P.forEach(p=>played[p.id]=0);
-  let prev={};
-  ivs.forEach((iv,ii)=>{
-    const assign=new Array(N).fill(null),used=new Set();
-    const gid=gkFor[iv.period];
-    if(gid!=null){assign[0]=gid;used.add(gid);played[gid]+=iv.len;}
-    const order=outIdx.slice().sort((a,b)=>scarcity(F.slots[a].pos)-scarcity(F.slots[b].pos));
-    order.forEach(si=>{
-      const pos=F.slots[si].pos;
-      let best=null,bs=-1e9;
-      P.forEach(p=>{
-        if(used.has(p.id)||rem[p.id]<=0.01)return;
-        let s=(rem[p.id]/iv.len)*8+prefScore(p,pos)*5;
-        if(prev[si]===p.id)s+=6;
-        const left=rem[p.id]-iv.len;
-        if(left>0&&left<S.minStint)s-=6;
-        if(rem[p.id]<iv.len*0.6&&ii===ivs.length-1)s+=2;
-        s+=hash(p.id+"|"+si)*0.001;
-        if(s>bs){bs=s;best=p;}
-      });
-      if(best){assign[si]=best.id;used.add(best.id);rem[best.id]=Math.max(0,rem[best.id]-iv.len);played[best.id]+=iv.len;}
-    });
-    outIdx.forEach(si=>{if(assign[si]==null){const c=P.find(p=>!used.has(p.id));if(c){assign[si]=c.id;used.add(c.id);played[c.id]+=iv.len;}}});
-    prev={};assign.forEach((v,i)=>{prev[i]=v;});
-    iv.assign=assign;
-  });
-  // repair: give short players minutes by replacing someone well over target
-  for(let pass=0;pass<3;pass++){
+  const usedFallback=(runs.length>1&&best.fallback);
+  state.snaps=best.snaps;state.activeId=best.snaps[0].id;
+  render();
+  if(best.unfilled)toast("Auto plan built with "+best.snaps.length+" snapshot(s) \u2014 "+best.unfilled+" slot(s) couldn't be filled (check squad size vs team size)");
+  else toast("Auto plan built \u2014 "+(best.snaps.length)+" snapshot(s)"+(usedFallback?" \u2014 fell back to 10 min blocks to hit your minutes":"")+" \u00b7 threshold "+best.worst+"\u2032");
+
+  function schedule(times){
+    const F=curForm(),N=F.slots.length;
+    const ivs=[];
+    for(let i=0;i<times.length;i++){
+      const t0=times[i],t1=(i+1<times.length?times[i+1]:end);
+      if(t1>t0)ivs.push({t0:t0,t1:t1,len:t1-t0,period:Math.floor(t0/S.mpp)+1});
+    }
+    const gkMin={};P.forEach(p=>gkMin[p.id]=0);
+    ivs.forEach(iv=>{const g=gkFor[iv.period];if(g!=null)gkMin[g]+=iv.len;});
+
+    // targets: keep GK floor, fill blanks with a fair share
+    const total=N*end;
+    const blankPool=P.filter(p=>p.target==null||p.target==="");
+    const sumSet=P.reduce((a,p)=>a+((p.target==null||p.target==="")?0:+p.target),0);
+    const gkFloor=Object.keys(gkMin).reduce((a,k)=>a+gkMin[k],0);
+    const spare=Math.max(0,total-sumSet-gkFloor);
+    const per=blankPool.length?spare/blankPool.length:0;
+    const tgt={};
     P.forEach(p=>{
-      let deficit=tgt[p.id]-played[p.id];
-      if(deficit<3)return;
-      for(let i=0;i<ivs.length&&deficit>=3;i++){
-        const iv=ivs[i];
-        if(iv.assign.indexOf(p.id)>=0)continue;
-        for(let k=0;k<outIdx.length;k++){
-          const si=outIdx[k],qid=iv.assign[si];
-          if(!qid)continue;
-          const q=player(qid);
-          if(!q)continue;
-          const surplus=played[qid]-tgt[qid];
-          if(surplus>=iv.len-0.5&&prefScore(p,F.slots[si].pos)>=prefScore(q,F.slots[si].pos)-2.5){
-            iv.assign[si]=p.id;played[p.id]+=iv.len;played[qid]-=iv.len;deficit=tgt[p.id]-played[p.id];break;
+      let t=(p.target==null||p.target==="")?per:+p.target;
+      t=clamp(t,0,end);
+      if(gkMin[p.id]>t)t=Math.min(end,gkMin[p.id]);
+      tgt[p.id]=t;
+    });
+    const rem={};P.forEach(p=>rem[p.id]=Math.max(0,tgt[p.id]-gkMin[p.id]));
+    // normalise so total assignable = total pitch minutes
+    const avail=total-gkFloor;
+    let s=0;P.forEach(p=>s+=rem[p.id]);
+    const k=(s>0.01)?avail/s:1;
+    P.forEach(p=>rem[p.id]=Math.max(0,rem[p.id]*k));
+
+    const scar={};
+    function scarcity(pos){if(scar[pos]!=null)return scar[pos];let c=0;P.forEach(p=>{if(prefScore(p,pos)>=3)c++;});return scar[pos]=c;}
+    const outIdx=[];for(let i=1;i<N;i++)outIdx.push(i);
+    const played={};P.forEach(p=>played[p.id]=0);
+    let prev={};
+    ivs.forEach((iv,ii)=>{
+      const assign=blankAssign(N),used=new Set();
+      const gid=gkFor[iv.period];
+      if(gid!=null){assign[0]=gid;used.add(gid);played[gid]+=iv.len;}
+      const order=outIdx.slice().sort((a,b)=>scarcity(F.slots[a].pos)-scarcity(F.slots[b].pos));
+      order.forEach(si=>{
+        const pos=F.slots[si].pos;let best=null,bs=-1e9;
+        P.forEach(p=>{
+          if(used.has(p.id)||rem[p.id]<=0.01)return;
+          let sc=(rem[p.id]/iv.len)*8+prefScore(p,pos)*5;
+          if(prev[si]===p.id)sc+=6;
+          const left=rem[p.id]-iv.len;
+          if(left>0&&left<S.minStint)sc-=6;
+          if(rem[p.id]<iv.len*0.6&&ii===ivs.length-1)sc+=2;
+          sc+=hash(p.id+"|"+si)*0.001;
+          if(sc>bs){bs=sc;best=p;}
+        });
+        if(best){assign[si]=best.id;used.add(best.id);rem[best.id]=Math.max(0,rem[best.id]-iv.len);played[best.id]+=iv.len;}
+      });
+      outIdx.forEach(si=>{if(assign[si]==null){const c=P.find(p=>!used.has(p.id));if(c){assign[si]=c.id;used.add(c.id);played[c.id]+=iv.len;}}});
+      prev={};assign.forEach((v,i)=>prev[i]=v);
+      iv.assign=assign;
+    });
+    // repair passes: shift minutes from over-target to under-target
+    for(let pass=0;pass<3;pass++){
+      P.forEach(p=>{
+        let def=tgt[p.id]-played[p.id];
+        if(def<3)return;
+        for(let i=0;i<ivs.length&&def>=3;i++){
+          const iv=ivs[i];
+          if(iv.assign.indexOf(p.id)>=0)continue;
+          for(let kx=0;kx<outIdx.length;kx++){
+            const si=outIdx[kx],qid=iv.assign[si];
+            if(!qid)continue;
+            const q=player(qid);if(!q)continue;
+            if(played[qid]-tgt[qid]>=iv.len-0.5&&prefScore(p,F.slots[si].pos)>=prefScore(q,F.slots[si].pos)-2.5){
+              iv.assign[si]=p.id;played[p.id]+=iv.len;played[qid]-=iv.len;def=tgt[p.id]-played[p.id];break;
+            }
           }
         }
-      }
-    });
+      });
+    }
+    const same=(a,b)=>a.length===b.length&&a.every((v,i)=>v===b[i]);
+    const snaps=[newSnap(0,ivs[0].assign)];
+    let unfilled=0;
+    for(let i=1;i<ivs.length;i++){
+      if(!same(ivs[i].assign,ivs[i-1].assign))snaps.push(newSnap(ivs[i].t0,ivs[i].assign));
+      else{ivs[i].assign.forEach(v=>{if(!v)unfilled++;});}
+    }
+    snaps.forEach(s=>s.assign.forEach(v=>{if(!v)unfilled++;}));
+    const dev=P.map(p=>Math.abs(played[p.id]-tgt[p.id]));
+    const worst=Math.max(0,Math.max.apply(null,dev));
+    return{snaps:snaps,worst:worst,dev:dev,unfilled:unfilled,fallback:(times!==runs[0])};
   }
-  const same=(a,b)=>a.every((v,i)=>v===b[i]);
-  const snaps=[newSnap(0,ivs[0].assign)];
-  for(let i=1;i<ivs.length;i++){if(!same(ivs[i].assign,ivs[i-1].assign))snaps.push(newSnap(ivs[i].t0,ivs[i].assign));}
-  state.snaps=snaps;state.activeId=snaps[0].id;
-  render();
-  toast("Auto plan built \u2014 "+snaps.length+" snapshot"+(snaps.length===1?"":"s")+", "+ivs.length+" blocks");
 }
 
-/* ---------- editing ---------- */
+/* ================= editing ================= */
 function carryForward(changed){
   if(!state.carry||!changed.length)return;
   const ss=sortedSnaps(),i=ss.indexOf(activeSnap());
   for(let j=i+1;j<ss.length;j++)changed.forEach(si=>{ss[j].assign[si]=ss[i].assign[si];});
 }
 function place(si,pid){
-  const snap=activeSnap(),before={},beforeTot=stats().min;
-  snap.assign.forEach((v,i)=>before[i]=v);
-  const prevPid=snap.assign[si];
+  const snap=activeSnap();if(!snap)return;
+  const beforeTot=stats().min,prevPid=snap.assign[si];
   let vacated=-1;
   snap.assign.forEach((v,i)=>{if(v===pid&&i!==si)vacated=i;});
   snap.assign[si]=pid;
   if(vacated>=0)snap.assign[vacated]=prevPid;
-  const changed=[si];if(vacated>=0)changed.push(si);
   carryForward([si].concat(vacated>=0?[vacated]:[]));
-  const afterTot=stats().min;
-  const touched=new Set([pid,prevPid]);
-  const bits=[];
-  touched.forEach(id=>{
+  const afterTot=stats().min,bits=[];
+  new Set([pid,prevPid]).forEach(id=>{
     if(!id)return;const p=player(id);if(!p)return;
     const a=beforeTot[id]||0,b=afterTot[id]||0;
-    const sign=b>a?"+":"";
-    bits.push("#"+p.num+" "+p.name+" "+a+"\u2032\u2192"+b+"\u2032 ("+sign+(b-a)+")");
+    bits.push("#"+p.num+" "+p.name+" "+a+"\u2032\u2192"+b+"\u2032 ("+(b-a>=0?"+":"")+(b-a)+")");
   });
   render();
   if(bits.length)toast(bits.join("   \u00b7   "));
 }
 function sendToBench(si){
-  const snap=activeSnap(),pid=snap.assign[si];
-  if(!pid)return;
-  const beforeTot=stats().min;
-  snap.assign[si]=null;
-  carryForward([si]);
-  const afterTot=stats().min,p=player(pid);
-  render();
+  const snap=activeSnap();if(!snap)return;
+  const pid=snap.assign[si];if(!pid)return;
+  const beforeTot=stats().min;snap.assign[si]=null;carryForward([si]);
+  const afterTot=stats().min,p=player(pid);render();
   if(p)toast("#"+p.num+" "+p.name+" subbed off \u2014 "+(beforeTot[pid]||0)+"\u2032\u2192"+(afterTot[pid]||0)+"\u2032");
 }
-function swapSlots(a,b){const s=activeSnap();const t=s.assign[a];s.assign[a]=s.assign[b];s.assign[b]=t;carryForward([a,b]);render();}
+function swapSlots(a,b){const s=activeSnap();if(!s)return;const t=s.assign[a];s.assign[a]=s.assign[b];s.assign[b]=t;carryForward([a,b]);render();}
 
-/* ---------- drag & drop ---------- */
-let drag=null,ghostEl=null,sel=null,lastDragEnd=0;
+/* ================= drag & drop ================= */
 function startDrag(e,payload,label){
   drag=Object.assign({sx:e.clientX,sy:e.clientY,moved:false},payload);
   ghostEl=document.createElement("div");ghostEl.className="ghost";ghostEl.textContent=label;
@@ -523,92 +590,94 @@ window.addEventListener("pointerup",e=>{
   if(ghostEl){ghostEl.remove();ghostEl=null;}
   document.querySelectorAll(".slot.over,.bench.over").forEach(n=>n.classList.remove("over"));
   if(!d.moved){
-    if(sel&&(sel.pid!==d.pid||sel.kind!==d.kind)){
+    if(sel){
       if(d.kind==="slot")place(d.si,sel.pid);
-      else if(sel.kind==="slot")place(d.si,sel.pid);
       sel=null;
-    }else{
-      sel=(sel&&sel.pid===d.pid&&sel.kind===d.kind)?null:{kind:d.kind,pid:d.pid,si:d.si};
-      if(sel&&d.kind==="slot"){/* selecting a pitch player */}else if(sel&&d.kind==="bench"){/* selected bench */}
-    }
+    }else sel={kind:d.kind,pid:d.pid,si:d.si};
     render();return;
   }
-  lastDragEnd=Date.now();
   const el=document.elementFromPoint(e.clientX,e.clientY);
   const t=el&&el.closest?el.closest(".slot,.bench"):null;
   if(!t){render();return;}
   if(t.classList.contains("bench")){
-    if(d.kind==="slot")sendToBench(d.si);
-    else{sel=null;render();}
+    if(d.kind==="slot")sendToBench(d.si);else{sel=null;render();}
     return;
   }
   const si=+t.dataset.si;
-  if(d.kind==="slot"){
-    if(d.si===si){render();return;}
-    swapSlots(d.si,si);
-  }else{
-    place(si,d.pid);
-  }
+  if(d.kind==="slot"){if(d.si!==si)swapSlots(d.si,si);}
+  else place(si,d.pid);
   sel=null;
 });
 document.addEventListener("pointerdown",e=>{
   const t=e.target.closest?e.target.closest(".token,.btoken"):null;
   if(!t)return;
   e.preventDefault();
-  const pid=+t.dataset.pid;
-  const p=player(pid);if(!p)return;
+  const pid=+t.dataset.pid,p=player(pid);if(!p)return;
   const si=(t.dataset.si!==undefined&&t.dataset.si!=="")?+t.dataset.si:null;
   startDrag(e,{kind:si==null?"bench":"slot",pid:pid,si:si},"#"+p.num+" "+p.name);
 });
 
-/* ---------- rendering ---------- */
+/* ================= rendering ================= */
 function renderFormations(){
-  const sel=f=$("#formation"),list=FORMS[state.pps];
-  const keep=sel.value;
-  sel.innerHTML=list.map(f=>'<option value="'+f.name+'">'+f.name+" ("+f.slots.length+" a-side)</option>").join("");
+  const sel=document.getElementById("formation"),list=formList(),keep=sel.value;
+  sel.innerHTML=list.map(f=>'<option value="'+f.name+'">'+f.name+" \u00b7 "+f.slots.length+" a-side</option>").join("");
   const names=list.map(f=>f.name);
-  sel.value=names.indexOf(keep)>=0?keep:list[clamp(state.formIdx,0,list.length-1)].name;
-  state.formIdx=names.indexOf(sel.value)<0?0:names.indexOf(sel.value);
+  state.formIdx=names.indexOf(keep)>=0?names.indexOf(keep):clamp(state.formIdx,0,names.length-1);
+  sel.value=names[state.formIdx];
 }
-function renderSquad(){
-  const st=stats(),tb=$("#squadTable tbody");
-  $("#squadCount").textContent=state.players.length+" players \u00b7 "+state.pps+" a-side";
-  tb.innerHTML=state.players.map(p=>{
+function renderTop(){
+  $("#pps").value=state.pps;$("#periods").value=state.periods;$("#mpp").value=state.mpp;
+  $("#subEvery").value=state.subEvery;$("#minStint").value=state.minStint;
+  $("#gkRot").checked=state.gkRot;$("#carry").checked=state.carry;
+  $("#subTitle").textContent="\u2014 "+state.pps+" a-side \u00b7 "+curForm().name+" \u00b7 "+state.periods+"\u00d7"+state.mpp+" min";
+}
+function renderPlayers(){
+  const has=state.players.length>0;
+  $("#emptyZone").style.display=has?"none":"";
+  $("#listZone").style.display=has?"":"none";
+  $("#importZone").style.display=(!has||state.showImport)?"":"none";
+  $("#btnToggleImport").textContent=state.showImport?"Collapse input":"Expand input";
+  $("#squadCount").textContent=has?(state.players.length+" players"):"no players yet";
+  if(!has){$("#playerTable tbody").innerHTML="";updateBudget();return;}
+  const st=stats();
+  $("#playerTable tbody").innerHTML=state.players.map(p=>{
     const m=st.min[p.id]||0,t=p.target;
-    const cls=(t==null||t==="")?"":(m>t?"over":(m<t?"under":"ok"));
-    const diff=(t==null||t==="")?"":"<small class='"+cls+"'>"+(m-t>0?"+":"")+(m-t)+" vs "+t+"</small>";
     return "<tr data-id='"+p.id+"'>"+
-      "<td><input class='cell num' data-f='num' value='"+p.num+"'></td>"+
+      "<td><input class='cell num' data-f='num' value='"+esc(p.num)+"'></td>"+
       "<td><input class='cell' data-f='name' value='"+esc(p.name)+"'></td>"+
-      "<td><input class='cell' data-f='prefs' value='"+p.prefs.join("/")+"' title='GK, LB/LM, CM...'></td>"+
-      "<td><input class='cell num' data-f='target' value='"+(p.target==null?"":p.target)+"' placeholder='auto'></td>"+
-      "<td class='actual "+cls+"'>"+m+"\u2032"+diff+"</td>"+
+      "<td><input class='cell' data-f='prefs' value='"+p.prefs.join("/")+"' placeholder='e.g. GK/LB' title='GK LB CB CDM CM CAM LW RW ST'></td>"+
+      "<td><div class='stepper'>"+
+        "<button type='button' data-step='-5' data-id='"+p.id+"'>&minus;</button>"+
+        "<input data-f='target' data-id='"+p.id+"' value='"+(t==null?"":t)+"' placeholder='auto'>"+
+        "<button type='button' data-step='5' data-id='"+p.id+"'>+</button>"+
+      "</div></td>"+
       "<td><button class='del' data-del='"+p.id+"' title='Remove'>&#10005;</button></td></tr>";
   }).join("");
+  updateBudget();
 }
-$("#squadTable").addEventListener("input",e=>{
-  const inp=e.target.closest("input.cell");if(!inp)return;
-  const id=+inp.closest("tr").dataset.id,p=player(id);if(!p)return;
-  const f=inp.dataset.f;
-  if(f==="num")p.num=inp.value.replace(/[^0-9]/g,"").slice(0,3);
-  else if(f==="name")p.name=inp.value;
-  else if(f==="prefs")p.prefs=parsePositions(inp.value);
-  else if(f==="target")p.target=inp.value.trim()===""?null:clamp(parseFloat(inp.value)||0,0,matchEnd());
-  renderPitch();renderBench();
-  const st=stats(),cell=inp.closest("tr").querySelector("td.actual");
-  const m=st.min[id]||0,t=p.target;
-  cell.className="actual "+((t==null)?"":(m>t?"over":(m<t?"under":"ok")));
-  cell.innerHTML=m+"\u2032"+((t==null)?"":"<small>"+(m-t>0?"+":"")+(m-t)+" vs "+t+"</small>");
-});
-$("#squadTable").addEventListener("click",e=>{
-  const b=e.target.closest("button[data-del]");if(!b)return;
-  const id=+b.dataset.del;
-  state.players=state.players.filter(p=>p.id!==id);
-  state.snaps.forEach(s=>s.assign=s.assign.map(v=>v===id?null:v));
-  render();
-});
+function updateBudget(){
+  const b=targetTotals(),fill=$("#bfill"),L=$("#bLabLeft"),R=$("#bLabRight"),W=$("#budgetWarn");
+  const pct=b.total?clamp((b.sum/b.total)*100,0,140):0;
+  fill.style.width=Math.min(100,pct/1.4)+"%";
+  fill.className="bfill "+(b.sum>b.total+0.5?"over":(b.sum<b.total-0.5?"under":"ok"));
+  L.innerHTML="Preferred minutes total <b>"+Math.round(b.sum)+"\u2032</b> of <b>"+b.total+"\u2032</b>";
+  R.textContent=(b.set===state.players.length&&state.players.length)?"all set":"("+b.set+"/"+state.players.length+" set)";
+  const diff=b.sum-b.total;
+  if(diff>0.5){
+    W.style.display="";W.innerHTML="&#9888; Your preferred minutes are <b>"+Math.round(diff)+"\u2032 OVER</b> the "+b.total+"\u2032 available. "+
+      "Players will get proportionally less. Reduce a few, or shorten the match.";
+    $("#btnAuto").disabled=true;
+  }else if(diff<-0.5&&b.set>0){
+    W.style.display="";W.innerHTML="&#9888; You're <b>"+Math.round(-diff)+"\u2032 UNDER</b> the "+b.total+"\u2032 available \u2014 "+
+      (b.set<state.players.length?"players with blank minutes will share the remaining ":"players will pick up the extra ")+Math.round(-diff)+"\u2032.";
+    $("#btnAuto").disabled=false;
+  }else if(b.set>0){
+    W.style.display="";W.innerHTML="&#10003; Preferred minutes add up to the "+b.total+"\u2032 pitch minutes available. Ready to auto plan.";
+    $("#btnAuto").disabled=false;
+  }else{W.style.display="none";$("#btnAuto").disabled=false;}
+}
 function renderPitch(){
-  const F=curForm(),snap=activeSnap()||{assign:[]},st=stats(),el=$("#pitch");
+  const F=curForm(),snap=activeSnap()||{t:0,assign:blankAssign(F.slots.length)},st=stats(),el=$("#pitch");
   el.innerHTML='<div class="pl half"></div><div class="pl circ"></div><div class="pl pen"></div><div class="pl goal"></div>';
   F.slots.forEach((sl,si)=>{
     const pid=snap.assign[si],p=pid?player(pid):null,fam=FAM[sl.pos];
@@ -617,26 +686,21 @@ function renderPitch(){
     d.dataset.si=si;d.style.left=sl.x+"%";d.style.top=sl.y+"%";
     let inner="<div class='pos'>"+sl.pos+"</div>";
     if(p){
-      const m=st.min[pid]||0,t=p.target;
-      const cls=(t==null)?"":(m>t?"over":(m<t?"under":""));
+      const m=st.min[pid]||0,t=p.target,cls=(t==null)?"":(m>t?"over":(m<t?"under":""));
       inner+="<div class='token fam-"+fam+"' data-pid='"+pid+"' data-si='"+si+"'>"+esc(p.num)+"</div>";
-      inner+="<div class='pname'>"+esc(p.name)+"</div>";
-      inner+="<div class='pmin "+cls+"'>"+m+"\u2032</div>";
+      inner+="<div class='pname'>"+esc(p.name)+"</div><div class='pmin "+cls+"'>"+m+"\u2032</div>";
     }else inner+="<div class='empty'>+</div>";
     d.innerHTML=inner;el.appendChild(d);
   });
-  const snap2=activeSnap();
-  const next=sortedSnaps()[sortedSnaps().indexOf(snap2)+1];
-  const label=snap2?(snap2.t+"\u2032"):"";
-  $("#activeInfo").textContent=snap2?("From "+label+" to "+(next?next.t+"\u2032":matchEnd()+"\u2032")):"";
-  $("#snapTime").value=snap2?snap2.t:0;
+  const ss=sortedSnaps(),i=ss.indexOf(activeSnap()),next=ss[i+1];
+  $("#activeInfo").textContent=snap?("From "+snap.t+"\u2032 to "+(next?next.t+"\u2032":matchEnd()+"\u2032")):"";
+  $("#snapTime").value=snap?snap.t:0;
 }
 function renderBench(){
   const snap=activeSnap(),st=stats(),on=new Set(snap?snap.assign.filter(v=>v):[]);
-  const el=$("#bench"),list=state.players.filter(p=>!on.has(p.id));
+  const list=state.players.filter(p=>!on.has(p.id)),el=$("#bench");
   el.innerHTML=list.map(p=>{
-    const m=st.min[p.id]||0,t=p.target;
-    const cls=(t==null)?"":(m>t?"over":(m<t?"under":"ok"));
+    const m=st.min[p.id]||0,t=p.target,cls=(t==null)?"":(m>t?"over":(m<t?"under":"ok"));
     return "<div class='btoken"+(sel&&sel.kind==="bench"&&sel.pid===p.id?" sel":"")+"' data-pid='"+p.id+"' data-si=''>"+
       "<div class='bnum'>"+esc(p.num)+"</div><div><div class='bname'>"+esc(p.name)+"</div>"+
       "<div class='bmeta "+cls+"'>"+(p.prefs.join("/")||"any")+" \u00b7 "+m+"\u2032"+(t==null?"":"/"+t+"\u2032")+"</div></div></div>";
@@ -644,163 +708,139 @@ function renderBench(){
   $("#benchInfo").textContent=list.length+" on the bench";
 }
 function renderChips(){
-  const ss=sortedSnaps(),F=curForm();
-  $("#chips").innerHTML=ss.map((s,i)=>{
-    const t=s.t;
-    const isHt=(state.periods===2&&t===state.mpp)||(state.periods>2&&F&&t%state.mpp===0&&t>0);
-    const lab=t+"\u2032"+(t===0?" KO":"")+(isHt?" HT":"");
-    return "<button class='chip"+(s.id===state.activeId?" on":"")+"' data-id='"+s.id+"'>"+lab+"</button>";
+  const ss=sortedSnaps();
+  $("#chips").innerHTML=ss.map(s=>{
+    const isHT=state.periods>1&&s.t>0&&s.t%state.mpp===0;
+    return "<button class='chip"+(s.id===state.activeId?" on":"")+"' data-id='"+s.id+"'>"+s.t+"\u2032"+(s.t===0?" KO":"")+(isHT?" \u00b7 break":"")+"</button>";
   }).join("");
   const clock=$("#clock");clock.max=matchEnd();clock.step=1;
 }
 function renderTimeline(){
   const ss=sortedSnaps(),F=curForm(),el=$("#timeline");
   el.innerHTML=ss.map((s,i)=>{
-    const prev=i?ss[i-1]:null;
-    const next=ss[i+1];
+    const prev=i?ss[i-1]:null,next=ss[i+1];
     const len=(next?next.t:matchEnd())-s.t;
-    const changed=[];
-    F.slots.forEach((sl,si)=>{
-      const a=prev?prev.assign[si]:null,b=s.assign[si];
-      if(prev&&a!==b)changed.push(si);
-      else if(!prev&&b)changed.push(si);
-    });
-    const chSet=new Set(changed);
+    const chSet=new Set();
+    F.slots.forEach((sl,si)=>{const a=prev?prev.assign[si]:null,b=s.assign[si];if(a!==b)chSet.add(si);});
     let mini="<div class='mini'><div class='pl half'></div><div class='pl circ'></div><div class='pl pen'></div>";
     F.slots.forEach((sl,si)=>{
       const pid=s.assign[si],p=pid?player(pid):null,old=prev?prev.assign[si]:null,op=old?player(old):null;
-      const cls=prev?(chSet.has(si)&&pid?" in":(chSet.has(si)?" out":"")):"";
+      const chg=prev&&chSet.has(si)&&old!==pid;
+      const cls=prev?(chg?(pid?" in":" out"):""):"";
       mini+="<div class='mslot "+cls+"' style='left:"+sl.x+"%;top:"+sl.y+"%'>"+
         "<div class='mdot "+(p?"fam-"+FAM[sl.pos]:"empty")+"'>"+(p?esc(p.num):"\u00b7")+"</div>"+
-        "<div class='mlab"+(onChange(chSet,si,prev,s)?" chg":"")+"'>"+sl.pos+" "+
-        (p?(esc(p.name.split(" ")[0])):"\u2014")+(onChange(chSet,si,prev,s)&&op?" <s>"+esc(op.num)+"</s> <b>"+esc(p.num)+"</b>":"")+
-        "</div></div>";
-      // note: keep markup simple
+        "<div class='mlab"+(chg?" chg":"")+"'>"+sl.pos+" "+(p?esc(String(p.name).split(" ")[0]):"\u2014")+
+        (chg&&op?" <s>"+esc(op.num)+"</s> <b>"+esc(p.num)+"</b>":"")+"</div></div>";
     });
     mini+="</div>";
     const lines=[];
     if(prev){
       const outs=[],ins=[];
       F.slots.forEach((sl,si)=>{
-        const a=prev.assign[si],b=s.assign[si];
-        if(a===b)return;
-        if(a){const ap=player(a);if(ap)outs.push({p:ap,pos:sl.pos,si:si});}
-        if(b){const bp=player(b);if(bp)ins.push({p:bp,pos:sl.pos,si:si});}
+        const a=prev.assign[si],b=s.assign[si];if(a===b)return;
+        if(a){const ap=player(a);if(ap)outs.push({p:ap,pos:sl.pos});}
+        if(b){const bp=player(b);if(bp)ins.push({p:bp,pos:sl.pos});}
       });
       const gone=outs.filter(o=>!s.assign.includes(o.p.id));
       const came=ins.filter(o=>!prev.assign.includes(o.p.id));
-      if(gone.length||came.length){
-        const n=Math.max(gone.length,came.length);
-        for(let k=0;k<n;k++){
-          const g=gone[k],c=came[k];
-          lines.push("<li>"+(g?("<span class='sout'>OUT #"+esc(g.p.num)+" "+esc(g.p.name)+" ("+g.pos+")</span>"):"<span class='muted'>\u2014</span>")+
-            "<span class='arrow'>&#8594;</span>"+(c?("<span class='sin'>IN #"+esc(c.p.num)+" "+esc(c.p.name)+" ("+c.pos+")</span>"):"<span class='muted'>bench</span>")+"</li>");
-        }
+      const n=Math.max(gone.length,came.length);
+      for(let k=0;k<n;k++){
+        const g=gone[k],c=came[k];
+        lines.push("<li>"+(g?"<span class='sout'>OUT #"+esc(g.p.num)+" "+esc(g.p.name)+" ("+g.pos+")</span>":"<span class='muted'>\u2014</span>")+
+          "<span class='arrow'>&#8594;</span>"+(c?"<span class='sin'>IN #"+esc(c.p.num)+" "+esc(c.p.name)+" ("+c.pos+")</span>":"<span class='muted'>bench</span>")+"</li>");
       }
-      const moved=[];
-      F.slots.forEach((sl,si)=>{
-        const a=prev.assign[si],b=s.assign[si];
-        if(a&&b&&a!==b&&prev.assign.includes(b)&&s.assign.includes(a))moved.push("<li class='tiny'><span class='sout'>#"+esc((player(a)||{}).num)+"</span> <span class='arrow'>&rarr;</span> <span class='sin'>#"+esc((player(b)||{}).num)+"</span> swapped at "+sl.pos+"</li>");
-      });
-      lines.push(...moved);
-    }else{
-      lines.push("<li class='muted tiny'>Kick-off line-up</li>");
-    }
+      if(!n)lines.push("<li class='muted tiny'>Position reshuffle only</li>");
+    }else lines.push("<li class='muted tiny'>Kick-off line-up</li>");
     return "<div class='card"+(s.id===state.activeId?" on":"")+"' data-id='"+s.id+"'>"+
       "<div class='card-head'><span class='minute'>"+s.t+"\u2032</span><span class='tiny muted'>"+(i?"sub point":"kick-off")+"</span><span class='len'>"+len+" min block</span></div>"+
       mini+"<ul class='subs'>"+lines.join("")+"</ul></div>";
-  }).join("");
+  }).join("")||"<div class='empty-state'>No snapshots yet \u2014 hit Auto plan.</div>";
 }
-function onChange(chSet,si,prev,s){return prev&&chSet.has(si)&&prev.assign[si]!==s.assign[si];}
 function renderPositions(){
   const st=stats();
   $("#posBody").innerHTML=state.players.map(p=>{
     const bp=st.byPos[p.id]||{},keys=Object.keys(bp).sort((a,b)=>bp[b]-bp[a]);
+    const m=st.min[p.id]||0,t=p.target;
+    const diff=t==null?"":" <span class='"+(m>t?"over":(m<t?"under":"ok"))+"'>("+(m-t>0?"+":"")+Math.round(m-t)+")</span>";
     return "<tr><td><b>"+esc(p.num)+"</b></td><td>"+esc(p.name)+(p.prefs.length?"<div class='tiny muted'>"+p.prefs.join("/")+"</div>":"")+"</td>"+
-      "<td><b>"+(st.min[p.id]||0)+"\u2032</b></td><td><div class='pchips'>"+
+      "<td><b>"+m+"\u2032</b>"+diff+"</td><td><div class='pchips'>"+
       (keys.length?keys.map(k=>"<span class='pchip "+FAM[k].toLowerCase()+"'>"+k+" "+Math.round(bp[k])+"\u2032</span>").join(""):"<span class='tiny muted'>not used</span>")+
       "</div></td></tr>";
-  }).join("");
+  }).join("")||"<tr><td colspan='4' class='tiny muted'>No players.</td></tr>";
 }
 function renderChecks(){
   const st=stats(),F=curForm(),end=matchEnd(),out=[];
-  const numbers={};
-  state.players.forEach(p=>{numbers[p.num]=(numbers[p.num]||0)+1;});
-  Object.keys(numbers).forEach(n=>{if(numbers[n]>1)out.push(["bad","Shirt number #"+n+" is used by "+numbers[n]+" players."]);});
+  if(!state.players.length){$("#checks").innerHTML="<li class='info'>Add players to get started.</li>";return;}
+  const nums={};state.players.forEach(p=>nums[p.num]=(nums[p.num]||0)+1);
+  Object.keys(nums).forEach(n=>{if(nums[n]>1)out.push(["bad","Shirt number #"+n+" is used by "+nums[n]+" players."]);});
   state.players.forEach(p=>{
     const m=st.min[p.id]||0,t=p.target;
-    if(t!=null){
+    if(t!=null&&t!==""){
       const d=m-t;
-      if(d>2)out.push(["warn","#"+p.num+" "+p.name+" is "+Math.round(d)+"\u2032 OVER target ("+m+"/"+t+")."]);
-      else if(d<-2)out.push(["warn","#"+p.num+" "+p.name+" is "+Math.round(-d)+"\u2032 UNDER target ("+m+"/"+t+")."]);
+      if(d>3)out.push(["warn","#"+p.num+" "+p.name+" is "+Math.round(d)+"\u2032 OVER preferred ("+m+"/"+t+")."]);
+      else if(d<-3)out.push(["warn","#"+p.num+" "+p.name+" is "+Math.round(-d)+"\u2032 UNDER preferred ("+m+"/"+t+")."]);
     }
-    if(m<=0)out.push(["info","#"+p.num+" "+p.name+" has no minutes in this plan."]);
   });
-  let emptySlot=0,gkEmpty=0;
-  sortedSnaps().forEach(s=>F.slots.forEach((sl,si)=>{if(!s.assign[si]){emptySlot++;if(sl.pos==="GK")gkEmpty++;}}));
-  if(state.players.length<F.slots.length)out.push(["bad","Squad is smaller than the team ("+state.players.length+" players for "+F.slots.length+" slots)."]);
-  if(emptySlot)out.push(["bad",emptySlot+" empty slot(s) across snapshots"+(gkEmpty?" (incl. "+gkEmpty+" at goalkeeper)":"")+" \u2014 drag players on."]);
-  const gkPlayers=state.players.filter(p=>p.prefs.indexOf("GK")>=0);
-  if(!gkPlayers.length)out.push(["info","Nobody has GK in their preferred positions \u2014 the planner will use your first player in goal."]);
-  const sum=Object.keys(st.min).reduce((a,k)=>a+st.min[k],0);
-  const expect=F.slots.length*end;
-  if(Math.abs(sum-expect)>0.5)out.push(["warn","Pitch minutes total "+Math.round(sum)+"\u2032 vs "+expect+"\u2032 available \u2014 that's the empty slots."]);
+  let empty=0,gkEmpty=0;
+  sortedSnaps().forEach(s=>F.slots.forEach((sl,si)=>{if(!s.assign[si]){empty++;if(sl.pos==="GK")gkEmpty++;}}));
+  if(state.players.length<F.slots.length)out.push(["bad","Squad ("+state.players.length+") is smaller than the team ("+F.slots.length+" slots)."]);
+  if(empty)out.push(["bad",empty+" empty slot(s) across snapshots"+(gkEmpty?" (incl. "+gkEmpty+" in goal)":"")+" \u2014 drag players on."]);
+  const gkP=state.players.filter(p=>p.prefs.indexOf("GK")>=0);
+  if(!gkP.length)out.push(["info","Nobody lists GK \u2014 the planner will use your first player in goal."]);
+  if(state.gkRot&&gkP.length<2)out.push(["info","GK rotation is on but only "+gkP.length+" player lists GK \u2014 they'll keep the gloves."]);
   if(!out.length)out.push(["info","No problems found \u2014 minutes add up and every slot is filled."]);
   $("#checks").innerHTML=out.map(o=>"<li class='"+o[0]+"'>"+o[1]+"</li>").join("");
 }
 function renderKpis(){
-  const st=stats(),end=matchEnd(),F=curForm();
+  const st=stats(),end=matchEnd(),F=curForm(),b=targetTotals();
   const sum=Object.keys(st.min).reduce((a,k)=>a+st.min[k],0);
-  const k=[
-    ["Match",end+" min",end+" min"],
+  const over=state.players.filter(p=>p.target!=null&&p.target!==""&&(st.min[p.id]||0)>(+p.target)+3).length;
+  const k=[["Match",end+" min",state.periods+" \u00d7 "+state.mpp],
     ["Team",F.slots.length+" slots",F.name],
     ["Squad",state.players.length,"players"],
     ["Sub points",Math.max(0,sortedSnaps().length-1),"changes"],
-    ["Pitch mins",Math.round(sum)+"\u2032",(F.slots.length*end)+"\u2032"]
-  ];
+    ["Pitch mins",Math.round(sum)+"\u2032",(F.slots.length*end)+"\u2032"],
+    ["Over target",over,"players"]];
   $("#kpis").innerHTML=k.map(x=>"<span class='kpi'>"+x[0]+" <b>"+x[1]+"</b> <span class='muted'>"+x[2]+"</span></span>").join("");
 }
 function render(){
-  renderFormations();
-  renderSquad();renderPitch();renderBench();renderChips();renderTimeline();renderPositions();renderChecks();renderKpis();
-  const ss=sortedSnaps();const i=ss.indexOf(activeSnap());
-  $("#clockLabel").textContent=(activeSnap()?activeSnap().t:0)+"\u2032";
-  $("#clock").value=activeSnap()?activeSnap().t:0;
+  renderFormations();renderTop();renderPlayers();renderPitch();renderBench();renderChips();
+  renderTimeline();renderPositions();renderChecks();renderKpis();
+  const s=activeSnap();
+  $("#clockLabel").textContent=(s?s.t:0)+"\u2032";
+  $("#clock").value=s?s.t:0;
 }
 function toast(msg){
   const t=$("#toast");t.textContent=msg;t.classList.add("on");
-  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),3800);
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),4000);
 }
 
-/* ---------- top bar wiring ---------- */
-["pps","periods","mpp","subEvery","minStint"].forEach(id=>{
-  $("#"+id).addEventListener("change",e=>{
+/* ================= top bar wiring ================= */
+[["pps","pps"],["periods","periods"],["mpp","mpp"],["subEvery","subEvery"],["minStint","minStint"]].forEach(pair=>{
+  const el=$("#"+pair[0]);
+  el.addEventListener("change",e=>{
     const v=parseInt(e.target.value,10);
-    if(id==="pps"){
-      oldSlots=curForm().slots;
-      state.pps=clamp(isFinite(v)?v:9,5,11);
-      e.target.value=state.pps;
-      state.formIdx=0;
-      const list=FORMS[state.pps];
-      state.snaps.forEach(s=>{s.assign=remapAssign(s.assign,oldSlots,list[0].slots);});
-      render();toast("Switched to "+state.pps+" a-side \u00b7 "+list[0].name);
+    if(pair[1]==="pps"){
+      const oldSlots=curForm().slots;
+      state.pps=clamp(isFinite(v)?v:9,5,11);e.target.value=state.pps;state.formIdx=0;
+      const ns=formList()[0].slots;
+      state.snaps.forEach(s=>{s.assign=remapAssign(s.assign,oldSlots,ns);});
+      render();toast("Switched to "+state.pps+" a-side \u00b7 "+formList()[0].name);
       return;
     }
-    if(id==="periods")state.periods=clamp(isFinite(v)?v:2,1,6);
-    if(id==="mpp")state.mpp=clamp(isFinite(v)?v:25,4,45);
-    if(id==="subEvery")state.subEvery=clamp(isFinite(v)?v:10,0,30);
-    if(id==="minStint")state.minStint=clamp(isFinite(v)?v:8,0,30);
-    e.target.value=state[id];
-    const ss=sortedSnaps();const end=matchEnd();
-    if(ss.length&&ss[ss.length-1].t>=end)state.snaps=ss.filter(s=>s.t<end||s===ss[0]);
-    if(!state.snaps.length)state.snaps=[newSnap(0,new Array(curForm().slots.length).fill(null))];
+    state[pair[1]]=clamp(isFinite(v)?v:state[pair[1]],pair[1]==="periods"?1:4,pair[1]==="periods"?6:45);
+    e.target.value=state[pair[1]];
+    const end=matchEnd();
+    state.snaps=sortedSnaps().filter(s=>s.t<end);
+    if(!state.snaps.length)state.snaps=[newSnap(0,blankAssign(curForm().slots.length))];
     if(!state.snaps.some(s=>s.id===state.activeId))state.activeId=sortedSnaps()[0].id;
     render();
   });
 });
+$("#pp").addEventListener("change",()=>{});
 $("#formation").addEventListener("change",e=>{
-  oldSlots=curForm().slots;
-  state.formIdx=Math.max(0,FORMS[state.pps].map(f=>f.name).indexOf(e.target.value));
+  const oldSlots=curForm().slots,names=formList().map(f=>f.name);
+  state.formIdx=Math.max(0,names.indexOf(e.target.value));
   const ns=curForm().slots;
   state.snaps.forEach(s=>{s.assign=remapAssign(s.assign,oldSlots,ns);});
   render();toast("Shape: "+e.target.value);
@@ -810,50 +850,41 @@ $("#carry").addEventListener("change",e=>{state.carry=e.target.checked;});
 
 $("#btnAuto").addEventListener("click",autoPlan);
 $("#btnReset").addEventListener("click",()=>{
-  const F=curForm(),n=F.slots.length;
-  const pool=state.players.slice().sort((a,b)=>prefsRank(b)-prefsRank(a));
-  const a=new Array(n).fill(null);
+  const F=curForm(),n=F.slots.length,pool=ranked(),a=blankAssign(n);
   F.slots.forEach((sl,si)=>{
     let best=null,bs=-1;
-    pool.forEach(p=>{if(a.includes(p.id))return;const s=prefScore(p,sl.pos);if(s>bs){bs=s;best=p;}});
+    pool.forEach(p=>{if(a.indexOf(p.id)>=0)return;const s=prefScore(p,sl.pos);if(s>bs){bs=s;best=p;}});
     if(best&&bs>0)a[si]=best.id;
   });
-  pool.forEach(p=>{if(a.includes(p.id))return;const i=a.indexOf(null);if(i>=0)a[i]=p.id;});
+  pool.forEach(p=>{if(a.indexOf(p.id)>=0)return;const i=a.indexOf(null);if(i>=0)a[i]=p.id;});
   state.snaps=[newSnap(0,a)];state.activeId=state.snaps[0].id;sel=null;render();
   toast("Plan reset \u2014 one kick-off line-up");
 });
-function prefsRank(p){return (p.prefs.indexOf("GK")>=0?0:1);}
 $("#btnSubPoint").addEventListener("click",()=>{
   const t=clamp(Math.round($("#clock").value),0,matchEnd()-1);
-  if(state.snaps.some(s=>s.t===t)){toast("Snapshot already exists at "+t+"\u2032");state.activeId=state.snaps.find(s=>s.t===t).id;render();return;}
-  const ss=sortedSnaps();
-  let prev=ss[0];
-  ss.forEach(s=>{if(s.t<=t)prev=s;});
-  const n=newSnap(t,prev.assign);
-  state.snaps.push(n);state.activeId=n.id;render();toast("Snapshot added at "+t+"\u2032");
+  if(state.snaps.some(s=>s.t===t)){state.activeId=state.snaps.find(s=>s.t===t).id;render();toast("Already a snapshot at "+t+"\u2032");return;}
+  const ss=sortedSnaps();let prev=ss[0];ss.forEach(s=>{if(s.t<=t)prev=s;});
+  const n=newSnap(t,prev.assign);state.snaps.push(n);state.activeId=n.id;render();toast("Snapshot added at "+t+"\u2032");
 });
 $("#btnClone").addEventListener("click",()=>{
-  const s=activeSnap(),ss=sortedSnaps(),i=ss.indexOf(s);
-  const next=ss[i+1];
+  const s=activeSnap();if(!s)return;
+  const ss=sortedSnaps(),i=ss.indexOf(s),next=ss[i+1];
   const t=clamp(Math.round(next?(s.t+next.t)/2:s.t+5),s.t+1,matchEnd()-1);
   const n=newSnap(t,s.assign);state.snaps.push(n);state.activeId=n.id;render();toast("Cloned to "+t+"\u2032");
 });
 $("#btnDelSnap").addEventListener("click",()=>{
   if(state.snaps.length<=1){toast("Keep at least one snapshot");return;}
-  const id=state.activeId;
-  state.snaps=state.snaps.filter(s=>s.id!==id);
+  state.snaps=state.snaps.filter(s=>s.id!==state.activeId);
   state.activeId=sortedSnaps()[0].id;render();toast("Snapshot deleted");
 });
 $("#snapTime").addEventListener("change",e=>{
   const s=activeSnap();if(!s)return;
-  s.t=clamp(parseInt(e.target.value,10)||0,0,matchEnd()-1);
-  render();
+  s.t=clamp(parseInt(e.target.value,10)||0,0,matchEnd()-1);render();
 });
 $("#clock").addEventListener("input",e=>{
   const t=+e.target.value,ss=sortedSnaps();
   let best=ss[0];ss.forEach(s=>{if(s.t<=t)best=s;});
-  state.activeId=best.id;
-  $("#clockLabel").textContent=t+"\u2032";
+  state.activeId=best.id;$("#clockLabel").textContent=t+"\u2032";
   renderPitch();renderBench();renderChips();renderTimeline();renderPositions();
 });
 $("#chips").addEventListener("click",e=>{
@@ -866,16 +897,20 @@ $("#timeline").addEventListener("click",e=>{
   document.querySelector(".pitchwrap").scrollIntoView({behavior:"smooth",block:"center"});
 });
 
-/* ---------- squad buttons ---------- */
+/* ================= player panel wiring ================= */
+function addPlayer(name,num,prefs,target){
+  const p={id:uid++,num:num!=null?num:(state.players.length+1),name:name||"Player",prefs:prefs||[],target:target==null?null:target};
+  state.players.push(p);return p;
+}
+$("#btnToggleImport").addEventListener("click",()=>{state.showImport=!state.showImport;renderPlayers();});
 $("#btnPaste").addEventListener("click",()=>{
-  const txt=$("#pasteBox").value||"";
-  const lines=txt.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const lines=($("#pasteBox").value||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  if(!lines.length){toast("Nothing to import \u2014 paste some rows first");return;}
   let added=0;
   lines.forEach(line=>{
     const parts=line.split(/\t|,|;/).map(s=>s.trim()).filter(s=>s!=="");
     if(!parts.length)return;
-    let num=null,name=null,prefs=[],target=null;
-    let idx=0;
+    let num=null,name=null,prefs=[],target=null,idx=0;
     if(/^\d{1,3}$/.test(parts[0])&&parts.length>1){num=+parts[0];idx=1;}
     name=parts[idx]||"Player";idx++;
     for(let i=idx;i<parts.length;i++){
@@ -887,27 +922,50 @@ $("#btnPaste").addEventListener("click",()=>{
     if(num==null)num=state.players.length+1;
     addPlayer(name,num,prefs,target);added++;
   });
-  $("#pasteBox").value="";
-  if(state.snaps.length===1&&state.snaps[0].assign.every(v=>!v))state.snaps[0].assign=new Array(curForm().slots.length).fill(null);
-  render();
-  toast(added+" player"+(added===1?"":"s")+" imported");
+  $("#pasteBox").value="";state.showImport=false;
+  if(!state.snaps.length)state.snaps=[newSnap(0,blankAssign(curForm().slots.length))];
+  if(!state.activeId)state.activeId=state.snaps[0].id;
+  render();toast(added+" player"+(added===1?"":"s")+" imported");
 });
-$("#btnAddPlayer").addEventListener("click",()=>{
-  addPlayer("New player",state.players.length+1,[],null);render();
+$("#btnAddPlayer").addEventListener("click",()=>{state.showImport=true;addPlayer("New player",state.players.length+1,[],null);render();});
+$("#btnClearSquad").addEventListener("click",()=>{
+  state.players=[];state.snaps=[newSnap(0,blankAssign(curForm().slots.length))];
+  state.activeId=state.snaps[0].id;sel=null;render();toast("Squad cleared");
 });
 $("#btnEqual").addEventListener("click",()=>{
-  const end=matchEnd(),per=Math.round(curForm().slots.length*end/Math.max(1,state.players.length));
-  state.players.forEach(p=>p.target=Math.min(end,per));
-  render();toast("Targets set to "+per+"\u2032 each");
+  const b=targetTotals(),per=Math.round(b.total/Math.max(1,state.players.length));
+  state.players.forEach(p=>p.target=Math.min(b.end,per));
+  render();toast("Everyone set to "+Math.min(b.end,per)+"\u2032");
 });
-$("#btnClearSquad").addEventListener("click",()=>{
-  state.players=[];state.snaps=[newSnap(0,new Array(curForm().slots.length).fill(null))];
-  state.activeId=state.snaps[0].id;render();toast("Squad cleared");
+$("#btnRound").addEventListener("click",()=>{
+  state.players.forEach(p=>{if(p.target!=null&&p.target!=="")p.target=clamp(Math.round((+p.target)/5)*5,0,matchEnd());});
+  render();toast("Minutes rounded to 5\u2032 blocks");
+});
+$("#playerTable").addEventListener("click",e=>{
+  const del=e.target.closest("button[data-del]");
+  if(del){const id=+del.dataset.del;state.players=state.players.filter(p=>p.id!==id);
+    state.snaps.forEach(s=>s.assign=s.assign.map(v=>v===id?null:v));render();return;}
+  const st=e.target.closest("button[data-step]");
+  if(st){
+    const id=+st.dataset.id,p=player(id);if(!p)return;
+    const step=+st.dataset.step,cur=(p.target==null||p.target==="")?0:+p.target;
+    p.target=clamp(cur+step,0,matchEnd());renderPlayers();return;
+  }
+});
+$("#playerTable").addEventListener("input",e=>{
+  const inp=e.target.closest("input");if(!inp)return;
+  const id=+inp.closest("tr").dataset.id,p=player(id);if(!p)return;
+  const f=inp.dataset.f;
+  if(f==="num")p.num=inp.value.replace(/[^0-9]/g,"").slice(0,3);
+  else if(f==="name")p.name=inp.value;
+  else if(f==="prefs")p.prefs=parsePositions(inp.value);
+  else if(f==="target")p.target=inp.value.trim()===""?null:clamp(parseFloat(inp.value)||0,0,matchEnd());
+  renderPitch();renderBench();updateBudget();
 });
 
-/* ---------- save / load / copy ---------- */
+/* ================= save / load / copy ================= */
 $("#btnData").addEventListener("click",()=>{
-  $("#modalText").value=JSON.stringify({v:1,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
+  $("#modalText").value=JSON.stringify({v:2,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
     subEvery:state.subEvery,minStint:state.minStint,gkRot:state.gkRot,carry:state.carry,
     players:state.players.map(p=>({num:p.num,name:p.name,prefs:p.prefs,target:p.target})),
     snaps:state.snaps.map(s=>({t:s.t,assign:s.assign}))},null,1);
@@ -919,78 +977,54 @@ $("#btnModalLoad").addEventListener("click",()=>{
   try{
     const d=JSON.parse($("#modalText").value);
     if(!d||!d.players)throw 0;
-    state.players=d.players.map(p=>{const q=addPlayer(p.name,p.num,p.prefs,p.target);return q;});
+    state.players=[];
+    d.players.forEach(p=>addPlayer(p.name,p.num,p.prefs,p.target));
     state.pps=clamp(d.pps||9,5,11);
-    const names=FORMS[state.pps].map(f=>f.name);
+    const names=formList().map(f=>f.name);
     state.formIdx=Math.max(0,names.indexOf(d.form));
     ["periods","mpp","subEvery","minStint"].forEach(k=>{if(d[k]!=null)state[k]=d[k];});
     state.gkRot=!!d.gkRot;state.carry=d.carry!==false;
     const slots=curForm().slots;
     state.snaps=(d.snaps||[{t:0,assign:[]}]).map(s=>{
-      const a=new Array(slots.length).fill(null);
+      const a=blankAssign(slots.length);
       (s.assign||[]).forEach((v,i)=>{if(v!=null&&state.players[i])a[i]=state.players[i].id;});
       return newSnap(s.t,a);
     });
-    if(!state.snaps.length)state.snaps=[newSnap(0,new Array(slots.length).fill(null))];
-    state.activeId=state.snaps[0].id;
-    $("#pps").value=state.pps;$("#periods").value=state.periods;$("#mpp").value=state.mpp;
-    $("#subEvery").value=state.subEvery;$("#minStint").value=state.minStint;
-    $("#gkRot").checked=state.gkRot;$("#carry").checked=state.carry;
-    $("#modal").classList.add("hidden");render();toast("Plan loaded");
+    if(!state.snaps.length)state.snaps=[newSnap(0,blankAssign(slots.length))];
+    state.activeId=state.snaps[0].id;$("#modal").classList.add("hidden");render();toast("Plan loaded");
   }catch(err){toast("That doesn't look like a valid saved plan");}
 });
 $("#btnCopy").addEventListener("click",()=>{
-  const F=curForm(),st=stats(),ss=sortedSnaps(),end=matchEnd();
-  const L=[];
+  const F=curForm(),st=stats(),ss=sortedSnaps(),end=matchEnd(),L=[];
   L.push("MATCH PLAN \u2014 "+state.pps+" a-side, "+F.name+", "+end+" min ("+state.periods+" x "+state.mpp+")");
-  L.push("");
-  L.push("TEAM \u2014 "+F.slots.length+" slots, "+state.players.length+" players");
   ss.forEach((s,i)=>{
-    const t=s.t;
-    L.push("");
-    L.push(t+"' "+(i?"SUB":"KICK-OFF")+":");
+    L.push("");L.push(s.t+"' "+(i?"SUB":"KICK-OFF")+":");
     F.slots.forEach((sl,si)=>{const p=player(s.assign[si]);L.push("  "+sl.pos.padEnd(4)+" #"+(p?p.num:"-")+" "+(p?p.name:"(empty)"));});
     if(i){
-      const prev=ss[i-1];
-      F.slots.forEach((sl,si)=>{
-        const a=prev.assign[si],b=s.assign[si];
-        if(a===b)return;
+      const prev=ss[i-1];F.slots.forEach((sl,si)=>{
+        const a=prev.assign[si],b=s.assign[si];if(a===b)return;
         const ap=a?player(a):null,bp=b?player(b):null;
         L.push("  SUB @ "+sl.pos+": OUT "+(ap?("#"+ap.num+" "+ap.name):"nobody")+" \u2192 IN "+(bp?("#"+bp.num+" "+bp.name):"nobody"));
       });
     }
   });
   L.push("");L.push("MINUTES");
-  state.players.forEach(p=>{
-    const m=st.min[p.id]||0;
-    L.push("  #"+p.num+" "+p.name.padEnd(16)+m+"' "+(p.target==null?"":"(target "+p.target+"', diff "+(m-p.target>0?"+":"")+(Math.round(m-p.target))+")"));
-  });
+  state.players.forEach(p=>{const m=st.min[p.id]||0;
+    L.push("  #"+p.num+" "+p.name.padEnd(16)+m+"'"+(p.target==null?"":" (wants "+p.target+"', diff "+(m-p.target>0?"+":"")+Math.round(m-p.target)+")"));});
   L.push("");L.push("POSITIONS PLAYED");
-  state.players.forEach(p=>{
-    const bp=st.byPos[p.id]||{},keys=Object.keys(bp).sort((a,b)=>bp[b]-bp[a]);
-    L.push("  #"+p.num+" "+p.name.padEnd(16)+(keys.length?keys.map(k=>k+" "+Math.round(bp[k])+"'").join(" \u00b7 "):"not used"));
-  });
-  const text=L.join("\n");
-  const done=()=>toast("Plan copied to clipboard");
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(done).catch(()=>{openText(text);});
-  }else openText(text);
+  state.players.forEach(p=>{const bp=st.byPos[p.id]||{},keys=Object.keys(bp).sort((a,b)=>bp[b]-bp[a]);
+    L.push("  #"+p.num+" "+p.name.padEnd(16)+(keys.length?keys.map(k=>k+" "+Math.round(bp[k])+"'").join(" \u00b7 "):"not used"));});
+  const text=L.join("\n"),done=()=>toast("Plan copied to clipboard");
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(()=>openText(text));
+  else openText(text);
   function openText(t){$("#modalText").value=t;$("#modal").classList.remove("hidden");toast("Copy the text from the box");}
 });
 
-/* ---------- boot ---------- */
-(function boot(){
-  [["Sam Smith",1,["GK"],50],["Jack Hughes",2,["LB","LM"],40],["Tom Reid",3,["CB","CM"],40],
-   ["Ali Khan",4,["CM","CDM"],40],["Leo Ward",5,["RW","ST"],40],["Max Ford",6,["LB","RB"],30],
-   ["Ben Cole",7,["CB","CDM"],30],["Ollie Shaw",8,["LW","ST"],30],["Ryan Patel",9,["RM","CAM"],30],
-   ["Kai Booth",10,["GK","RB"],30],["Joe Lamb",11,["ST","RW"],25],["Adam Reid",12,["CM","LM"],25]]
-  .forEach(x=>addPlayer(x[0],x[1],x[2],x[3]));
-  state.snaps=[newSnap(0,new Array(curForm().slots.length).fill(null))];
-  state.activeId=state.snaps[0].id;
-  render();
-  autoPlan();
-  toast("Demo squad loaded \u2014 hit Reset plan to start from scratch");
-})();
+/* ================= boot ================= */
+state.showImport=true;
+state.snaps=[newSnap(0,blankAssign(curForm().slots.length))];
+state.activeId=state.snaps[0].id;
+render();
 </script>
 </body>
 </html>
