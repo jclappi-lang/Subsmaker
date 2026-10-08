@@ -12,7 +12,7 @@ body{background:radial-gradient(1200px 600px at 15% -15%,#16233c,#0b1220 60%);co
 font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh}
 h2{font-size:12px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700}
 code{background:#0d1626;padding:1px 4px;border-radius:4px;font-size:12px;color:#c7d5ea}
-header{position:sticky;top:0;z-index:60;background:rgba(11,18,32,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:8px 12px}
+header{position:sticky;top:0;z-index:60;background:rgba(11,18,32,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:8px 12px}
 .topbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 .brand{font-weight:800;letter-spacing:.3px;font-size:14px}.brand span{font-weight:400;color:var(--muted);font-size:12px}
 .settings{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -27,13 +27,19 @@ header{position:sticky;top:0;z-index:60;background:rgba(11,18,32,.94);backdrop-f
 .btn.primary:hover{filter:brightness(1.07)}
 .btn.primary:disabled{opacity:.45;cursor:not-allowed;filter:none}
 .btn.ghost{background:transparent}.btn.sm{padding:3px 8px;font-size:12px;border-radius:7px}
-main{display:grid;grid-template-columns:382px minmax(340px,1fr) 412px;gap:12px;padding:12px;align-items:start}
-@media(max-width:1400px){main{grid-template-columns:1fr}}
-.panel{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:12px}
+.pagebar{display:flex;gap:6px;padding:9px 12px 0;max-width:1500px;margin:0 auto;flex-wrap:wrap}
+.pgtab{background:#16223a;border:1px solid var(--line);border-bottom-color:transparent;color:var(--muted);
+border-radius:10px 10px 0 0;padding:8px 16px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.pgtab:hover{color:var(--text)}
+.pgtab.on{background:linear-gradient(180deg,var(--panel),var(--panel2));color:var(--text);border-color:var(--line);
+box-shadow:inset 0 2px 0 var(--accent)}
+main{max-width:1500px;margin:0 auto;padding:0 12px 18px}
+.page{display:none}.page.active{display:block}
+.panel{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
 .row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .muted{color:var(--muted)}.tiny{font-size:11px}
 .hint{font-size:11px;color:var(--muted);line-height:1.55;margin-top:6px}
-textarea{width:100%;min-height:70px;background:#0d1626;border:1px solid var(--line);border-radius:9px;color:var(--text);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;padding:8px;resize:vertical;outline:none}
+textarea{width:100%;min-height:96px;background:#0d1626;border:1px solid var(--line);border-radius:9px;color:var(--text);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;padding:8px;resize:vertical;outline:none}
 textarea:focus{border-color:#38507a}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:4px 3px;font-weight:700}
@@ -49,7 +55,7 @@ button.del:hover{color:var(--danger)}
 .stepper button.reset{background:#1b2740;color:#93a4bf;font-size:12px}
 .stepper input{width:52px;text-align:center;background:#0e1728;border:1px solid var(--line);border-radius:6px;color:var(--text);font:11px/1 inherit;padding:4px 0;outline:none}
 .stepper input::placeholder{color:#7d8fae}
-.budget{margin:9px 0 2px}
+.budget{margin:11px 0 2px}
 .bbar{height:12px;border-radius:7px;background:#0d1626;border:1px solid var(--line);overflow:hidden;position:relative}
 .bfill{height:100%;width:0;transition:.25s}
 .bfill.ok{background:linear-gradient(90deg,#16a34a,#22c55e)}
@@ -57,70 +63,82 @@ button.del:hover{color:var(--danger)}
 .bfill.over{background:linear-gradient(90deg,#b91c1c,#ef4444)}
 .blab{font-size:11px;margin-top:4px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .ok{color:#7ee2a8}.over{color:#fca5a5}.under{color:#fcd34d}
+/* ---------- pitch ---------- */
 .pitchwrap{display:flex;justify-content:center}
-.pitch{position:relative;height:min(56vh,580px);aspect-ratio:68/105;max-width:100%;
+.pitch{position:relative;height:min(72vh,800px);aspect-ratio:68/105;max-width:100%;font-size:clamp(9px,1.45vh,16px);
 background:repeating-linear-gradient(180deg,#1c7a45 0 10%,#186b3c 10% 20%);
-border:2px solid rgba(255,255,255,.55);border-radius:10px;box-shadow:inset 0 0 70px rgba(0,0,0,.45);touch-action:none}
+border:2px solid rgba(255,255,255,.55);border-radius:12px;box-shadow:inset 0 0 80px rgba(0,0,0,.45);touch-action:none}
 .pl{position:absolute;background:rgba(255,255,255,.5);pointer-events:none}
 .pl.half{left:0;right:0;top:50%;height:2px}
-.pl.circ{width:36%;aspect-ratio:1;border:2px solid rgba(255,255,255,.45);border-radius:50%;left:32%;top:50%;transform:translateY(-50%);background:none}
-.pl.pen{left:20%;width:60%;height:15%;bottom:-2px;border:2px solid rgba(255,255,255,.45);border-bottom:none;background:none}
-.pl.goal{left:35%;width:30%;height:5%;bottom:-2px;border:2px solid rgba(255,255,255,.45);border-bottom:none;background:none}
-.slot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:84px;padding:3px;border-radius:10px}
-.slot .pos{font-size:9px;font-weight:800;letter-spacing:.6px;background:rgba(0,0,0,.42);border-radius:4px;padding:1px 5px;color:#d6e2f2}
-.slot .pname{font-size:10px;background:rgba(0,0,0,.52);padding:1px 6px;border-radius:7px;white-space:nowrap;max-width:84px;overflow:hidden;text-overflow:ellipsis}
-.slot .pmin{font-size:9px;font-weight:700;color:#cfe0f5;background:rgba(0,0,0,.34);border-radius:4px;padding:0 4px}
+.pl.circ{width:34%;aspect-ratio:1;border:2px solid rgba(255,255,255,.42);border-radius:50%;left:33%;top:50%;transform:translateY(-50%);background:none}
+.pl.pen{left:18%;width:64%;height:14%;bottom:-2px;border:2px solid rgba(255,255,255,.42);border-bottom:none;background:none}
+.pl.goal{left:34%;width:32%;height:5%;bottom:-2px;border:2px solid rgba(255,255,255,.42);border-bottom:none;background:none}
+.slot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:.15em;width:7em;padding:.1em;border-radius:10px}
+.slot .pos{font-size:.82em;font-weight:800;letter-spacing:.6px;background:rgba(0,0,0,.5);border-radius:4px;padding:.08em .4em;color:#e2ecfa}
+.slot .pname{font-size:.95em;font-weight:600;background:rgba(0,0,0,.55);padding:.05em .5em;border-radius:7px;white-space:nowrap;max-width:7em;overflow:hidden;text-overflow:ellipsis}
+.slot .pmin{font-size:.8em;font-weight:700;color:#cfe0f5;background:rgba(0,0,0,.4);border-radius:4px;padding:0 .35em}
 .slot .pmin.over{color:#ffb4b4}.slot .pmin.under{color:#ffe08a}
-.token{width:37px;height:37px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;color:#07131f;
-border:2px solid rgba(255,255,255,.85);box-shadow:0 3px 8px rgba(0,0,0,.45);cursor:grab;touch-action:none;user-select:none}
+.slot .for{font-size:.78em;font-weight:700;color:#0b2a14;background:linear-gradient(180deg,#4ade80,#22c55e);border-radius:5px;padding:.05em .45em}
+.token{width:3.4em;height:3.4em;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:1.15em;color:#07131f;
+border:2.5px solid rgba(255,255,255,.9);box-shadow:0 4px 12px rgba(0,0,0,.5);cursor:grab;touch-action:none;user-select:none}
 .token.fam-GK{background:var(--gk)}.token.fam-DEF{background:var(--def)}.token.fam-MID{background:var(--mid)}.token.fam-ATT{background:var(--att)}
-.slot.sel .token{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 6px rgba(56,189,248,.35)}
+.token.in{box-shadow:0 0 0 5px rgba(34,197,94,.95),0 0 26px 8px rgba(34,197,94,.65);animation:pulseIn 1.6s ease-out 2}
+@keyframes pulseIn{0%{box-shadow:0 0 0 5px rgba(34,197,94,1),0 0 30px 12px rgba(34,197,94,.9)}100%{box-shadow:0 0 0 5px rgba(34,197,94,.85),0 0 26px 8px rgba(34,197,94,.5)}}
+.slot.sel .token{outline:3px solid #fff;outline-offset:3px}
 .slot.over{background:rgba(56,189,248,.22);outline:2px dashed #7dd3fc;border-radius:12px}
-.empty{width:37px;height:37px;border-radius:50%;border:2px dashed rgba(255,255,255,.55);display:grid;place-items:center;color:rgba(255,255,255,.6);font-size:18px}
+.empty{width:3.4em;height:3.4em;border-radius:50%;border:2px dashed rgba(255,255,255,.55);display:grid;place-items:center;color:rgba(255,255,255,.6);font-size:1.4em}
 .slot.over .empty{border-color:#7dd3fc;color:#7dd3fc}
-.bench{margin-top:9px;min-height:74px;border:2px dashed #33456a;border-radius:11px;padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;background:rgba(13,22,38,.5);transition:.15s}
+.substrip{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.subpair{display:flex;align-items:center;gap:6px;background:#0e1728;border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-size:12px;font-weight:600}
+.subpair .on{color:#8ef0b4}.subpair .off{color:#ffb4b4}.subpair .arw{color:#6b7d99}
+/* ---------- bench ---------- */
+.bench{margin-top:10px;min-height:76px;border:2px dashed #33456a;border-radius:11px;padding:9px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;background:rgba(13,22,38,.5);transition:.15s}
 .bench.over{border-color:var(--accent);background:rgba(34,197,94,.14)}
-.btoken{display:flex;align-items:center;gap:7px;background:#1b2740;border:1px solid #33456a;border-radius:9px;padding:5px 9px 5px 5px;cursor:grab;touch-action:none;user-select:none}
+.btoken{display:flex;align-items:center;gap:8px;background:#1b2740;border:1px solid #33456a;border-radius:9px;padding:6px 11px 6px 6px;cursor:grab;touch-action:none;user-select:none}
 .btoken:hover{border-color:#4b6a9e}
 .btoken.sel{border-color:#7dd3fc;box-shadow:0 0 0 3px rgba(56,189,248,.28)}
-.bnum{width:26px;height:26px;border-radius:50%;background:#33456a;display:grid;place-items:center;font-weight:800;font-size:12px}
-.bname{font-size:12px;font-weight:600}.bmeta{font-size:10px;color:var(--muted)}
+.bnum{width:30px;height:30px;border-radius:50%;background:#33456a;display:grid;place-items:center;font-weight:800;font-size:13px}
+.bname{font-size:13px;font-weight:600}.bmeta{font-size:10px;color:var(--muted)}
 .ghost{position:fixed;transform:translate(-50%,-50%);pointer-events:none;z-index:9999;display:flex;align-items:center;gap:6px;
-background:linear-gradient(180deg,#28d16a,#16a34a);color:#04240f;font-weight:800;border-radius:20px;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:13px}
-.tabs{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
-.tab{flex:1 1 0;min-width:50px;text-align:center;background:#1b2740;border:1px solid #33456a;color:#c9d8ee;border-radius:9px;padding:5px 5px;font-size:12px;font-weight:800;cursor:pointer;line-height:1.15}
+background:linear-gradient(180deg,#28d16a,#16a34a);color:#04240f;font-weight:800;border-radius:20px;padding:7px 14px;box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:13px}
+/* ---------- tabs under pitch ---------- */
+.tabs{display:flex;gap:5px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+.tab{flex:1 1 0;min-width:56px;text-align:center;background:#1b2740;border:1px solid #33456a;color:#c9d8ee;border-radius:9px;padding:6px 6px;font-size:13px;font-weight:800;cursor:pointer;line-height:1.15}
 .tab small{display:block;font-size:9px;font-weight:600;color:var(--muted)}
 .tab:hover{border-color:#5b7fb8}
 .tab.on{background:linear-gradient(180deg,#28d16a,#16a34a);border-color:#15803d;color:#04240f}
 .tab.on small{color:#0b3a1c}
 .clock{display:flex;align-items:center;gap:8px;margin-top:8px}
 .clock input[type=range]{flex:1;accent-color:var(--accent)}
-.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-left:4px solid #33456a;border-radius:11px;padding:8px;margin-bottom:8px;cursor:pointer}
+/* ---------- timeline ---------- */
+.plan-grid{display:grid;grid-template-columns:minmax(320px,1fr) 400px;gap:12px;align-items:start}
+@media(max-width:1100px){.plan-grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-left:4px solid #33456a;border-radius:11px;padding:9px;margin-bottom:9px;cursor:pointer}
 .card.on{border-left-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.35)}
-.card.quiet{opacity:.72}
-.rowcard{background:linear-gradient(180deg,#152036,#182338);border:1px solid var(--line);border-left:4px solid #33456a;border-radius:10px;padding:7px 9px;margin-bottom:7px;cursor:pointer}
+.card.quiet{opacity:.7}
+.rowcard{background:linear-gradient(180deg,#152036,#182338);border:1px solid var(--line);border-left:4px solid #33456a;border-radius:10px;padding:8px 10px;margin-bottom:8px;cursor:pointer}
 .rowcard:hover{border-color:#4b6a9e}
 .rowcard.on{border-left-color:var(--accent);box-shadow:0 0 0 1px rgba(34,197,94,.35)}
-.rowcard.quiet{opacity:.72}
+.rowcard.quiet{opacity:.7}
 .rh{display:flex;align-items:center;gap:7px}
 .minute{font-weight:800;font-size:13px;background:#22314e;border-radius:7px;padding:2px 8px}
 .rh .len{margin-left:auto}
-.mini{position:relative;height:150px;aspect-ratio:68/105;margin:6px auto 0;border:1.5px solid rgba(255,255,255,.45);border-radius:7px;
+.mini{position:relative;height:230px;aspect-ratio:68/105;margin:7px auto 0;border:1.5px solid rgba(255,255,255,.45);border-radius:8px;font-size:11px;
 background:repeating-linear-gradient(180deg,#1a6f3f 0 10%,#176336 10% 20%);overflow:hidden}
 .mini .pl{border-color:rgba(255,255,255,.3)}
-.mslot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px}
-.mdot{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#07131f;border:1.5px solid rgba(255,255,255,.8)}
+.mslot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px;width:5em}
+.mdot{width:2.1em;height:2.1em;border-radius:50%;display:grid;place-items:center;font-size:1em;font-weight:800;color:#07131f;border:1.5px solid rgba(255,255,255,.85)}
 .mdot.fam-GK{background:var(--gk)}.mdot.fam-DEF{background:var(--def)}.mdot.fam-MID{background:var(--mid)}.mdot.fam-ATT{background:var(--att)}
 .mdot.empty{background:rgba(255,255,255,.12);border-style:dashed;color:rgba(255,255,255,.5)}
-.mslot.in .mdot{box-shadow:0 0 0 3px rgba(34,197,94,.95),0 0 10px rgba(34,197,94,.85)}
+.mslot.in .mdot{box-shadow:0 0 0 4px rgba(34,197,94,.95),0 0 16px 4px rgba(34,197,94,.7)}
 .mslot.out .mdot{box-shadow:0 0 0 3px rgba(239,68,68,.9)}
-.mlab{font-size:8px;line-height:1;color:#dbe7f8;background:rgba(0,0,0,.5);border-radius:3px;padding:1px 3px;white-space:nowrap}
+.mlab{font-size:.9em;line-height:1.1;color:#dbe7f8;background:rgba(0,0,0,.55);border-radius:4px;padding:1px 4px;white-space:nowrap;max-width:5.4em;overflow:hidden;text-overflow:ellipsis}
 .mlab.chg s{color:#ffb4b4;text-decoration:line-through}.mlab.chg b{color:#8ef0b4}
-.subs{list-style:none;margin:6px 0 0;padding:0;font-size:12px}
+.subs{list-style:none;margin:7px 0 0;padding:0;font-size:12px}
 .subs li{padding:2px 0;border-top:1px dashed rgba(38,52,75,.8);display:flex;gap:5px;align-items:baseline;flex-wrap:wrap}
 .subs li:first-child{border-top:none}
 .sout{color:#ffb4b4}.sin{color:#8ef0b4}.arrow{color:#6b7d99}
-.tlscroll{max-height:min(70vh,720px);overflow-y:auto;padding-right:5px;margin-top:8px}
+.tlscroll{max-height:min(74vh,780px);overflow-y:auto;padding-right:5px;margin-top:8px}
 .tlscroll::-webkit-scrollbar{width:8px}
 .tlscroll::-webkit-scrollbar-thumb{background:#2c3f66;border-radius:4px}
 .tlscroll::-webkit-scrollbar-track{background:#0d1626;border-radius:4px}
@@ -146,14 +164,16 @@ ul#checks li.bad{color:#fca5a5}ul#checks li.warn{color:#fde68a}ul#checks li.info
 .modal .box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;width:min(680px,96vw)}
 .modal textarea{min-height:230px}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1d2b47;border:1px solid #3b5a8f;color:var(--text);
-padding:8px 14px;border-radius:11px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.22s;z-index:300;max-width:88vw;text-align:center}
+padding:9px 15px;border-radius:11px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.22s;z-index:300;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(-6px)}
 details{margin-top:8px}details summary{cursor:pointer;color:var(--muted);font-size:12px}
 details p{font-size:12px;color:var(--muted);line-height:1.6}
-.empty-state{border:1px dashed #33456a;border-radius:10px;padding:16px;text-align:center;color:var(--muted);font-size:12px;margin-top:9px}
+.empty-state{border:1px dashed #33456a;border-radius:10px;padding:22px;text-align:center;color:var(--muted);font-size:13px;margin-top:9px}
 .badge{font-size:10px;padding:1px 6px;border-radius:6px;background:rgba(250,204,21,.22);color:#fde68a;font-weight:700}
 .warnbox{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.5);color:#fde68a;border-radius:9px;padding:7px 10px;font-size:12px;margin-top:8px}
 .warnbox.good{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.5);color:#bbf7d0}
+.squadgrid{max-width:940px;margin:0 auto}
+.pitchgrid{max-width:640px;margin:0 auto}
 </style>
 </head>
 <body>
@@ -165,19 +185,17 @@ details p{font-size:12px;color:var(--muted);line-height:1.6}
         <input type="number" id="pps" min="5" max="11" value="9"></label>
       <label class="field" title="Formation / shape">Shape
         <select id="formation"></select></label>
-      <label class="field" title="Number of periods (halves/quarters)">Periods
+      <label class="field" title="Number of periods">Periods
         <input type="number" id="periods" min="1" max="6" value="4"></label>
       <label class="field" title="Minutes in each period">Min/period
         <input type="number" id="mpp" min="4" max="45" value="20"></label>
-      <label class="field" title="Preferred substitution block length. The planner will use finer blocks automatically if your minutes need them.">Sub every
+      <label class="field" title="Preferred block length. Finer blocks are used automatically when your minutes need them.">Sub every
         <input type="number" id="subEvery" min="0" max="30" value="20"></label>
-      <label class="field" title="Minimum length of a stint. Also caps how fine the auto planner's blocks can get.">Min stint
+      <label class="field" title="Minimum stint length; also caps how fine the planner's blocks can be">Min stint
         <input type="number" id="minStint" min="0" max="30" value="8"></label>
-      <label class="field tick" title="Split goalkeeper duty between players by period. Off = one keeper plays the whole match.">
-        <input type="checkbox" id="gkRot"> GK rotation</label>
-      <label class="field tick" title="Off (default): dragging only changes that block. On: the change repeats in every later block.">
-        <input type="checkbox" id="carry"> Ripple forward</label>
-      <button class="btn primary" id="btnAuto" title="Build a full match plan from preferred minutes and positions">&#9889; Auto plan</button>
+      <label class="field tick" title="Split keeper duty between players by period"><input type="checkbox" id="gkRot"> GK rotation</label>
+      <label class="field tick" title="Off (default): dragging changes only that block"><input type="checkbox" id="carry"> Ripple forward</label>
+      <button class="btn primary" id="btnAuto" title="Build a full match plan">&#9889; Auto plan</button>
       <button class="btn" id="btnSubPoint">+ Sub point</button>
       <button class="btn ghost" id="btnReset">Reset plan</button>
       <button class="btn ghost" id="btnData">&#8645; Save / Load</button>
@@ -186,106 +204,117 @@ details p{font-size:12px;color:var(--muted);line-height:1.6}
   </div>
 </header>
 
+<div class="pagebar" id="pageTabs">
+  <button class="pgtab" data-page="squad">1 &middot; Squad</button>
+  <button class="pgtab" data-page="pitch">2 &middot; Pitch &amp; subs</button>
+  <button class="pgtab" data-page="plan">3 &middot; Plan</button>
+  <button class="pgtab" data-page="positions">4 &middot; Positions</button>
+</div>
+
 <main>
-  <section>
-    <div class="panel">
-      <div class="row" style="justify-content:space-between;align-items:center">
-        <h2 style="margin:0">1 &middot; Players</h2>
-        <span class="tiny muted" id="squadCount">no players yet</span>
-      </div>
-      <div id="importZone" style="margin-top:9px">
-        <textarea id="pasteBox" spellcheck="false" placeholder="Paste from Excel, one player per line:
+  <!-- ==================== SQUAD ==================== -->
+  <section class="page" id="page-squad">
+    <div class="squadgrid">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h2 style="margin:0">Squad</h2>
+          <span class="tiny muted" id="squadCount">no players yet</span>
+        </div>
+        <div id="importZone" style="margin-top:9px">
+          <textarea id="pasteBox" spellcheck="false" placeholder="Paste from Excel, one player per line:
 7, Ali Khan, GK/LB
 Jack, LB/LM, 40
 Tom&#9;CM;RM;CB&#9;35
 GK, CB, 25"></textarea>
-        <div class="row" style="margin-top:7px">
-          <button class="btn primary" id="btnPaste">Import players</button>
-          <button class="btn sm" id="btnAddPlayer">+ Add blank</button>
-          <button class="btn sm ghost" id="btnClearSquad">Clear squad</button>
+          <div class="row" style="margin-top:7px">
+            <button class="btn primary" id="btnPaste">Import players</button>
+            <button class="btn sm" id="btnAddPlayer">+ Add blank</button>
+            <button class="btn sm ghost" id="btnClearSquad">Clear squad</button>
+          </div>
         </div>
-        <div class="hint">Positions: <code>GK LB CB RB LWB RWB CDM CM CAM LM RM LW RW ST</code> &mdash; separate with <code>/ , ;</code> or spaces.
-        A number on its own (e.g. <code>40</code>) is that player's preferred minutes; leave it out to keep them on <b>auto</b>.<br>
-        <b>Order matters:</b> first position is the 1st choice, the last is the <i>only-if-needed</i> option.
-        <b>CM is doubled up</b> in most shapes; wings and full-backs stay single.</div>
+        <div id="emptyZone" class="empty-state">Paste your squad above &mdash; name, positions <b>in order of preference</b>, and the minutes you want them to play.</div>
+        <div id="listZone" style="display:none">
+          <div class="row" style="justify-content:space-between">
+            <span class="tiny muted">Positions in preference order &amp; minutes</span>
+            <button class="btn sm ghost" id="btnToggleImport">Expand input</button>
+          </div>
+          <div style="max-height:52vh;overflow:auto;margin-top:7px">
+            <table id="playerTable">
+              <thead><tr><th>#</th><th>Player</th><th>Prefs &mdash; 1st&rarr;last</th><th style="text-align:center">Wants</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="budget">
+            <div class="bbar"><div class="bfill" id="bfill"></div></div>
+            <div class="blab"><span id="bLabLeft"></span><span id="bLabRight" class="muted"></span></div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="btn sm" id="btnEqual">All back to auto</button>
+            <button class="btn sm" id="btnRound">Round to 10&prime;</button>
+          </div>
+          <div id="budgetWarn" class="warnbox" style="display:none"></div>
+        </div>
       </div>
-      <div id="emptyZone" class="empty-state">No players yet &mdash; paste your squad above or tap <b>+ Add blank</b>.</div>
-      <div id="listZone" style="display:none">
+    </div>
+  </section>
+
+  <!-- ==================== PITCH ==================== -->
+  <section class="page" id="page-pitch">
+    <div class="pitchgrid">
+      <div class="panel">
         <div class="row" style="justify-content:space-between">
-          <span class="tiny muted">Positions in preference order &amp; minutes</span>
-          <button class="btn sm ghost" id="btnToggleImport">Expand input</button>
+          <h2 style="margin:0" id="pitchTitle">Pitch</h2>
+          <span class="tiny muted" id="activeInfo"></span>
         </div>
-        <div style="max-height:44vh;overflow:auto;margin-top:7px">
-          <table id="playerTable">
-            <thead><tr><th>#</th><th>Player</th><th>Prefs &mdash; 1st&rarr;last</th><th style="text-align:center">Wants</th><th></th></tr></thead>
-            <tbody></tbody>
-          </table>
+        <div class="clock">
+          <span class="tiny muted" id="clockLabel">0&prime;</span>
+          <input type="range" id="clock" min="0" max="80" value="0" step="1">
         </div>
-        <div class="budget">
-          <div class="bbar"><div class="bfill" id="bfill"></div></div>
-          <div class="blab"><span id="bLabLeft"></span><span id="bLabRight" class="muted"></span></div>
+        <div class="pitchwrap" style="margin-top:10px"><div class="pitch" id="pitch"></div></div>
+        <div class="tabs" id="tabs"></div>
+        <div class="substrip" id="subStrip"></div>
+        <div class="row tiny" style="margin-top:12px;justify-content:space-between">
+          <span class="muted">Bench &mdash; drag onto the pitch, or tap a player then tap a slot</span>
+          <span class="muted" id="benchInfo"></span>
         </div>
-        <div class="row" style="margin-top:8px">
-          <button class="btn sm" id="btnEqual">All back to auto</button>
-          <button class="btn sm" id="btnRound">Round to 10&prime;</button>
+        <div class="bench" id="bench"></div>
+        <div class="row tiny" style="margin-top:10px">
+          <label class="field">Starts <input type="number" id="snapTime" min="0" step="1"></label>
+          <button class="btn sm" id="btnClone">&#10697; Clone &amp; shift</button>
+          <button class="btn sm" id="btnDelSnap">&#128465; Delete block</button>
         </div>
-        <div id="budgetWarn" class="warnbox" style="display:none"></div>
-        <div class="hint"><b>auto</b> = that player's fair share of the outfield minutes, with the keeper on the full match.
-        Press <b>+</b> / <b>&minus;</b> to move in 10&prime; steps from there. Minutes are the planner's priority;
-        positions are optimised only where they don't cost anyone minutes.</div>
       </div>
-    </div>
-
-    <div class="panel" id="checksPanel"><h2>Checks</h2><ul id="checks"></ul></div>
-    <div class="panel">
-      <details><summary>How to use</summary>
-        <p>1. Paste your squad, positions <b>in preference order</b>, optional preferred minutes.<br>
-        2. Set the minutes you want each player to get &mdash; the bar shows whether the totals add up.<br>
-        3. Pick side / shape / match length. The planner never puts a substitution before a quarter of the match.<br>
-        4. Hit <b>Auto plan</b>. It picks the block length that can actually deliver your minutes (20&prime;, 10&prime; or 5&prime; steps), then balances every player's minutes before touching positions.<br>
-        5. Use the tabs under the pitch to jump to any block. Drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap.<br>
-        6. A change affects <b>only that block</b> unless you tick <b>Ripple forward</b>.</p>
-      </details>
     </div>
   </section>
 
-  <section>
-    <div class="panel">
-      <div class="row" style="justify-content:space-between">
-        <h2 style="margin:0">Pitch &mdash; the team at the selected block</h2>
-        <span class="tiny muted" id="activeInfo"></span>
+  <!-- ==================== PLAN ==================== -->
+  <section class="page" id="page-plan">
+    <div class="plan-grid">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h2 style="margin:0">Timeline</h2>
+          <button class="btn sm" id="btnTlMode">Compact view</button>
+        </div>
+        <div class="tlscroll" id="timeline"></div>
       </div>
-      <div class="row tiny" style="margin-top:8px">
-        <label class="field">Starts <input type="number" id="snapTime" min="0" step="1"></label>
-        <button class="btn sm" id="btnClone">&#10697; Clone &amp; shift</button>
-        <button class="btn sm" id="btnDelSnap">&#128465; Delete</button>
+      <div>
+        <div class="panel"><h2>Checks</h2><ul id="checks"></ul></div>
+        <div class="panel">
+          <details><summary>How to use</summary>
+            <p>1. Squad page: paste names, positions (first = 1st choice) and minutes.<br>
+            2. Hit <b>Auto plan</b>. It chooses the block length that can deliver your minutes, balances every player's minutes first, then fits positions.<br>
+            3. Pitch page: tap a block tab, then drag bench &rarr; pitch to sub on, pitch &rarr; bench to sub off, slot &rarr; slot to swap.<br>
+            4. A change affects only that block.</p>
+          </details>
+        </div>
       </div>
-      <div class="clock">
-        <span class="tiny muted">Clock</span>
-        <input type="range" id="clock" min="0" max="80" value="0" step="1">
-        <span class="tiny muted" id="clockLabel">0&prime;</span>
-      </div>
-      <div class="pitchwrap" style="margin-top:10px"><div class="pitch" id="pitch"></div></div>
-      <div class="tabs" id="tabs"></div>
-      <div class="row tiny muted" style="margin-top:10px;justify-content:space-between">
-        <span>Bench &mdash; drag a player onto the pitch to sub them on</span><span id="benchInfo"></span>
-      </div>
-      <div class="bench" id="bench"></div>
     </div>
   </section>
 
-  <section>
+  <!-- ==================== POSITIONS ==================== -->
+  <section class="page" id="page-positions">
     <div class="panel">
-      <div class="row" style="justify-content:space-between;align-items:center">
-        <h2 style="margin:0">Match timeline</h2>
-        <button class="btn sm" id="btnTlMode">Compact view</button>
-      </div>
-      <div class="hint" style="margin-top:4px">Tap any block to load that line-up onto the pitch.</div>
-      <div class="tlscroll" id="timeline"></div>
-    </div>
-    <div class="panel">
-      <h2>Positions played</h2>
-      <div class="hint" style="margin:0 0 6px">Columns are the plan's blocks &mdash; scroll sideways if there are many.</div>
+      <h2>Positions &amp; minutes</h2>
       <div class="xscroll">
         <table class="postbl blocktbl"><thead><tr id="posHead"></tr></thead><tbody id="posBody"></tbody></table>
       </div>
@@ -309,14 +338,13 @@ GK, CB, 25"></textarea>
 
 <script>
 "use strict";
-/* ================= helpers ================= */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const hash=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%997;return h/997;};
 const ORD=["","1st","2nd","3rd","4th","5th","6th","7th","8th"];
 
-/* ================= positions ================= */
+/* ---------------- positions ---------------- */
 const FAM={GK:"GK",LB:"DEF",LCB:"DEF",CB:"DEF",RCB:"DEF",RB:"DEF",LWB:"DEF",RWB:"DEF",
 CDM:"MID",CM:"MID",CAM:"MID",LM:"MID",RM:"MID",LW:"ATT",RW:"ATT",ST:"ATT"};
 const POSCODES=Object.keys(FAM);
@@ -337,8 +365,6 @@ function parsePositions(str){
   });
   return out;
 }
-
-/* ================= preference weighting ================= */
 const PREF_W=[10,7.5,5.5,4,3,2.5,2];
 function prefScore(p,pos){
   if(!p.prefs||!p.prefs.length)return 1.5;
@@ -353,17 +379,29 @@ function prefScore(p,pos){
   }
   return best>0?Math.min(4.5,best):0.2;
 }
+/* penalty for playing someone out of a listed position (per 20 min of slot time) */
+function posPenalty(p,pos,len){
+  if(!p.prefs||!p.prefs.length)return 0;
+  const unit=len/20;
+  const i=p.prefs.indexOf(pos);
+  if(i===0||i===1)return 0;
+  if(i===2)return 0.8*unit;
+  if(i>=3)return 1.4*unit;
+  for(let k=0;k<p.prefs.length;k++)if(FAM[p.prefs[k]]===FAM[pos])return 1.8*unit;
+  return 7*unit;
+}
+const isOutOfPosition=(p,pos)=>p.prefs.length>0&&p.prefs.indexOf(pos)<0&&!p.prefs.some(k=>FAM[k]===FAM[pos]);
 
-/* ================= formations ================= */
-const OFFS={1:[0],2:[-14,14],3:[-26,0,26],4:[-38,-13,13,38],5:[-39,-20,0,20,39],6:[-40,-24,-8,8,24,40]};
+/* ---------------- formations ---------------- */
+const OFFS={1:[0],2:[-16,16],3:[-30,0,30],4:[-42,-14,14,42],5:[-44,-22,0,22,44],6:[-44,-26,-9,9,26,44]};
 function mk(name,rows){
-  const slots=[{pos:"GK",x:50,y:90}];
+  const slots=[{pos:"GK",x:50,y:92}];
   const n=rows.length;
   rows.forEach((row,i)=>{
     const ps=row.trim().split(/\s+/);
-    const y=(n<=1)?48:73-(i*(49/(n-1)));
+    const y=(n<=1)?48:76-(i*(56/(n-1)));
     const offs=OFFS[ps.length]||[0];
-    ps.forEach((p,k)=>slots.push({pos:p,x:clamp(50+offs[k],6,94),y:y}));
+    ps.forEach((p,k)=>slots.push({pos:p,x:clamp(50+offs[k],5,95),y:y}));
   });
   return {name:name,slots:slots};
 }
@@ -382,9 +420,9 @@ const FORMS={
 11:[mk("4-4-2",["LB LCB RCB RB","LM CM CM RM","ST ST"]),mk("4-3-3",["LB LCB RCB RB","CM CM CM","LW ST RW"]),mk("3-5-2",["LB CB RB","LWB CM CM CM RWB","ST ST"]),mk("4-2-3-1",["LB LCB RCB RB","CDM CDM","LM CAM RM","ST"]),mk("3-4-3",["LB CB RB","LM CM CM RM","LW ST RW"])]
 };
 
-/* ================= state ================= */
+/* ---------------- state ---------------- */
 let uid=1;
-const state={pps:9,formIdx:0,periods:4,mpp:20,subEvery:20,minStint:8,gkRot:false,carry:false,
+const state={page:"squad",pps:9,formIdx:0,periods:4,mpp:20,subEvery:20,minStint:8,gkRot:false,carry:false,
   showImport:true,tlMode:"visual",players:[],snaps:[],activeId:null};
 let sel=null,drag=null,ghostEl=null;
 
@@ -430,7 +468,7 @@ function stepDown(pid){
 }
 const wantOf=p=>isAuto(p)?(autoMinutes().min[p.id]||0):+p.target;
 
-/* ================= minutes engine ================= */
+/* ---------------- minutes engine ---------------- */
 function intervals(){
   const end=matchEnd(),ss=sortedSnaps(),out=[];
   for(let i=0;i<ss.length;i++){
@@ -475,11 +513,10 @@ function minsNote(p){
 
 /* ============================================================
    AUTO PLANNER
-   Two layers:
-     1. minutes  - who is on the pitch in each block (optimised)
-     2. positions- who fills which slot inside a block (free)
-   Position changes are only ever accepted when they cost
-   zero minutes, so minutes always win.
+   Slots are filled first (position is chosen from the players
+   who are close enough on minutes), then minutes are balanced
+   by swap search, then remaining position problems are repaired
+   at a bounded cost in minutes.
    ============================================================ */
 function autoPlan(){
   const P=state.players;
@@ -491,8 +528,6 @@ function autoPlan(){
   const gkFor={};
   for(let pd=1;pd<=S.periods;pd++)gkFor[pd]=(S.gkRot&&keepers.length>1)?keepers[(pd-1)%keepers.length].id:keepers[0].id;
 
-  /* ---- targets: keepers play their GK blocks, outfield targets are
-          normalised so the outfield slots are exactly filled ---- */
   const auto=autoMinutes();
   const T={};
   P.forEach(p=>{T[p.id]=clamp(isAuto(p)?(auto.min[p.id]||0):+p.target,0,end);});
@@ -501,7 +536,6 @@ function autoPlan(){
   if(sumOut>0.01)outIds.forEach(id=>{T[id]=Math.min(end,T[id]*(totalOut/sumOut));});
   else outIds.forEach(id=>{T[id]=Math.min(end,totalOut/Math.max(1,outIds.length));});
 
-  /* ---- candidate time grids: nothing before a quarter of the match ---- */
   function buildTimes(step){
     const set={0:1},minT=end/4;
     for(let pd=1;pd<=S.periods;pd++){
@@ -518,54 +552,117 @@ function autoPlan(){
   steps.forEach(st=>{
     if(st==null||st<0)return;
     const g=buildTimes(st);
-    if(g.length<1)return;
+    if(!g.length)return;
     if(!grids.some(x=>x.times.length===g.length&&x.times.every((v,i)=>v===g[i])))grids.push({times:g,step:st});
   });
   if(!grids.length)grids.push({times:buildTimes(0),step:0});
 
   let best=null;
-  grids.forEach(g=>{
-    const seeds=g.step===S.subEvery?3:2;
+  grids.forEach((g,gi)=>{
+    const seeds=(gi===0)?2:1;
     for(let seed=1;seed<=seeds;seed++){
       const res=build(g.times,g.step,seed);
       if(!best||res.score<best.score)best=res;
     }
   });
-
   state.snaps=best.snaps;state.activeId=best.snaps[0].id;
+  setPage("pitch");
   render();
   let msg="Auto plan \u2014 "+best.blocks+" block"+(best.blocks===1?"":"s");
-  if(best.step>0)msg+=" on a "+best.step+"\u2032 grid";
-  msg+=" \u00b7 biggest miss "+Math.round(best.worst)+"\u2032";
-  if(best.cover)msg+=" \u00b7 "+best.cover+" cover stint"+(best.cover===1?"":"s");
+  if(best.step>0)msg+=" ("+best.step+"\u2032 grid)";
+  msg+=" \u00b7 biggest miss "+Math.round(best.worst)+"\u2032 \u00b7 out of position: "+best.ooo;
   if(best.unfilled)msg+=" \u00b7 "+best.unfilled+" slot(s) unfilled";
-  if(best.blocks>1)msg+=" \u00b7 first sub "+best.snaps[1].t+"\u2032";
   toast(msg);
 
-  /* ---------------- one full schedule ---------------- */
   function build(times,step,seed){
-    const B=[];                                   // {t0,len,period}
+    const B=[];
     for(let i=0;i<times.length;i++){
       const t0=times[i],t1=(i+1<times.length?times[i+1]:end);
       if(t1>t0)B.push({t0:t0,t1:t1,len:t1-t0,period:Math.floor(t0/S.mpp)+1});
     }
     if(!B.length)B.push({t0:0,t1:end,len:end,period:1});
     const nB=B.length;
-
-    /* ---------- 1. construct: most unfilled minutes first ---------- */
-    const ON=[];                                  // ON[b] = [playerId...] outfield
     const played={};outIds.forEach(id=>played[id]=0);
-    for(let b=0;b<nB;b++){
-      const lb=B[b].len,prev=new Set(b?ON[b-1]:[]);
-      const scored=outIds.map(id=>({id:id,sc:(T[id]-played[id])+(prev.has(id)?lb*0.5:0)+hash(id+"|"+b+"|"+seed)*lb*0.3}));
-      scored.sort((x,y)=>y.sc-x.sc);
-      const take=scored.slice(0,S_OUT).map(o=>o.id);
-      ON.push(take);
-      take.forEach(id=>{played[id]+=lb;});
+    const ON=[],SLOT=[];
+
+    /* ---- slot fitting for a given set (free of minutes) ---- */
+    function fit(set,b){
+      const assign=blankAssign(N);
+      const gid=gkFor[B[b].period];
+      if(gid!=null)assign[0]=gid;
+      const used=new Set(gid!=null?[gid]:[]);
+      const pool=set.slice();
+      const order=[];for(let si=1;si<N;si++)order.push(si);
+      const claim=pos=>pool.reduce((a,id)=>a+((!used.has(id)&&prefScore(player(id),pos)>=3)?1:0),0);
+      order.sort((x,y)=>claim(F.slots[x].pos)-claim(F.slots[y].pos));
+      order.forEach(si=>{
+        let bi=-1,bs=-1e9;
+        pool.forEach((id,ix)=>{
+          if(used.has(id))return;
+          const p=player(id);if(!p)return;
+          const sc=prefScore(p,F.slots[si].pos);
+          if(sc>bs){bs=sc;bi=ix;}
+        });
+        if(bi>=0){assign[si]=pool[bi];used.add(pool[bi]);}
+      });
+      for(let g=0;g<8;g++){
+        let imp=false;
+        for(let a=1;a<N;a++)for(let c=a+1;c<N;c++){
+          const pa=assign[a],pc=assign[c];if(!pa||!pc)continue;
+          const A=player(pa),C=player(pc);
+          if(prefScore(A,F.slots[c].pos)+prefScore(C,F.slots[a].pos)>prefScore(A,F.slots[a].pos)+prefScore(C,F.slots[c].pos)+1.5){
+            assign[a]=pc;assign[c]=pa;imp=true;
+          }
+        }
+        if(!imp)break;
+      }
+      return assign;
+    }
+    function penOf(b,assign){
+      const lb=B[b].len;let pen=0,ooo=0;
+      for(let si=1;si<N;si++){
+        const occ=assign[si];if(!occ)continue;
+        const p=player(occ);if(!p)continue;
+        pen+=posPenalty(p,F.slots[si].pos,lb);
+        if(isOutOfPosition(p,F.slots[si].pos))ooo++;
+      }
+      return {pen:pen,ooo:ooo};
     }
 
-    /* ---------- 2. balance minutes: steepest-descent swaps ---------- */
-    const inBlock=ON.map(set=>new Set(set));
+    /* ---- 1. fill each block: position chosen from the neediest band ---- */
+    for(let b=0;b<nB;b++){
+      const lb=B[b].len,gid=gkFor[B[b].period];
+      const used=new Set(gid!=null?[gid]:[]);
+      const assign=blankAssign(N);
+      if(gid!=null)assign[0]=gid;
+      const order=[];for(let si=1;si<N;si++)order.push(si);
+      const needOf=id=>Math.max(0,T[id]-played[id])/lb;
+      const claim=pos=>outIds.reduce((a,id)=>a+((!used.has(id)&&player(id)&&prefScore(player(id),pos)>=3)?1:0),0);
+      order.sort((x,y)=>claim(F.slots[x].pos)-claim(F.slots[y].pos));
+      order.forEach(si=>{
+        const pos=F.slots[si].pos;
+        const cands=outIds.filter(id=>!used.has(id));
+        if(!cands.length)return;
+        let maxNeed=0;cands.forEach(id=>{const n=needOf(id);if(n>maxNeed)maxNeed=n;});
+        let elig=cands.filter(id=>needOf(id)>=maxNeed-1.0);
+        if(!elig.length)elig=cands.filter(id=>T[id]-played[id]>0.01);
+        if(!elig.length)elig=cands;
+        let best=null,bs=-1e9;
+        elig.forEach(id=>{
+          const p=player(id);if(!p)return;
+          const cont=(b>0&&ON[b-1].indexOf(id)>=0)?1.5:0;
+          const sc=prefScore(p,pos)*4+Math.min(needOf(id),2.5)*1.2+cont+hash(id+"|"+si+"|"+b+"|"+seed)*0.8;
+          if(sc>bs){bs=sc;best=id;}
+        });
+        if(best!=null){assign[si]=best;used.add(best);}
+      });
+      ON[b]=outIds.filter(id=>used.has(id));
+      ON[b].forEach(id=>played[id]+=lb);
+      SLOT[b]=assign;
+    }
+
+    /* ---- 2. balance minutes: steepest descent ---- */
+    const inB=ON.map(s=>new Set(s));
     for(let it=0;it<250;it++){
       let bestD=-0.05,bx=-1,bi=-1,bq=null;
       for(let b=0;b<nB;b++){
@@ -576,7 +673,7 @@ function autoPlan(){
           if(dp>=0)continue;
           for(let y=0;y<outIds.length;y++){
             const q=outIds[y];
-            if(inBlock[b].has(q))continue;
+            if(inB[b].has(q))continue;
             const dq=Math.abs(played[q]+lb-T[q])-Math.abs(played[q]-T[q]);
             if(dp+dq>=bestD)continue;
             bestD=dp+dq;bx=x;bi=b;bq=q;
@@ -585,101 +682,91 @@ function autoPlan(){
       }
       if(bq==null)break;
       const p=ON[bi][bx];
-      inBlock[bi].delete(p);inBlock[bi].add(bq);
+      inB[bi].delete(p);inB[bi].add(bq);
       ON[bi][bx]=bq;
       played[p]-=B[bi].len;played[bq]+=B[bi].len;
     }
+    for(let b=0;b<nB;b++)SLOT[b]=fit(ON[b],b);
 
-    /* ---------- 3. slot fitting inside a block (costs no minutes) ---------- */
-    function fitBlock(b){
-      const assign=blankAssign(N);
-      const gid=gkFor[B[b].period];
-      if(gid!=null)assign[0]=gid;
-      const used=new Set(gid!=null?[gid]:[]);
-      const pool=ON[b].slice();
-      const order=[];for(let i=1;i<N;i++)order.push(i);
-      const claim=pos=>pool.reduce((a,id)=>{const p=player(id);return a+(p&&prefScore(p,pos)>=3?1:0);},0);
-      order.sort((a,c)=>claim(F.slots[a].pos)-claim(F.slots[c].pos));
-      order.forEach(si=>{
-        let bi2=-1,bs=-1e9;
-        pool.forEach((id,ix)=>{
-          if(used.has(id))return;
-          const p=player(id);if(!p)return;
-          const sc=prefScore(p,F.slots[si].pos);
-          if(sc>bs){bs=sc;bi2=ix;}
-        });
-        if(bi2>=0){assign[si]=pool[bi2];used.add(pool[bi2]);}
-      });
-      for(let guard=0;guard<8;guard++){
-        let imp=false;
-        for(let a=1;a<N;a++)for(let c=a+1;c<N;c++){
-          const pa=assign[a],pc=assign[c];
-          if(!pa||!pc)continue;
-          const A=player(pa),C=player(pc);
-          if(prefScore(A,F.slots[c].pos)+prefScore(C,F.slots[a].pos)>prefScore(A,F.slots[a].pos)+prefScore(C,F.slots[c].pos)+1.5){
-            assign[a]=pc;assign[c]=pa;imp=true;
-          }
-        }
-        if(!imp)break;
-      }
-      return assign;
-    }
-
-    /* ---------- 4. position swaps, only where minutes do not suffer ---------- */
-    for(let round=0;round<4;round++){
+    /* ---- 3. repair positions: minutes may suffer a little, never much ---- */
+    const MINS_W=3;
+    for(let round=0;round<6;round++){
       let improved=false;
       for(let b=0;b<nB;b++){
+        const lb=B[b].len;
         for(let attempt=0;attempt<4;attempt++){
-          const lb=B[b].len,set=ON[b];
-          const assign=fitBlock(b);
-          let bestGain=0.4,bp=null,bq=null;
-          set.forEach(p=>{
-            const si=assign.indexOf(p);if(si<1)return;
-            const pos=F.slots[si].pos,pp=player(p);
-            const curFit=prefScore(pp,pos);
-            outIds.forEach(q=>{
-              if(inBlock[b].has(q))return;
-              const gain=prefScore(player(q),pos)-curFit;
-              if(gain<=bestGain)return;
-              const dp=Math.abs(played[p]-lb-T[p])-Math.abs(played[p]-T[p]);
-              const dq=Math.abs(played[q]+lb-T[q])-Math.abs(played[q]-T[q]);
-              if(dp+dq>0.001)return;                 // never trade minutes for position
-              bestGain=gain;bp=p;bq=q;
-            });
-          });
+          const assign=SLOT[b];
+          let bestDelta=-0.02,bp=null,bq=null;
+          for(let si=1;si<N;si++){
+            const p=assign[si];if(!p)continue;
+            const pp=player(p),pos=F.slots[si].pos;
+            const pPen=posPenalty(pp,pos,lb);
+            for(let y=0;y<outIds.length;y++){
+              const q=outIds[y];
+              if(inB[b].has(q))continue;
+              const dPen=posPenalty(player(q),pos,lb)-pPen;
+              if(dPen>=-0.2)continue;
+              const dMin=Math.abs(played[p]-lb-T[p])-Math.abs(played[p]-T[p])+Math.abs(played[q]+lb-T[q])-Math.abs(played[q]-T[q]);
+              const delta=dMin*MINS_W+dPen;
+              if(delta<bestDelta){bestDelta=delta;bp=p;bq=q;}
+            }
+          }
           if(bp==null)break;
           const ix=ON[b].indexOf(bp);
-          inBlock[b].delete(bp);inBlock[b].add(bq);
+          inB[b].delete(bp);inB[b].add(bq);
           ON[b][ix]=bq;
           played[bp]-=lb;played[bq]+=lb;
+          SLOT[b]=fit(ON[b],b);
           improved=true;
         }
       }
       if(!improved)break;
     }
 
-    /* ---------- 5. final line-ups + score ---------- */
-    const assigns=[];for(let b=0;b<nB;b++)assigns.push(fitBlock(b));
-    let minErr=0;outIds.forEach(id=>{minErr+=Math.abs(played[id]-T[id]);});
-    let posLoss=0,cover=0,unfilled=0;
-    for(let b=0;b<nB;b++){
-      const lb=B[b].len;
-      F.slots.forEach((sl,si)=>{
-        const occ=assigns[b][si];
-        if(!occ){unfilled++;return;}
-        const pl=player(occ);if(!pl)return;
-        posLoss+=(10-prefScore(pl,sl.pos))/2*(lb/20);
-        if(pl.prefs.length&&pl.prefs.indexOf(sl.pos)<0)cover++;
-      });
+    /* ---- 4. final minutes tidy that costs no position quality ---- */
+    for(let it=0;it<150;it++){
+      let bestD=-0.05,bx=-1,bi=-1,bq=null;
+      for(let b=0;b<nB;b++){
+        const lb=B[b].len,set=ON[b],assign=SLOT[b];
+        for(let x=0;x<set.length;x++){
+          const p=set[x];
+          const dp=Math.abs(played[p]-lb-T[p])-Math.abs(played[p]-T[p]);
+          if(dp>=0)continue;
+          const si=assign.indexOf(p);if(si<1)continue;
+          const pos=F.slots[si].pos,pPen=posPenalty(player(p),pos,lb);
+          for(let y=0;y<outIds.length;y++){
+            const q=outIds[y];
+            if(inB[b].has(q))continue;
+            if(posPenalty(player(q),pos,lb)>pPen+0.01)continue;
+            const dq=Math.abs(played[q]+lb-T[q])-Math.abs(played[q]-T[q]);
+            if(dp+dq>=bestD)continue;
+            bestD=dp+dq;bx=x;bi=b;bq=q;
+          }
+        }
+      }
+      if(bq==null)break;
+      const p=ON[bi][bx];
+      inB[bi].delete(p);inB[bi].add(bq);
+      ON[bi][bx]=bq;
+      played[p]-=B[bi].len;played[bq]+=B[bi].len;
+      SLOT[bi]=fit(ON[bi],bi);
     }
-    const snaps=B.map((bt,i)=>newSnap(bt.t0,assigns[i]));
+
+    /* ---- score ---- */
+    let minErr=0;outIds.forEach(id=>{minErr+=Math.abs(played[id]-T[id]);});
+    let pen=0,ooo=0,unfilled=0;
+    for(let b=0;b<nB;b++){
+      const r=penOf(b,SLOT[b]);pen+=r.pen;ooo+=r.ooo;
+      SLOT[b].forEach(v=>{if(!v)unfilled++;});
+    }
+    const snaps=B.map((bt,i)=>newSnap(bt.t0,SLOT[i]));
     let worst=0;outIds.forEach(id=>{worst=Math.max(worst,Math.abs(played[id]-T[id]));});
-    return{snaps:snaps,score:minErr*2.5+posLoss*2+nB*0.8+unfilled*60,
-      worst:worst,cover:cover,unfilled:unfilled,blocks:nB,step:step,times:times};
+    return{snaps:snaps,score:minErr*2.5+pen,ooo*18+nB*0.8+unfilled*60,
+      worst:worst,ooo:ooo,unfilled:unfilled,blocks:nB,step:step};
   }
 }
 
-/* ================= editing ================= */
+/* ---------------- editing ---------------- */
 function carryForward(changed){
   if(!state.carry||!changed.length)return;
   const ss=sortedSnaps(),i=ss.indexOf(activeSnap());
@@ -711,7 +798,7 @@ function sendToBench(si){
 }
 function swapSlots(a,b){const s=activeSnap();if(!s)return;const t=s.assign[a];s.assign[a]=s.assign[b];s.assign[b]=t;carryForward([a,b]);render();}
 
-/* ================= drag & drop ================= */
+/* ---------------- drag & drop ---------------- */
 function startDrag(e,payload,label){
   drag=Object.assign({sx:e.clientX,sy:e.clientY,moved:false},payload);
   ghostEl=document.createElement("div");ghostEl.className="ghost";ghostEl.textContent=label;
@@ -762,7 +849,18 @@ document.addEventListener("pointerdown",e=>{
   startDrag(e,{kind:si==null?"bench":"slot",pid:pid,si:si},"#"+p.num+" "+p.name);
 });
 
-/* ================= rendering ================= */
+/* ---------------- pages ---------------- */
+function setPage(p){
+  state.page=p;
+  document.querySelectorAll(".page").forEach(el=>el.classList.toggle("active",el.id==="page-"+p));
+  document.querySelectorAll(".pgtab").forEach(b=>b.classList.toggle("on",b.dataset.page===p));
+}
+$("#pageTabs").addEventListener("click",e=>{
+  const b=e.target.closest(".pgtab");if(!b)return;
+  setPage(b.dataset.page);
+});
+
+/* ---------------- rendering ---------------- */
 function remapAssign(oldAssign,oldSlots,newSlots){
   const out=blankAssign(newSlots.length),used=new Set();
   newSlots.forEach((sl,si)=>{
@@ -802,7 +900,7 @@ function renderPlayers(){
     return "<tr data-id='"+p.id+"'>"+
       "<td><input class='cell num' data-f='num' value='"+esc(p.num)+"'></td>"+
       "<td><input class='cell' data-f='name' value='"+esc(p.name)+"'>"+badge+"</td>"+
-      "<td><input class='cell' data-f='prefs' value='"+p.prefs.join("/")+"' placeholder='GK/LB' title='Order = preference: first is 1st choice'></td>"+
+      "<td><input class='cell' data-f='prefs' value='"+p.prefs.join("/")+"' placeholder='GK/LB'></td>"+
       "<td><div class='stepper'>"+
         "<button type='button' data-step='down' data-id='"+p.id+"' title='10 minutes less'>&minus;</button>"+
         "<input data-f='target' data-id='"+p.id+"' value='"+(autoP?"":p.target)+"' placeholder='auto "+a+"' title='Preferred minutes'>"+
@@ -823,39 +921,54 @@ function updateBudget(){
   if(!state.players.length){W.style.display="none";$("#btnAuto").disabled=false;return;}
   if(diff>5){
     W.style.display="";W.className="warnbox";
-    W.innerHTML="&#9888; Your preferred minutes are <b>"+Math.round(diff)+"\u2032 over</b> the "+b.total+"\u2032 available. "+
-      "Everyone will get proportionally less. Trim a few minutes or shorten the match.";
+    W.innerHTML="&#9888; <b>"+Math.round(diff)+"\u2032 over</b> the "+b.total+"\u2032 available. Everyone gets proportionally less.";
     $("#btnAuto").disabled=true;
   }else if(diff<-5){
     W.style.display="";W.className="warnbox";
-    W.innerHTML="&#9888; You're <b>"+Math.round(-diff)+"\u2032 short</b> of the "+b.total+"\u2032 available \u2014 "+
-      "the players left on auto will pick up the extra.";
+    W.innerHTML="&#9888; <b>"+Math.round(-diff)+"\u2032 short</b> of the "+b.total+"\u2032 available \u2014 auto players pick up the extra.";
     $("#btnAuto").disabled=false;
   }else{
     W.style.display="";W.className="warnbox good";
-    W.innerHTML="&#10003; Preferred minutes add up to the "+b.total+"\u2032 of pitch time available. Ready to auto plan.";
+    W.innerHTML="&#10003; Adds up to the "+b.total+"\u2032 of pitch time available.";
     $("#btnAuto").disabled=false;
   }
 }
 function renderPitch(){
-  const F=curForm(),snap=activeSnap()||{t:0,assign:blankAssign(F.slots.length)},st=stats(),el=$("#pitch");
+  const F=curForm(),ss=sortedSnaps(),snap=activeSnap()||{t:0,assign:blankAssign(F.slots.length)},st=stats(),el=$("#pitch");
+  const idx=ss.indexOf(activeSnap()),prev=idx>0?ss[idx-1]:null;
   el.innerHTML='<div class="pl half"></div><div class="pl circ"></div><div class="pl pen"></div><div class="pl goal"></div>';
   F.slots.forEach((sl,si)=>{
     const pid=snap.assign[si],p=pid?player(pid):null,fam=FAM[sl.pos];
+    const old=prev?prev.assign[si]:null,op=old?player(old):null;
+    const isIn=!!prev&&old!==pid&&!!pid;
     const d=document.createElement("div");
     d.className="slot"+(sel&&sel.kind==="slot"&&sel.si===si?" sel":"");
     d.dataset.si=si;d.style.left=sl.x+"%";d.style.top=sl.y+"%";
     let inner="<div class='pos'>"+sl.pos+"</div>";
     if(p){
       const m=st.min[pid]||0,t=p.target,cls=isAuto(p)?"":(m>t?"over":(m<t?"under":""));
-      inner+="<div class='token fam-"+fam+"' data-pid='"+pid+"' data-si='"+si+"'>"+esc(p.num)+"</div>";
-      inner+="<div class='pname'>"+esc(p.name)+"</div><div class='pmin "+cls+"'>"+m+"\u2032</div>";
+      inner+="<div class='token"+(isIn?" in":"")+" fam-"+fam+"' data-pid='"+pid+"' data-si='"+si+"'>"+esc(p.num)+"</div>";
+      inner+="<div class='pname'>"+esc(p.name)+"</div>";
+      if(isIn&&op)inner+="<div class='for'>on for #"+esc(op.num)+"</div>";
+      inner+="<div class='pmin "+cls+"'>"+m+"\u2032</div>";
     }else inner+="<div class='empty'>+</div>";
     d.innerHTML=inner;el.appendChild(d);
   });
-  const ss=sortedSnaps(),i=ss.indexOf(activeSnap()),next=ss[i+1];
-  $("#activeInfo").textContent=snap?("Block "+snap.t+"\u2032\u2013"+(next?next.t:matchEnd())+"\u2032"):"";
+  const next=ss[idx+1];
+  $("#activeInfo").textContent=snap?("Block "+snap.t+"\u2032\u2013"+(next?next.t+"\u2032":matchEnd()+"\u2032")):"";
   $("#snapTime").value=snap?snap.t:0;
+}
+function renderSubStrip(){
+  const F=curForm(),ss=sortedSnaps(),idx=ss.indexOf(activeSnap()),el=$("#subStrip");
+  if(idx<=0){el.innerHTML="";return;}
+  const prev=ss[idx-1],s=ss[idx],pairs=[];
+  F.slots.forEach((sl,si)=>{
+    const a=prev.assign[si],b=s.assign[si];
+    if(a===b)return;
+    const ap=a?player(a):null,bp=b?player(b):null;
+    if(bp)pairs.push("<span class='subpair'><span class='on'>IN #"+esc(bp.num)+" "+esc(bp.name)+"</span><span class='arw'>&#8592;</span><span class='off'>OUT "+(ap?("#"+esc(ap.num)+" "+esc(ap.name)):"nobody")+"</span><span class='muted tiny'>"+sl.pos+"</span></span>");
+  });
+  el.innerHTML=pairs.join("");
 }
 function renderBench(){
   const snap=activeSnap(),st=stats(),on=new Set(snap?snap.assign.filter(v=>v):[]);
@@ -943,7 +1056,8 @@ function renderPositions(){
     const totals=keys.length?keys.map(k=>k+" "+Math.round(bp[k])+"\u2032").join(" \u00b7 "):"not used";
     const cells=blks.length?blks.map(b=>{
       const pos=posFor(p.id,b,F);
-      return "<td>"+(pos?"<span class='pchip "+FAM[pos].toLowerCase()+"'>"+pos+"</span>":"<span class='pchip bench'>bench</span>")+"</td>";
+      const bad=pos&&isOutOfPosition(p,pos);
+      return "<td>"+(pos?"<span class='pchip "+FAM[pos].toLowerCase()+"'"+(bad?" style='outline:1px solid #ef4444'":"")+">"+pos+"</span>":"<span class='pchip bench'>bench</span>")+"</td>";
     }).join(""):"<td class='tiny muted'>"+totals+"</td>";
     return "<tr><td><b>"+esc(p.num)+"</b></td><td>"+esc(p.name)+"<div class='tiny muted'>"+totals+"</div></td>"+
       "<td><b>"+m+"\u2032</b>"+diff+"</td>"+cells+"</tr>";
@@ -952,7 +1066,7 @@ function renderPositions(){
 function renderChecks(){
   const st=stats(),F=curForm(),out=[],P=state.players;
   if(!P.length){
-    $("#checks").innerHTML="<li class='info'>Add players, then press <b>Auto plan</b> &mdash; checks appear once there's a plan to check.</li>";
+    $("#checks").innerHTML="<li class='info'>Add players on the Squad page, then press <b>Auto plan</b>.</li>";
     return;
   }
   const nums={};P.forEach(p=>nums[p.num]=(nums[p.num]||0)+1);
@@ -960,11 +1074,11 @@ function renderChecks(){
   if(P.length<F.slots.length)out.push(["bad","Squad ("+P.length+") is smaller than the team ("+F.slots.length+" slots)."]);
   const b=targetTotals(),bdiff=b.sum-b.total;
   if(bdiff>5)out.push(["bad","Preferred minutes are "+Math.round(bdiff)+"\u2032 over the "+b.total+"\u2032 available."]);
-  else if(bdiff<-5)out.push(["info","Preferred minutes are "+Math.round(-bdiff)+"\u2032 short \u2014 players on auto will cover it."]);
+  else if(bdiff<-5)out.push(["info","Preferred minutes are "+Math.round(-bdiff)+"\u2032 short \u2014 auto players cover it."]);
 
   const assigned=sortedSnaps().reduce((a,s)=>a+s.assign.filter(v=>v).length,0);
   if(!assigned){
-    out.push(["info","No plan yet \u2014 press \u26A1 Auto plan. This panel then lists minutes over/under, players out of position, and lower-choice cover."]);
+    out.push(["info","No plan yet \u2014 press \u26A1 Auto plan."]);
     $("#checks").innerHTML=out.map(o=>"<li class='"+o[0]+"'>"+o[1]+"</li>").join("");
     return;
   }
@@ -975,10 +1089,10 @@ function renderChecks(){
     if(d>3)over.push({p:p,d:d,m:m,w:w});else if(d<-3)under.push({p:p,d:d,m:m,w:w});
   });
   over.sort((a,b)=>b.d-a.d);under.sort((a,b)=>a.d-b.d);
-  over.slice(0,5).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is "+Math.round(o.d)+"\u2032 OVER their allocation ("+o.m+"\u2032 vs "+o.w+"\u2032)."]));
-  if(over.length>5)out.push(["warn","\u2026and "+(over.length-5)+" more over their allocation."]);
-  under.slice(0,5).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is "+Math.round(-o.d)+"\u2032 UNDER their allocation ("+o.m+"\u2032 vs "+o.w+"\u2032)."]));
-  if(under.length>5)out.push(["warn","\u2026and "+(under.length-5)+" more under their allocation."]);
+  over.slice(0,4).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is "+Math.round(o.d)+"\u2032 OVER their allocation ("+o.m+"\u2032 vs "+o.w+"\u2032)."]));
+  if(over.length>4)out.push(["warn","\u2026and "+(over.length-4)+" more over."]);
+  under.slice(0,4).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is "+Math.round(-o.d)+"\u2032 UNDER their allocation ("+o.m+"\u2032 vs "+o.w+"\u2032)."]));
+  if(under.length>4)out.push(["warn","\u2026and "+(under.length-4)+" more under."]);
 
   const cover=[],nth=[];
   P.forEach(p=>{
@@ -987,38 +1101,38 @@ function renderChecks(){
     Object.keys(bp).forEach(pos=>{
       if(bp[pos]<=0)return;
       const i=p.prefs.indexOf(pos);
-      if(i<0)cover.push({p:p,pos:pos,m:bp[pos]});
+      if(i<0&&!p.prefs.some(k=>FAM[k]===FAM[pos]))cover.push({p:p,pos:pos,m:bp[pos]});
       else if(i>=2)nth.push({p:p,pos:pos,m:bp[pos],i:i});
     });
   });
   cover.sort((a,b)=>b.m-a.m);nth.sort((a,b)=>b.m-a.m);
-  cover.slice(0,4).forEach(o=>out.push(["warn","#"+o.p.num+" "+o.p.name+" is OUT OF POSITION \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+" (their list: "+o.p.prefs.join("/")+")."]));
-  if(cover.length>4)out.push(["warn","\u2026and "+(cover.length-4)+" more stints outside a listed position."]);
-  nth.slice(0,4).forEach(o=>out.push(["info","#"+o.p.num+" "+o.p.name+" is on their "+ORD[o.i+1]+" choice \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+" ("+o.p.prefs.join("/")+")."]));
+  cover.slice(0,4).forEach(o=>out.push(["bad","#"+o.p.num+" "+o.p.name+" is OUT OF POSITION \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+" (their list: "+o.p.prefs.join("/")+")."]));
+  if(cover.length>4)out.push(["bad","\u2026and "+(cover.length-4)+" more out of position."]);
+  nth.slice(0,4).forEach(o=>out.push(["info","#"+o.p.num+" "+o.p.name+" is on their "+ORD[o.i+1]+" choice \u2014 "+Math.round(o.m)+"\u2032 at "+o.pos+"."]));
   if(nth.length>4)out.push(["info","\u2026and "+(nth.length-4)+" more lower-choice stints."]);
 
   let empty=0,gkEmpty=0;
   sortedSnaps().forEach(s=>F.slots.forEach((sl,si)=>{if(!s.assign[si]){empty++;if(sl.pos==="GK")gkEmpty++;}}));
-  if(empty)out.push(["bad",empty+" empty slot(s) across blocks"+(gkEmpty?" (incl. "+gkEmpty+" in goal)":"")+" \u2014 drag players on."]);
+  if(empty)out.push(["bad",empty+" empty slot(s) across blocks"+(gkEmpty?" (incl. "+gkEmpty+" in goal)":"")+"."]);
   const gkP=P.filter(p=>p.prefs.indexOf("GK")>=0);
   if(!gkP.length)out.push(["info","Nobody lists GK \u2014 your first player keeps goal."]);
-  if(state.gkRot&&gkP.length<2)out.push(["info","GK rotation is on but only "+gkP.length+" player lists GK \u2014 they'll keep the gloves."]);
-  if(!out.length)out.push(["info","Nothing to flag \u2014 minutes and positions all check out."]);
+  if(!out.length)out.push(["info","Clean \u2014 minutes on target and nobody out of position."]);
   $("#checks").innerHTML=out.map(o=>"<li class='"+o[0]+"'>"+o[1]+"</li>").join("");
 }
 function render(){
-  renderFormations();renderTop();renderPlayers();renderPitch();renderBench();renderTabs();
+  renderFormations();renderTop();renderPlayers();renderPitch();renderSubStrip();renderBench();renderTabs();
   renderTimeline();renderPositions();renderChecks();
   const s=activeSnap();
   $("#clockLabel").textContent=(s?s.t:0)+"\u2032";
   $("#clock").value=s?s.t:0;
+  $("#pitchTitle").textContent="Pitch \u2014 "+curForm().name;
 }
 function toast(msg){
   const t=$("#toast");t.textContent=msg;t.classList.add("on");
   clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),5200);
 }
 
-/* ================= top bar wiring ================= */
+/* ---------------- top bar wiring ---------------- */
 [["pps","pps"],["periods","periods"],["mpp","mpp"],["subEvery","subEvery"],["minStint","minStint"]].forEach(pair=>{
   const el=$("#"+pair[0]);
   el.addEventListener("change",e=>{
@@ -1068,8 +1182,8 @@ $("#btnReset").addEventListener("click",()=>{
       a[a2]=pb;a[b2]=pa;
     }
   }
-  state.snaps=[newSnap(0,a)];state.activeId=state.snaps[0].id;sel=null;render();
-  toast("Plan reset \u2014 one kick-off line-up, best-fit positions");
+  state.snaps=[newSnap(0,a)];state.activeId=state.snaps[0].id;sel=null;setPage("pitch");render();
+  toast("Plan reset \u2014 one kick-off line-up");
 });
 $("#btnSubPoint").addEventListener("click",()=>{
   const t=clamp(Math.round($("#clock").value),0,matchEnd()-1);
@@ -1096,7 +1210,7 @@ $("#clock").addEventListener("input",e=>{
   const t=+e.target.value,ss=sortedSnaps();
   let best=ss[0];ss.forEach(s=>{if(s.t<=t)best=s;});
   state.activeId=best.id;$("#clockLabel").textContent=t+"\u2032";
-  renderPitch();renderBench();renderTabs();renderTimeline();renderPositions();
+  renderPitch();renderSubStrip();renderBench();renderTabs();renderTimeline();renderPositions();
 });
 $("#tabs").addEventListener("click",e=>{
   const b=e.target.closest(".tab");if(!b)return;
@@ -1104,11 +1218,10 @@ $("#tabs").addEventListener("click",e=>{
 });
 $("#timeline").addEventListener("click",e=>{
   const c=e.target.closest(".card,.rowcard");if(!c)return;
-  state.activeId=+c.dataset.id;render();
-  document.querySelector(".pitchwrap").scrollIntoView({behavior:"smooth",block:"center"});
+  state.activeId=+c.dataset.id;setPage("pitch");render();
 });
 
-/* ================= player panel wiring ================= */
+/* ---------------- squad wiring ---------------- */
 function addPlayer(name,num,prefs,target){
   const p={id:uid++,num:num!=null?num:(state.players.length+1),name:name||"Player",prefs:prefs||[],target:target==null?null:target};
   state.players.push(p);return p;
@@ -1136,7 +1249,8 @@ $("#btnPaste").addEventListener("click",()=>{
   $("#pasteBox").value="";state.showImport=false;
   if(!state.snaps.length)state.snaps=[newSnap(0,blankAssign(curForm().slots.length))];
   if(!state.activeId)state.activeId=state.snaps[0].id;
-  render();toast(added+" player"+(added===1?"":"s")+" imported");
+  render();setPage("pitch");
+  toast(added+" player"+(added===1?"":"s")+" imported");
 });
 $("#btnAddPlayer").addEventListener("click",()=>{state.showImport=true;addPlayer("New player",state.players.length+1,[],null);render();});
 $("#btnClearSquad").addEventListener("click",()=>{
@@ -1174,12 +1288,12 @@ $("#playerTable").addEventListener("input",e=>{
   else if(f==="name")p.name=inp.value;
   else if(f==="prefs")p.prefs=parsePositions(inp.value);
   else if(f==="target")p.target=inp.value.trim()===""?null:clamp(parseFloat(inp.value)||0,0,matchEnd());
-  renderPitch();renderBench();updateBudget();
+  updateBudget();
 });
 
-/* ================= save / load / copy ================= */
+/* ---------------- save / load / copy ---------------- */
 $("#btnData").addEventListener("click",()=>{
-  $("#modalText").value=JSON.stringify({v:6,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
+  $("#modalText").value=JSON.stringify({v:7,pps:state.pps,form:curForm().name,periods:state.periods,mpp:state.mpp,
     subEvery:state.subEvery,minStint:state.minStint,gkRot:state.gkRot,carry:state.carry,
     players:state.players.map(p=>({num:p.num,name:p.name,prefs:p.prefs,target:p.target})),
     snaps:state.snaps.map(s=>({t:s.t,assign:s.assign}))},null,1);
@@ -1205,7 +1319,7 @@ $("#btnModalLoad").addEventListener("click",()=>{
       return newSnap(s.t,a);
     });
     if(!state.snaps.length)state.snaps=[newSnap(0,blankAssign(slots.length))];
-    state.activeId=state.snaps[0].id;$("#modal").classList.add("hidden");render();toast("Plan loaded");
+    state.activeId=state.snaps[0].id;$("#modal").classList.add("hidden");setPage("pitch");render();toast("Plan loaded");
   }catch(err){toast("That doesn't look like a valid saved plan");}
 });
 $("#btnCopy").addEventListener("click",()=>{
@@ -1237,16 +1351,14 @@ $("#btnCopy").addEventListener("click",()=>{
   function openText(t){$("#modalText").value=t;$("#modal").classList.remove("hidden");toast("Copy the text from the box");}
 });
 
-/* ================= boot ================= */
+/* ---------------- boot ---------------- */
 window.addEventListener("error",function(ev){try{toast("Script error: "+(ev.message||"unknown"));}catch(e){}});
 state.snaps=[newSnap(0,blankAssign(curForm().slots.length))];
 state.activeId=state.snaps[0].id;
 try{
+  setPage("squad");
   render();
 }catch(err){
-  var iz=document.getElementById("importZone"),ez=document.getElementById("emptyZone");
-  if(iz)iz.style.display="";
-  if(ez)ez.style.display="";
   toast("Start-up problem: "+err.message);
 }
 </script>
