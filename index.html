@@ -3,21 +3,28 @@
 <title>Match Sub Planner</title>
 <style>
 body{margin:0;background:#0b1220;color:#e6edf7;font:14px system-ui,Arial;padding:10px}
-h2{font-size:12px;color:#93a4bf;margin:0 0 8px}
+h2{font-size:12px;color:#93a4bf;margin:0 0 8px;letter-spacing:.5px}
 button{background:#1e2b45;color:#e6edf7;border:1px solid #26344b;border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer}
 button.go{background:#22c55e;color:#05230f;font-weight:700;border-color:#15803d}
+button.big{padding:11px 18px;font-size:15px;border-radius:10px;width:100%;text-align:left}
 input,select,textarea{background:#0e1728;color:#e6edf7;border:1px solid #26344b;border-radius:6px;font:inherit;padding:4px}
-textarea{width:100%;height:78px;font:12px monospace}
+textarea{width:100%;height:74px;font:12px monospace}
 .bar{font-size:11px;color:#86d7a6;margin:6px 0}
 .bar.e{color:#fca5a5}
-.tabs{margin-bottom:8px}
+.tabs{margin:8px 0}
 .tabs button{margin-right:5px}
 .tabs button.on{background:#182338;box-shadow:inset 0 2px 0 #22c55e}
 .pg{display:none}.pg.on{display:block}
-.box{background:#131c2e;border:1px solid #26344b;border-radius:10px;padding:10px;margin-bottom:10px}
+.box{background:#131c2e;border:1px solid #26344b;border-radius:10px;padding:11px;margin-bottom:10px}
+.cfg{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:11px;color:#93a4bf;text-transform:uppercase;letter-spacing:.4px}
+.cfg label{display:flex;gap:5px;align-items:center}
+.cfg select{text-transform:none;letter-spacing:0;font-size:13px}
 table{width:100%;border-collapse:collapse;font-size:12px}
 td,th{padding:3px;border-bottom:1px solid #1d2a40;text-align:left}
 .cell{width:100%;background:#0e1728;border:1px solid transparent;border-radius:6px;color:#e6edf7;font:inherit;padding:3px}
+.bb{height:12px;background:#0d1626;border:1px solid #26344b;border-radius:6px;overflow:hidden;margin-top:9px}
+.bf{height:100%;width:0;background:#22c55e}
+.bf.un{background:#f59e0b}.bf.ov{background:#ef4444}
 .pitch{position:relative;height:68vh;aspect-ratio:68/105;margin:0 auto;font-size:clamp(9px,1.35vh,15px);
 background:repeating-linear-gradient(180deg,#1c7a45 0 10%,#186b3c 10% 20%);border:2px solid #8fb9a3;border-radius:10px;touch-action:none}
 .sl{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:7em}
@@ -27,8 +34,6 @@ background:repeating-linear-gradient(180deg,#1c7a45 0 10%,#186b3c 10% 20%);borde
 .sl u.over{color:#ffb4b4}.sl u.under{color:#ffe08a}
 .tk{width:3.2em;height:3.2em;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:1.15em;color:#07131f;border:2px solid #fff;cursor:grab;touch-action:none}
 .GK{background:#facc15}.D{background:#38bdf8}.M{background:#34d399}.A{background:#fb7185}
-.tk.in{box-shadow:0 0 0 5px #22c55e,0 0 20px 6px #22c55e}
-.fr{font-size:.78em;background:#4ade80;color:#0b2a14;border-radius:4px;padding:0 4px;font-weight:700}
 .em{width:3.2em;height:3.2em;border-radius:50%;border:2px dashed #7f9d8c;display:grid;place-items:center}
 .sl.ov{background:rgba(56,189,248,.25);border-radius:10px;outline:2px dashed #7dd3fc}
 .bk{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
@@ -38,8 +43,10 @@ background:repeating-linear-gradient(180deg,#1c7a45 0 10%,#186b3c 10% 20%);borde
 .bn.ov{border-color:#22c55e}
 .bt{background:#1b2740;border:1px solid #33456a;border-radius:8px;padding:4px 8px;cursor:grab;touch-action:none;font-size:12px}
 .gh{position:fixed;transform:translate(-50%,-50%);background:#28d16a;color:#04240f;font-weight:700;border-radius:16px;padding:5px 10px;font-size:12px;pointer-events:none;z-index:99}
-.sbp{font-size:12px;color:#8ef0b4;margin-top:6px}
+.sbp{font-size:12px;color:#8ef0b4}
 .sbo{font-size:12px;color:#ffb4b4}
+.fr{font-size:.78em;color:#07131f;border-radius:4px;padding:0 5px;font-weight:700;white-space:nowrap;max-width:9em;overflow:hidden;text-overflow:ellipsis}
+.shl{font-size:12px;color:#93a4bf;padding-left:12px}
 .cr{border-left:3px solid #33456a;padding:5px 8px;margin-bottom:6px;font-size:12px}
 .cr.on{border-left-color:#22c55e}
 .ck{font-size:12px;color:#bae6fd}.ck div{padding:3px 0;border-bottom:1px dashed #22304a}
@@ -47,27 +54,34 @@ background:repeating-linear-gradient(180deg,#1c7a45 0 10%,#186b3c 10% 20%);borde
 .xs{overflow-x:auto}
 .pc{font-size:10px;font-weight:700;border-radius:5px;padding:1px 5px;background:#22314e}
 .pc.b{background:#1b2740;color:#8494b3}
+.prompt{background:#14283c;border:1px solid #2f5e86;border-radius:9px;padding:9px 11px;margin-top:9px;font-size:13px;color:#cfe6ff}
 </style></head>
 <body>
-<div id="bar" class="bar">Loading</div>
-<script>document.getElementById('bar').textContent='Script A ok';</script>
+<div class="bar" id="bar">Loading</div>
 <div class="tabs" id="tb">
 <button data-p="sq" class="on">1 Squad</button><button data-p="pit">2 Pitch</button><button data-p="pl">3 Plan</button>
 </div>
 <div class="pg on" id="pg-sq">
   <div class="box">
+    <h2>Match settings</h2>
+    <div class="cfg" id="cfgRow"></div>
+  </div>
+  <div class="box">
+    <h2>Paste your squad</h2>
     <textarea id="ap" placeholder="7, Ali Khan, GK/LB&#10;Jack, LB/LM, 40&#10;Tom, CM/RM, 35"></textarea>
     <div style="margin-top:6px"><button class="go" id="bImp">Import players</button> <button id="bAdd">+ Blank</button> <button id="bClr">Clear</button></div>
   </div>
   <div class="box" id="sqBox" style="display:none">
+    <h2>Players &amp; minutes &mdash; positions in order of preference</h2>
     <table id="pT"><tbody></tbody></table>
+    <div class="bb"><div class="bf" id="bF"></div></div>
     <div class="bar" id="bud"></div>
+    <div class="prompt" id="prompt">Players look good? <b>Time to plan the match.</b></div>
+    <button class="go big" id="bGo">&#9889; Auto plan, or plan manually &rarr;</button>
   </div>
 </div>
 <div class="pg" id="pg-pit">
   <div class="box">
-    <div id="cfgRow"></div>
-    <div style="margin:6px 0"><button class="go" id="bGo">Auto plan</button> <span class="bar" id="cfg"></span></div>
     <div class="bk" id="bk"></div>
     <div class="pitch" id="pitch" style="margin-top:8px"></div>
     <div id="subs"></div>
@@ -84,13 +98,22 @@ var d=function(i){return document.getElementById(i)};
 function bar(t,e){var b=d('bar');b.textContent=t;b.className=e?'bar e':'bar';}
 var FM={GK:'GK',LB:'D',LCB:'D',CB:'D',RCB:'D',RB:'D',LWB:'D',RWB:'D',CDM:'M',CM:'M',CAM:'M',LM:'M',RM:'M',LW:'A',RW:'A',ST:'A'};
 var AL={gk:'GK',goalkeeper:'GK',keeper:'GK',lb:'LB',leftback:'LB',cb:'CB',centreback:'CB',centerback:'CB',rb:'RB',rightback:'RB',cdm:'CDM',dm:'CDM',cm:'CM',centremid:'CM',midfield:'CM',mid:'CM',cam:'CAM',am:'CAM',attackingmid:'CAM',lm:'LM',leftmid:'LM',rm:'RM',rightmid:'RM',lw:'LW',leftwing:'LW',rw:'RW',rightwing:'RW',winger:'LW',st:'ST',cf:'ST',striker:'ST',forward:'ST',fw:'ST',attacker:'ST'};
-var SHP={9:['3-4-1','LB CB RB|LM CM CM RM|ST'],10:['4-3-2','LB LCB RCB RB|LM CM RM|ST ST'],11:['4-4-2','LB LCB RCB RB|LM CM CM RM|ST ST'],8:['3-2-2','LB CB RB|CM CM|ST ST'],7:['2-3-1','LB RB|LM CM RM|ST'],6:['2-2-1','LB RB|LM RM|ST'],5:['2-1-1','LB RB|CM|ST']};
+var SHPS={
+5:[['2-1-1','LB RB|CM|ST']],
+6:[['2-2-1','LB RB|LM RM|ST'],['2-1-2','LB RB|CM|ST ST']],
+7:[['2-3-1','LB RB|LM CM RM|ST'],['3-2-1','LB CB RB|CM CM|ST']],
+8:[['3-2-2','LB CB RB|CM CM|ST ST'],['2-3-2','LB RB|LM CM RM|ST ST']],
+9:[['3-4-1','LB CB RB|LM CM CM RM|ST'],['3-3-2','LB CB RB|LM CM RM|ST ST'],['3-2-3','LB CB RB|CM CM|LW ST RW']],
+10:[['4-3-2','LB LCB RCB RB|LM CM RM|ST ST'],['3-3-3','LB CB RB|LM CM RM|LW ST RW']],
+11:[['4-4-2','LB LCB RCB RB|LM CM CM RM|ST ST'],['4-3-3','LB LCB RCB RB|CM CM CM|LW ST RW'],['4-2-3-1','LB LCB RCB RB|CDM CDM|LM CAM RM|ST']]};
 var OF={1:[0],2:[-16,16],3:[-30,0,30],4:[-42,-14,14,42],5:[-44,-22,0,22,44]};
 var PW=[10,7.5,5.5,4,3,2.5,2];
-var S={side:9,per:4,mpp:20,sub:20,gk:false,players:[],snaps:[],aid:null,page:'sq'};
+var COLS=['#22c55e','#38bdf8','#f59e0b','#a78bfa','#f472b6','#a3e635'];
+var S={side:9,form:0,per:4,mpp:20,sub:20,gk:false,players:[],snaps:[],aid:null,page:'sq'};
 var uid=1,sel=null,drag=null,gh=null;
 function cl(v,a,b){return Math.max(a,Math.min(b,v))}
 function E(){return Math.max(4,S.per*S.mpp)}
+function shapes(){return SHPS[S.side]||SHPS[9]}
 function pp(s){
   var o=[];
   if(!s)return o;
@@ -125,7 +148,7 @@ function PN(p,pos,l){
   return 7*u;
 }
 function SH(){
-  var a=SHP[S.side]||SHP[9],rows=a[1].split('|'),o=[{p:'GK',x:50,y:92}],m=rows.length,i,j;
+  var a=shapes()[cl(S.form,0,shapes().length-1)],rows=a[1].split('|'),o=[{p:'GK',x:50,y:92}],m=rows.length,i,j;
   for(i=0;i<m;i++){
     var q=rows[i].split(' '),f=OF[q.length]||[0],y=(m<2)?48:76-i*(56/(m-1));
     for(j=0;j<q.length;j++)o.push({p:q[j],x:cl(50+f[j],6,94),y:y});
@@ -143,10 +166,17 @@ function blk(n){var a=[],i;for(i=0;i<n;i++)a.push(null);return a;}
 function isA(p){return p.target==null||p.target===''}
 function keep(){var p=S.players.filter(function(x){return x.prefs.indexOf('GK')>=0});if(S.gk&&p.length>1)return p.slice(0,2);return p.length?[p[0]]:(S.players.length?[S.players[0]]:[]);}
 function am(){
-  var F=SH(),n=S.players.length,K=keep(),nk=K.length,os=Math.max(0,F.s.length-1);
-  var v=cl(Math.round(os*E()/Math.max(1,n-nk)),0,E()),m={};
-  S.players.forEach(function(p){m[p.id]=v});
-  K.forEach(function(k){m[k.id]=(nk===1)?E():Math.round(E()/nk)});
+  var F=SH(),e=E(),K=keep(),nk=K.length,m={},os=Math.max(0,F.s.length-1);
+  var n=Math.max(1,S.players.length-nk),total=os*e;
+  var base=cl(Math.floor(total/n/10)*10,0,e);
+  var extra=Math.min(n,Math.max(0,Math.round((total-base*n)/10)));
+  var cnt=0;
+  S.players.forEach(function(p){
+    if(K.indexOf(p)>=0)return;
+    m[p.id]=cl((cnt<extra)?base+10:base,0,e);
+    cnt++;
+  });
+  K.forEach(function(k){m[k.id]=cl((nk===1)?e:Math.round(e/nk),0,e)});
   return m;
 }
 function wnt(p){return isA(p)?(am()[p.id]||0):+p.target}
@@ -156,12 +186,26 @@ function calc(){
   bl().forEach(function(v){F.s.forEach(function(sl,i){var id=v.sn.assign[i];if(!id||mn[id]===undefined)return;mn[id]+=v.len;bp[id][sl.p]=(bp[id][sl.p]||0)+v.len;})});
   return {mn:mn,bp:bp};
 }
+/* subs = players who come off the bench at this snapshot */
+function subSets(pv,cur){
+  var F=SH(),subs=[],shuf=[];
+  if(!pv)return {subs:subs,shuf:shuf};
+  F.s.forEach(function(sl,si){
+    var x=pv.assign[si],y=cur.assign[si];
+    if(x===y)return;
+    var onBenchBefore=x?pv.assign.indexOf(x)<0:false;
+    var yp=y?ply(y):null,xp=x?ply(x):null;
+    if(yp&&pv.assign.indexOf(yp.id)<0)subs.push({inP:yp,outP:xp,pos:sl.p,si:si});
+    else shuf.push({inP:yp,outP:xp,pos:sl.p,si:si});
+  });
+  return {subs:subs,shuf:shuf};
+}
 function planner(){
   var P=S.players,F=SH(),N=F.s.length,SO=Math.max(1,N-1),e=E();
   var K=keep(),kid=K.map(function(k){return k.id});
   var outs=P.filter(function(p){return kid.indexOf(p.id)<0}).map(function(p){return p.id});
-  var gk={},d;
-  for(d=1;d<=S.per;d++)gk[d]=(S.gk&&K.length>1)?K[(d-1)%K.length].id:K[0].id;
+  var gk={},d2;
+  for(d2=1;d2<=S.per;d2++)gk[d2]=(S.gk&&K.length>1)?K[(d2-1)%K.length].id:K[0].id;
   var A=am(),T={};
   P.forEach(function(p){T[p.id]=cl(isA(p)?(A[p.id]||0):+p.target,0,e)});
   var to=SO*e,su=0;
@@ -182,9 +226,7 @@ function planner(){
     if(st<=0)return;
     var ts=times(st);
     if(!ts.length)return;
-    var dup=false;
-    if(best)dup=best.ts.join('|')===ts.join('|');
-    if(dup)return;
+    if(best&&best.ts.join('|')===ts.join('|'))return;
     for(var k=0;k<(gi?1:2);k++){
       var r=run(ts,st);
       if(!best||r.score<best.score)best=r;
@@ -320,7 +362,7 @@ function planner(){
   }
 }
 function esc(s){return String(s==null?'':s).split('&').join('&amp;').split('<').join('&lt;')}
-function msg(t){var c=d('cfg');c.textContent=t;}
+function msg(t){d('bar').textContent=t;d('bar').className='bar';}
 function go(p){
   var a=['sq','pit','pl'],i;
   if(a.indexOf(p)<0)p='sq';
@@ -330,18 +372,25 @@ function go(p){
   for(i=0;i<b.length;i++)b[i].className=b[i].getAttribute('data-p')===p?'on':'';
 }
 function cfg(){
-  var h='',F=SH();
-  h+='<select id="cSide">';
-  for(var i=5;i<=11;i++)h+='<option'+(i===S.side?' selected':'')+'>'+i+'</option>';
-  h+='</select> a-side &middot; '+F.n;
-  h+=' <select id="cPer">';
+  var h='',i;
+  h+='<label>Side <select id="cSide">';
+  for(i=5;i<=11;i++)h+='<option'+(i===S.side?' selected':'')+'>'+i+'</option>';
+  h+='</select></label>';
+  h+='<label>Formation <select id="cForm">';
+  shapes().forEach(function(f,k){h+='<option value="'+k+'"'+(k===S.form?' selected':'')+'>'+f[0]+'</option>'});
+  h+='</select></label>';
+  h+='<label>Periods <select id="cPer">';
   for(i=1;i<=6;i++)h+='<option'+(i===S.per?' selected':'')+'>'+i+'</option>';
-  h+='</select> periods <select id="cMpp">';
+  h+='</select></label>';
+  h+='<label>Min/period <select id="cMpp">';
   [5,10,15,20,25,30,40].forEach(function(v){h+='<option'+(v===S.mpp?' selected':'')+'>'+v+'</option>'});
-  h+='</select> min <select id="cSub">';
+  h+='</select></label>';
+  h+='<label>Sub every <select id="cSub">';
   [0,5,10,15,20,25,30].forEach(function(v){h+='<option'+(v===S.sub?' selected':'')+'>'+v+'</option>'});
-  h+='</select> sub every';
+  h+='</select></label>';
+  h+='<label><input type="checkbox" id="cGk"'+(S.gk?' checked':'')+'> GK rotation</label>';
   d('cfgRow').innerHTML=h;
+  d('pg-'+S.page+'').className='pg on';
 }
 function sq(){
   var has=S.players.length>0;
@@ -352,7 +401,7 @@ function sq(){
   S.players.forEach(function(p){
     var m=c.mn[p.id]||0,v=A[p.id]||0,au=isA(p);
     h+='<tr data-id="'+p.id+'"><td><input class="cell" style="width:34px" data-f="num" value="'+esc(p.num)+'"></td>';
-    h+='<td><input class="cell" data-f="name" value="'+esc(p.name)+'">'+(kid.indexOf(p.id)>=0?' GK '+v:'')+'</td>';
+    h+='<td><input class="cell" data-f="name" value="'+esc(p.name)+'">'+(kid.indexOf(p.id)>=0?' GK':'')+'</td>';
     h+='<td><input class="cell" data-f="prefs" value="'+p.prefs.join('/')+'" placeholder="GK/LB"></td>';
     h+='<td><button data-st="-" data-id="'+p.id+'">-</button> <input class="cell" style="width:48px;display:inline-block" data-f="target" data-id="'+p.id+'" value="'+(au?'':p.target)+'" placeholder="auto '+v+'"> <button data-st="+" data-id="'+p.id+'">+</button>';
     if(!au)h+=' <button data-au="'+p.id+'">auto</button>';
@@ -362,42 +411,50 @@ function sq(){
   bud();
 }
 function bud(){
-  var e=E(),F=SH(),A=am(),sum=0,set=0;
+  var e=E(),F=SH(),A=am(),sum=0,set=0,total=F.s.length*e;
   S.players.forEach(function(p){if(isA(p))sum+=A[p.id]||0;else{sum+=+p.target;set++}});
-  d('bud').textContent='Wants '+Math.round(sum)+' of '+(F.s.length*e)+' min available ('+set+' set, '+(S.players.length-set)+' auto)';
+  var df=sum-total,f=d('bF');
+  f.style.width=Math.min(100,Math.abs(sum/total)*100/1.4)+'%';
+  f.className='bf'+(df>5?' ov':(df<-5?' un':''));
+  d('bud').textContent='Wants '+Math.round(sum)+' of '+total+' min available ('+set+' set, '+(S.players.length-set)+' auto) - '+
+    (df>5?(Math.round(df)+' min OVER'):(df<-5?(Math.round(-df)+' min UNDER'):'adds up exactly'));
+  d('prompt').innerHTML=(sum>=total-10)?'Minutes are set. <b>Time to plan the match.</b>':'You can still adjust minutes &mdash; or just plan the match now.';
 }
 function pit(){
   var F=SH(),ss=srt(),a=act()||{t:0,assign:blk(F.s.length)},c=calc(),el=d('pitch');
   var i=ss.indexOf(act()),pv=i>0?ss[i-1]:null,h='';
+  var sets=pv?subSets(pv,a):{subs:[],shuf:[]};
+  var glow={};
+  sets.subs.forEach(function(sb,k){glow[sb.si]=COLS[k%COLS.length]});
   F.s.forEach(function(sl,si){
-    var id=a.assign[si],p=id?ply(id):null,old=pv?pv.assign[si]:null,op=old?ply(old):null;
-    var ch=!!pv&&old!==id&&!!id;
+    var id=a.assign[si],p=id?ply(id):null,col=glow[si];
     h+='<div class="sl" data-si="'+si+'" style="left:'+sl.x+'%;top:'+sl.y+'%"><b>'+sl.p+'</b>';
     if(p){
       var m=c.mn[id]||0,cc=isA(p)?'':(m>p.target?'over':(m<p.target?'under':''));
-      h+='<div class="tk'+(ch?' in':'')+' '+FM[sl.p]+'" data-pid="'+id+'" data-si="'+si+'">'+esc(p.num)+'</div>';
+      h+='<div class="tk '+FM[sl.p]+'" data-pid="'+id+'" data-si="'+si+'" style="'+(col?'box-shadow:0 0 0 5px '+col+',0 0 22px 7px '+col+';':'')+'">'+esc(p.num)+'</div>';
       h+='<i>'+esc(p.name)+'</i>';
-      if(ch&&op)h+='<div class="fr">on for '+esc(op.num)+'</div>';
+      if(col){
+        var sb=null;
+        sets.subs.forEach(function(z){if(z.si===si)sb=z});
+        if(sb)h+='<div class="fr" style="background:'+col+'">on for '+(sb.outP?esc(sb.outP.name):'nobody')+'</div>';
+      }
       h+='<u class="'+cc+'">'+m+'</u>';
     }else h+='<div class="em">+</div>';
     h+='</div>';
   });
   el.innerHTML=h;
-  var nx=ss[i+1];
-  var st=d('subs'),sh='';
-  if(i>0){
-    F.s.forEach(function(sl,si){
-      var x=pv.assign[si],y=ss[i].assign[si];
-      if(x===y)return;
-      var xp=x?ply(x):null,yp=y?ply(y):null;
-      if(yp)sh+='<div><span class="sbp">IN #'+esc(yp.num)+' '+esc(yp.name)+'</span> for <span class="sbo">'+(xp?'#'+esc(xp.num)+' '+esc(xp.name):'nobody')+'</span> ('+sl.p+')</div>';
-    });
+  var sh='';
+  sets.subs.forEach(function(sb,k){
+    var col=COLS[k%COLS.length];
+    sh+='<div style="border-left:4px solid '+col+';padding-left:6px;margin-top:4px"><span class="sbp">IN #'+esc(sb.inP.num)+' '+esc(sb.inP.name)+'</span> <span style="color:#93a4bf">for</span> <span class="sbo">'+(sb.outP?'#'+esc(sb.outP.num)+' '+esc(sb.outP.name):'nobody coming off')+'</span> <span style="color:#93a4bf">('+sb.pos+')</span></div>';
+  });
+  if(sets.shuf.length&&!sets.subs.length){
+    sh+='<div class="shl">Position shuffle only: '+sets.shuf.map(function(z){return (z.inP?esc(z.inP.name):'-')+' to '+z.pos}).join(', ')+'</div>';
   }
-  if(sh)sh='<div style="margin-top:6px">'+sh+'</div>';
-  st.innerHTML=sh;
+  d('subs').innerHTML=sh;
   var bh='';
   ss.forEach(function(s,k){
-    var nx2=ss[k+1],l=(nx2?nx2.t:E())-s.t;
+    var nx=ss[k+1],l=(nx?nx.t:E())-s.t;
     bh+='<button class="'+(s.id===S.aid?'on':'')+'" data-id="'+s.id+'">'+s.t+'<br><small>'+l+' min</small></button>';
   });
   d('bk').innerHTML=bh;
@@ -413,22 +470,14 @@ function tl(){
     var s=ss[i],pv=i?ss[i-1]:null,lines=[];
     if(!pv)lines.push('Kick-off line-up');
     else{
-      var same=true,A=[],Bx=[];
-      F.s.forEach(function(sl,si){
-        var x=pv.assign[si],y=s.assign[si];
-        if(x!==y)same=false;
-        if(x===y)return;
-        if(x)A.push({p:ply(x),pos:sl.p});
-        if(y)Bx.push({p:ply(y),pos:sl.p});
+      var sets=subSets(pv,s);
+      sets.subs.forEach(function(sb,k){
+        var col=COLS[k%COLS.length];
+        lines.push('<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+col+';margin-right:4px"></span>'+
+          '<span class="sbo">OUT '+(sb.outP?('#'+esc(sb.outP.num)+' '+esc(sb.outP.name)):'nobody')+'</span> <span class="sbp">IN #'+esc(sb.inP.num)+' '+esc(sb.inP.name)+' ('+sb.pos+')</span>');
       });
-      var go1=A.filter(function(o){return s.assign.indexOf(o.p.id)<0});
-      var cm=Bx.filter(function(o){return pv.assign.indexOf(o.p.id)<0});
-      var n=Math.max(go1.length,cm.length);
-      for(var k=0;k<n;k++){
-        var g=go1[k],c=cm[k];
-        lines.push((g?'<span class="sbo">OUT #'+esc(g.p.num)+' '+esc(g.p.name)+' ('+g.pos+')</span>':'')+' '+(c?'<span class="sbp">IN #'+esc(c.p.num)+' '+esc(c.p.name)+' ('+c.pos+')</span>':'to bench'));
-      }
-      if(!n)lines.push(same?'No change':'Position shuffle only');
+      if(sets.shuf.length&&!sets.subs.length)lines.push('Position shuffle only');
+      if(!sets.subs.length&&!sets.shuf.length)lines.push('No change');
     }
     h+='<div class="cr'+(s.id===S.aid?' on':'')+'"><b>'+s.t+' min</b> <span style="color:#93a4bf">'+(i?'sub':'kick-off')+'</span><div>'+lines.join('<br>')+'</div></div>';
   }
@@ -473,20 +522,10 @@ function ck(){
   if(!out.length)out.push(['','Clean - minutes on target, nobody out of position']);
   d('ck').innerHTML=out.slice(0,14).map(function(o){return '<div class="'+o[0]+'">'+o[1]+'</div>'}).join('');
 }
-function all(){
-  sq();pit();tl();pos();ck();
-  d('cfg').textContent=S.players.length+' players, '+srt().length+' blocks';
-  bar('Ready - '+S.players.length+' players, '+srt().length+' blocks',false);
-}
+function all(){sq();pit();tl();pos();ck();}
 function addP(n,num,pr,tg){var p={id:uid++,num:(num!=null?num:S.players.length+1),name:n||'Player',prefs:pr||[],target:(tg==null?null:tg)};S.players.push(p);return p}
-function carry(ch){
-  var ss=srt(),i=ss.indexOf(act()),j,k;
-  for(j=i+1;j<ss.length;j++)for(k=0;k<ch.length;k++)ss[j].assign[ch[k]]=ss[i].assign[ch[k]];
-}
-function note(p){
-  var m=calc().mn[p.id]||0,w=wnt(p),df=m-w;
-  return m+' min'+(df>2?' ('+Math.round(df)+' over)':(df<-2?' ('+Math.round(-df)+' under)':''));
-}
+function carry(ch){var ss=srt(),i=ss.indexOf(act()),j,k;for(j=i+1;j<ss.length;j++)for(k=0;k<ch.length;k++)ss[j].assign[ch[k]]=ss[i].assign[ch[k]];}
+function note(p){var m=calc().mn[p.id]||0,w=wnt(p),df=m-w;return m+' min'+(df>2?' ('+Math.round(df)+' over)':(df<-2?' ('+Math.round(-df)+' under)':''));}
 function put(si,pid){
   var s=act();
   if(!s)return;
@@ -500,17 +539,7 @@ function put(si,pid){
   all();
   msg(bits.join(' / '));
 }
-function toBn(si){
-  var s=act();
-  if(!s)return;
-  var id=s.assign[si];
-  if(!id)return;
-  s.assign[si]=null;
-  carry([si]);
-  var p=ply(id);
-  all();
-  if(p)msg('#'+p.num+' '+p.name+' off - '+note(p));
-}
+function toBn(si){var s=act();if(!s)return;var id=s.assign[si];if(!id)return;s.assign[si]=null;carry([si]);var p=ply(id);all();if(p)msg('#'+p.num+' '+p.name+' off - '+note(p));}
 function swapAB(a,b){var s=act();if(!s)return;var t=s.assign[a];s.assign[a]=s.assign[b];s.assign[b]=t;carry([a,b]);all()}
 window.addEventListener('pointermove',function(e){
   if(!drag)return;
@@ -561,11 +590,7 @@ document.addEventListener('pointerdown',function(e){
   gh.style.top=e.clientY+'px';
   document.body.appendChild(gh);
 });
-d('tb').addEventListener('click',function(e){
-  var b=e.target.closest('button');
-  if(!b)return;
-  go(b.getAttribute('data-p'));
-});
+d('tb').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;go(b.getAttribute('data-p'))});
 d('bImp').addEventListener('click',function(){
   try{
     var v=d('ap').value||'',lines=v.split('\n').filter(function(s){return s.replace(/\s/g,'')!==''});
@@ -589,52 +614,35 @@ d('bImp').addEventListener('click',function(){
     d('ap').value='';
     if(!S.snaps.length)S.snaps=[{id:uid++,t:0,assign:blk(SH().s.length)}];
     if(!S.aid)S.aid=S.snaps[0].id;
-    all();go('pit');
-    msg(n+' players imported');
+    all();
+    msg(n+' players imported - adjust minutes, then press Auto plan');
   }catch(err){bar('Import failed: '+err.message,true)}
 });
 d('bAdd').addEventListener('click',function(){addP('New player',S.players.length+1,[],null);all()});
-d('bClr').addEventListener('click',function(){
-  S.players=[];
-  S.snaps=[{id:uid++,t:0,assign:blk(SH().s.length)}];
-  S.aid=S.snaps[0].id;sel=null;
-  all();go('sq');
-});
+d('bClr').addEventListener('click',function(){S.players=[];S.snaps=[{id:uid++,t:0,assign:blk(SH().s.length)}];S.aid=S.snaps[0].id;sel=null;all();go('sq')});
 d('bGo').addEventListener('click',function(){
   try{
     if(!S.players.length){msg('Add players first');return}
     var r=planner();
     S.snaps=r.snaps;
     S.aid=r.snaps[0].id;
-    all();go('pit');
-    msg('Auto plan: '+r.nb+' blocks ('+r.step+' min), biggest miss '+Math.round(r.worst)+' min, out of position: '+r.oo);
-    bar('Ready - '+S.players.length+' players, '+r.nb+' blocks',false);
+    go('pit');all();
+    msg('Plan: '+r.nb+' blocks of ~'+r.step+' min, biggest miss '+Math.round(r.worst)+' min, out of position: '+r.oo);
   }catch(err){bar('Auto plan failed: '+err.message,true)}
 });
-d('bk').addEventListener('click',function(e){
-  var b=e.target.closest('button');
-  if(!b)return;
-  S.aid=parseInt(b.getAttribute('data-id'),10);sel=null;all();
-});
+d('bk').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;S.aid=parseInt(b.getAttribute('data-id'),10);sel=null;all()});
 d('pT').addEventListener('click',function(e){
-  var x=e.target.closest('button'),id,p,am2,ex;
+  var x=e.target.closest('button'),id,p,A,e2,a;
   if(!x)return;
-  if(x.getAttribute('data-del')){
-    id=parseInt(x.getAttribute('data-del'),10);
-    S.players=S.players.filter(function(q){return q.id!==id});
-    S.snaps.forEach(function(s){s.assign=s.assign.map(function(v){return v===id?null:v})});
-    all();return;
-  }
+  if(x.getAttribute('data-del')){id=parseInt(x.getAttribute('data-del'),10);S.players=S.players.filter(function(q){return q.id!==id});S.snaps.forEach(function(s){s.assign=s.assign.map(function(v){return v===id?null:v})});all();return}
   if(x.getAttribute('data-au')){p=ply(parseInt(x.getAttribute('data-au'),10));if(p){p.target=null;all()}return}
   if(x.getAttribute('data-st')){
     id=parseInt(x.getAttribute('data-id'),10);
     p=ply(id);
     if(!p)return;
-    am2=am();
-    ex=E();
-    var a=am2[id]||0;
-    if(x.getAttribute('data-st')==='+')p.target=isA(p)?cl(Math.floor(a/10)*10+10,0,ex):cl(Math.round(+p.target)+10,0,ex);
-    else p.target=isA(p)?cl((a%10===0?Math.floor(a/10)*10-10:Math.floor(a/10)*10),0,ex):cl(Math.round(+p.target)-10,0,ex);
+    A=am();e2=E();a=A[id]||0;
+    if(x.getAttribute('data-st')==='+')p.target=isA(p)?cl(a+10,0,e2):cl(Math.round(+p.target)+10,0,e2);
+    else p.target=isA(p)?cl(a-10,0,e2):cl(Math.round(+p.target)-10,0,e2);
     all();
   }
 });
@@ -654,11 +662,13 @@ d('pT').addEventListener('input',function(e){
 });
 d('cfgRow').addEventListener('change',function(e){
   var id=e.target.id,v=parseInt(e.target.value,10);
-  if(id==='cSide'){S.side=cl(v,5,11)}
-  else if(id==='cPer'){S.per=cl(v,1,6)}
-  else if(id==='cMpp'){S.mpp=cl(v,4,45)}
-  else if(id==='cSub'){S.sub=cl(v,0,30)}
-  if(id==='cSide'||id==='cPer'||id==='cMpp'){
+  if(id==='cSide'){S.side=cl(v,5,11);S.form=0}
+  else if(id==='cForm')S.form=parseInt(e.target.value,10)||0;
+  else if(id==='cPer')S.per=cl(v,1,6);
+  else if(id==='cMpp')S.mpp=cl(v,4,45);
+  else if(id==='cSub')S.sub=cl(v,0,30);
+  else if(id==='cGk')S.gk=e.target.checked;
+  if(id==='cSide'||id==='cForm'||id==='cPer'||id==='cMpp'){
     var e2=E();
     S.snaps=srt().filter(function(s){return s.t<e2});
     if(!S.snaps.length)S.snaps=[{id:uid++,t:0,assign:blk(SH().s.length)}];
@@ -677,6 +687,9 @@ try{
   bar('Start-up problem: '+err.message,true);
 }
 </script>
-<script>document.getElementById('bar').textContent+=' | end reached';</script>
+<script>
+var b=document.getElementById('bar');
+if(b&&b.textContent.indexOf('Ready')<0)b.textContent+=' | file intact, script failed';
+</script>
 </body>
 </html>
