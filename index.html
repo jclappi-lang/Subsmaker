@@ -524,7 +524,8 @@ function ck(){
 }
 function all(){sq();pit();tl();pos();ck();}
 function addP(n,num,pr,tg){var p={id:uid++,num:(num!=null?num:S.players.length+1),name:n||'Player',prefs:pr||[],target:(tg==null?null:tg)};S.players.push(p);return p}
-function carry(ch){var ss=srt(),i=ss.indexOf(act()),j,k;for(j=i+1;j<ss.length;j++)for(k=0;k<ch.length;k++)ss[j].assign[ch[k]]=ss[i].assign[ch[k]];}
+/* Edits apply ONLY to the snapshot being viewed - nothing is copied into later snapshots. */
+function carry(ch){}
 function note(p){var m=calc().mn[p.id]||0,w=wnt(p),df=m-w;return m+' min'+(df>2?' ('+Math.round(df)+' over)':(df<-2?' ('+Math.round(-df)+' under)':''));}
 function put(si,pid){
   var s=act();
